@@ -1,5 +1,5 @@
 # RecipeMaker
 
-Contributers:
-Omar Taylor
-Souparni Agnihotri
+Contributers:__
+Omar Taylor__
+Souparni Agnihotri__
