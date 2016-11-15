@@ -1,0 +1,29 @@
+
+#first{
+    padding-left: 10px;
+    padding-top: 30px;
+    width: 300px;
+    float: left;
+    font-family: 'fantasy';
+    color: darkblue;
+}
+
+#second{
+    padding-top: 30px;
+    width: 500px;
+    height: 300px;
+    float: left;
+    font-family: 'Fantasy';
+    color: darkblue;
+}
+
+#button{
+    height:200px;
+    width:200px;
+}
+
+#mainImg {
+    width:1280px;
+    height: 720px;
+}
+
