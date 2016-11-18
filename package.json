@@ -1,0 +1,42 @@
+{
+  "name": "recipemaker",
+  "version": "0.0.1",
+  "description": "Contributers:<br /> Omar Taylor<br /> Souparni Agnihotri<br />",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acesonnall/RecipeMaker.git"
+  },
+  "author": "Omar, Souparni, Chinmay, Charlie",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "*",
+    "body-parser": "*",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "ejs": "*",
+    "express": "*",
+    "express-session": "*",
+    "formidable": "^1.0.17",
+    "method-override": "*",
+    "mongoose": "*",
+    "mongoose-file": "0.0.2",
+    "morgan": "*",
+    "nodemon": "*",
+    "passport": "*",
+    "passport-facebook": "*",
+    "passport-github2": "^0.1.10",
+    "passport-google-oauth": "*",
+    "passport-local": "*",
+    "passport-twitter": "*",
+    "tunnel-ssh": "^4.1.1",
+    "unirest": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/Acesonnall/RecipeMaker/issues"
+  },
+  "homepage": "https://github.com/Acesonnall/RecipeMaker#readme"
+}

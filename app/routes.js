@@ -1,9 +1,9 @@
 /**
  * Created by O on 10/21/2016.
  */
-var path = require('path');
-var bcrypt   = require('bcrypt-nodejs');
-var User            = require('../app/models/user');
+var path    = require('path');
+var bcrypt  = require('bcrypt-nodejs');
+var User    = require('../app/models/users');
 
 module.exports = function(app, passport) {
 
@@ -13,10 +13,6 @@ module.exports = function(app, passport) {
 
     app.get('/login', function(req, res) {
         res.render(path.resolve(__dirname + '../../views/Login/login.ejs'), { message: req.flash('loginMessage') });
-    });
-
-    app.get('/dashboard',isLoggedIn,function (req,res) {
-        res.render(path.resolve('ISUtilities/views/Dashboard/dashboard.ejs'),{user_name: req.user.local.name});
     });
 
     // process the login form
@@ -53,6 +49,25 @@ module.exports = function(app, passport) {
             successRedirect : '/profile',
             failureRedirect : '/'
         }));
+
+    // send to facebook to do the authentication
+    app.get('/connect/facebook', passport.authorize('facebook', { scope : 'email' }));
+
+    // handle the callback after facebook has authorized the user
+    app.get('/connect/facebook/callback',
+        passport.authorize('facebook', {
+            successRedirect : '/profile',
+            failureRedirect : '/'
+        }));
+
+    // facebook -------------------------------
+    app.get('/unlink/facebook', function(req, res) {
+        var user            = req.user;
+        user.facebook.token = undefined;
+        user.save(function(err) {
+            res.redirect('/profile');
+        });
+    });
 
     app.post('/profile', isLoggedIn, function (req, res) {
 
