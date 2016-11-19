@@ -14,6 +14,7 @@ var bodyParser   = require('body-parser');
 var session      = require('express-session');
 var path         = require('path');
 var unirest      = require('unirest');
+var MongoClient  = require('mongodb');
 //var client       = require('tunnel-ssh');
 
 var configDB     = require(__dirname + '/config/database.js');
@@ -24,14 +25,42 @@ var configSesh   = require(__dirname + '/config/sesh_conf.js');
     if (error) {
         console.log("SSH connection error " + error);
     }*/
+
+    /*MongoClient.connect(configDB.url, function (err, db) {
+        var collection = db.collection('recipes');
+
+        var cursor = collection.aggregate([
+            {
+                $sample: {
+                    size: 1
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    image: 1
+                }
+            }
+        ], { cursor: { batchSize: 1 } });
+        cursor.toArray(function (err, docs) {
+            console.log(docs);
+            db.close();
+        });
+    });*/
+
     console.log('MongoDB Connection Initializing');
 
     mongoose.connect(configDB.url); // connect to the database
 
-    var db = mongoose.connection;
+    exports.GetRandRecipes = function (callback) {
+
+    };
+
+    /*var db = mongoose.connection;
 
     db.on('error', console.error.bind(console, 'connection error:'));
-    /*db.once('open', function() {
+    db.once('open', function() {
         console.log('Database Connection: Established');
 
         var mycollection = mongoose.model('mycollection');

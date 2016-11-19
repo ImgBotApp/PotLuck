@@ -4,6 +4,8 @@
 var path    = require('path');
 var bcrypt  = require('bcrypt-nodejs');
 var User    = require('../app/models/users');
+var Recipe  = require('../app/models/recipes');
+var mongoose     = require('mongoose');
 
 module.exports = function(app, passport) {
 
@@ -69,6 +71,16 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/polling', isLoggedIn, function (req, res) {
+        Recipe.aggregate({ $sample: { size: 1 } }, { $project: { _id: 1, title: 1, image: 1 } }, function (err, docs) {
+            if (err) console.log(err);
+            res.render(path.resolve(__dirname + '../../views/Polling/polling.ejs'), {
+                user : req.user,
+                recipe: docs
+            });
+        });
+    });
+
     app.post('/profile', isLoggedIn, function (req, res) {
 
         var email = req.body.email;
@@ -103,6 +115,29 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
+
+/*function GetRandRecipes(callback) {
+
+    var db = mongoose.connection;
+    var collection = db.collection('recipes');
+    collection.aggregate([
+        {
+            $sample: {
+                size: 1
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                title: 1,
+                image: 1
+            }
+        }
+        ], function (err, docs) {
+        if (err) console.log(err);
+        console.log(docs);
+    });
+}*/
 
 // generating a hash
 function generateHash(password) {

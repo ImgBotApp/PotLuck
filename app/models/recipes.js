@@ -3,13 +3,16 @@
  */
 // load the things we need
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
 
 // define the schema for our user model
-var ratingsSchema = mongoose.Schema({
-    rating : Number,
-    recipe : ObjectId
+var recipeSchema = mongoose.Schema({
+
+    title: String,
+    image: {
+        type: String,
+        match: /^https:\/\//i
+    }
 });
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('Ratings', ratingsSchema);
+module.exports = mongoose.model('Recipe', recipeSchema);

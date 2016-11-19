@@ -17,4 +17,7 @@ $(document).ready(function(){
         $.post('/signup', name);
     });
 
+    $('.btn-like').click(function(event) {
+        var rating = $('.')
+    })
 });

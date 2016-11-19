@@ -22,6 +22,7 @@
     "express-session": "*",
     "formidable": "^1.0.17",
     "method-override": "*",
+    "mongodb": "^2.2.11",
     "mongoose": "*",
     "mongoose-file": "0.0.2",
     "morgan": "*",
