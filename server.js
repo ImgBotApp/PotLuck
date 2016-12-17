@@ -12,9 +12,9 @@ var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
+var serveStatic  = require('serve-static');
 var path         = require('path');
 var unirest      = require('unirest');
-var MongoClient  = require('mongodb');
 //var client       = require('tunnel-ssh');
 
 var configDB     = require(__dirname + '/config/database.js');
@@ -24,56 +24,12 @@ var configSesh   = require(__dirname + '/config/sesh_conf.js');
 /*var server = client(configTunnel, function (error, server) {
     if (error) {
         console.log("SSH connection error " + error);
-    }*/
-
-    /*MongoClient.connect(configDB.url, function (err, db) {
-        var collection = db.collection('recipes');
-
-        var cursor = collection.aggregate([
-            {
-                $sample: {
-                    size: 1
-                }
-            },
-            {
-                $project: {
-                    _id: 1,
-                    title: 1,
-                    image: 1
-                }
-            }
-        ], { cursor: { batchSize: 1 } });
-        cursor.toArray(function (err, docs) {
-            console.log(docs);
-            db.close();
-        });
+    }
     });*/
 
     console.log('MongoDB Connection Initializing');
 
     mongoose.connect(configDB.url); // connect to the database
-
-    exports.GetRandRecipes = function (callback) {
-
-    };
-
-    /*var db = mongoose.connection;
-
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function() {
-        console.log('Database Connection: Established');
-
-        var mycollection = mongoose.model('mycollection');
-        mycollection.find({}, function (err, docs) {
-           if (!err) {
-               console.log(docs);
-               process.exit();
-           } else {
-               throw err;
-           }
-        });
-    });
-});*/
 
 require(__dirname + '/config/passport')(passport); // pass passport for configuration
 
@@ -85,6 +41,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 app.use(session(configSesh)); // Keep user logged in
+app.use('/public', serveStatic(path.join(__dirname, '/public')));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session

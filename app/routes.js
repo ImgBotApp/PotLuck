@@ -19,7 +19,7 @@ module.exports = function(app, passport) {
 
     // process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/dashboard', // redirect to the secure profile section
+        successRedirect : '/polling', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
@@ -115,29 +115,6 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
-
-/*function GetRandRecipes(callback) {
-
-    var db = mongoose.connection;
-    var collection = db.collection('recipes');
-    collection.aggregate([
-        {
-            $sample: {
-                size: 1
-            }
-        },
-        {
-            $project: {
-                _id: 1,
-                title: 1,
-                image: 1
-            }
-        }
-        ], function (err, docs) {
-        if (err) console.log(err);
-        console.log(docs);
-    });
-}*/
 
 // generating a hash
 function generateHash(password) {
