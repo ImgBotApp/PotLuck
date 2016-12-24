@@ -20,16 +20,14 @@ module.exports = function (passport) {
     // required for persistent login sessions
     // passport needs ability to serialize and unserialize users out of session
 
-    // used to serialize the user for the session
+    // High level user serialize/de-serialize configuration used for passport
     passport.serializeUser(function (user, done) {
-        done(null, user.id);
+        done(null, user._id);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function (id, done) {
-        User.findById(id, function (err, user) {
-            done(err, user);
-        });
+        User.findById(id).exec(done);
     });
 
     // =========================================================================
@@ -53,7 +51,7 @@ module.exports = function (passport) {
                 }
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
-                User.findOne({'local.name': req.body.name}, function (err, user) {
+                User.findOne({'local.email': req.body.email}, function (err, user) {
                     // if there are any errors, return the error
                     if (err) {
                         err.status = 1000;
@@ -65,7 +63,7 @@ module.exports = function (passport) {
 
                         // if there is a user id already but no token (user was linked at one point and then removed)
                         // just add our token and profile information
-                        if (!user.local.email) {
+                        if (!user.local.name) {
                             user.local.email = email;
                             user.local.password = user.generateHash(password);
                             user.local.name = req.body.name;
@@ -80,20 +78,37 @@ module.exports = function (passport) {
                         }
                     } else {
 
-                        // if there is no user with that email
-                        // create the user
-                        var newUser = new User();
+                        if (req.originalUrl != '/connect/local') {
 
-                        // set the user's local credentials
-                        newUser.local.email = email;
-                        newUser.local.password = newUser.generateHash(password);
-                        newUser.local.name = req.body.name;
+                            // if there is no user with that email
+                            // create the user
+                            var newUser = new User();
 
-                        // save the user
-                        newUser.save(function (err) {
-                            if (err) throw err;
-                            return done(null, newUser);
-                        });
+                            // set the user's local credentials
+                            newUser.local.email = email;
+                            newUser.local.password = newUser.generateHash(password);
+                            newUser.local.name = req.body.name;
+
+                            // save the user
+                            newUser.save(function (err) {
+                                if (err) throw err;
+                                return done(null, newUser);
+                            });
+                        } else {
+                            var user = req.user; // pull the user out of the session
+
+                            // update the current users facebook credentials
+                            user.local.email = email;
+                            user.local.password = user.generateHash(password);
+                            user.local.name = req.body.name;
+
+                            // save the user
+                            user.save(function (err) {
+                                if (err)
+                                    throw err;
+                                return done(null, user);
+                            });
+                        }
 
                     }
 
@@ -148,8 +163,10 @@ module.exports = function (passport) {
 
         // facebook will send back the token and profile
         function (req, accessToken, refreshToken, profile, done) {
-
-            console.log('profile', profile);
+            console.log('profile', profile); // debugging
+            if (!profile.emails || !profile.emails.length) {
+                return done('No emails associated with this account!');
+            }
 
             // asynchronous
             process.nextTick(function () {
@@ -173,6 +190,9 @@ module.exports = function (passport) {
                                 user.facebook.token = accessToken;
                                 user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
                                 user.facebook.email = profile.emails[0].value;
+                                user.facebook.picture = 'http://graph.facebook.com/' +
+                                    profile.id.toString() + '/picture?type=large';
+                                //user.facebook.picture
 
                                 user.save(function(err) {
                                     if (err)
@@ -191,6 +211,8 @@ module.exports = function (passport) {
                             newUser.facebook.token = accessToken; // we will save the token that facebook provides to the user
                             newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
                             newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                            newUser.facebook.picture = 'https://graph.facebook.com/' +
+                                profile.id.toString() + '/picture?type=large';
 
                             // save our user to the database
                             newUser.save(function (err) {
@@ -212,6 +234,8 @@ module.exports = function (passport) {
                     user.facebook.token = accessToken;
                     user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
                     user.facebook.email = profile.emails[0].value;
+                    user.facebook.picture = 'https://graph.facebook.com/v2.8/' +
+                        profile.id.toString() + '/picture?type=large';
 
                     // save the user
                     user.save(function(err) {
@@ -256,6 +280,7 @@ module.exports = function (passport) {
                                 user.twitter.diplayName  = profile.displayName;
                                 user.twitter.username = profile.username;
                                 user.twitter.email = profile.emails[0].value;
+                                user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                                 user.save(function(err) {
                                     if (err)
@@ -275,6 +300,7 @@ module.exports = function (passport) {
                             newUser.twitter.username = profile.username;
                             newUser.twitter.displayName = profile.displayName;
                             newUser.twitter.email = profile.emails[0].value;
+                            newUser.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                             // save our user into the database
                             newUser.save(function (err) {
@@ -294,6 +320,7 @@ module.exports = function (passport) {
                     user.twitter.displayName  = profile.displayName;
                     user.twitter.username = profile.username;
                     user.twitter.email = profile.emails[0].value;
+                    user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                     // save the user
                     user.save(function(err) {
@@ -334,6 +361,7 @@ module.exports = function (passport) {
                                 user.google.token = token;
                                 user.google.diplayName  = profile.displayName;
                                 user.google.email = profile.emails[0].value;
+                                user.google.picture = profile.photos[0].value;
 
                                 user.save(function(err) {
                                     if (err)
@@ -353,6 +381,7 @@ module.exports = function (passport) {
                             newUser.google.token = token;
                             newUser.google.name = profile.displayName;
                             newUser.google.email = profile.emails[0].value; // pull the first email
+                            newUser.google.picture = profile.photos[0].value;
 
                             // save the user
                             newUser.save(function (err) {
@@ -371,6 +400,7 @@ module.exports = function (passport) {
                     user.google.token = token;
                     user.google.name  = profile.displayName;
                     user.google.email = profile.emails[0].value;
+                    user.google.picture = profile.photos[0].value.substring(0, profile.photos[0].value.length - 6);
 
                     // save the user
                     user.save(function(err) {
@@ -408,6 +438,7 @@ module.exports = function (passport) {
                                 user.github.name  = profile.displayName;
                                 user.github.username = profile.username;
                                 user.github.email = profile.emails[0].value;
+                                user.github.picture = profile._json.avatar_url;
 
                                 user.save(function(err) {
                                     if (err)
@@ -428,6 +459,7 @@ module.exports = function (passport) {
                             newUser.github.name = profile.displayName;
                             newUser.github.username = profile.username;
                             newUser.github.email = profile.emails[0].value;
+                            newUser.github.email = profile._json.avatar_url;
 
                             // save the user
                             newUser.save(function (err) {
@@ -447,6 +479,7 @@ module.exports = function (passport) {
                     user.github.name  = profile.displayName;
                     user.github.username = profile.username;
                     user.github.email = profile.emails[0].value;
+                    user.github.picture = profile._json.avatar_url;
 
                     // save the user
                     user.save(function(err) {

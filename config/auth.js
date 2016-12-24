@@ -10,21 +10,21 @@ module.exports = {
     },
 
     'twitterAuth' : {
-        'consumerKey'       : 'TODO',
-        'consumerSecret'    : 'TODO',
-        'callbackURL'       : 'TODO'
+        'consumerKey'       : 'ID',
+        'consumerSecret'    : 'Secret',
+        'callbackURL'       : 'http://localhost:8080/auth/twitter/callback'
     },
 
     'googleAuth' : {
-        'clientID'      : 'TODO',
-        'clientSecret'  : 'TODO',
-        'callbackURL'   : 'TODO'
+        'clientID'      : 'ID',
+        'clientSecret'  : 'Secret',
+        'callbackURL'   : 'http://localhost:8080/auth/google/callback'
     },
 
     'githubAuth' : {
-        'clientID'      : 'TODO',
-        'clientSecret'  : 'TODO',
-        'callbackURL'   : 'TODO'
+        'clientID'      : 'ID',
+        'clientSecret'  : 'Secret',
+        'callbackURL'   : 'http://localhost:8080/auth/github/callback'
     }
 
 };

@@ -11,6 +11,7 @@ var flash        = require('connect-flash');
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
+var serveStatic = require('serve-static');
 var session      = require('express-session');
 var path         = require('path');
 var unirest      = require('unirest');
@@ -48,7 +49,7 @@ var configSesh   = require(__dirname + '/config/sesh_conf.js');
             db.close();
         });
     });*/
-
+    mongoose.Promise = global.Promise;
     console.log('MongoDB Connection Initializing');
 
     mongoose.connect(configDB.url); // connect to the database
@@ -85,6 +86,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 app.use(session(configSesh)); // Keep user logged in
+app.use('/public', serveStatic(path.join(__dirname, '/public'))); // Serve up public folder
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session

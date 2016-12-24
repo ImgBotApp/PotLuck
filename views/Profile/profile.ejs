@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>RecipeMaker | Profile</title>
+    <title>Node Authentication</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
@@ -10,6 +10,9 @@
             word-wrap: break-word;
         }
     </style>
+
+    <!-- Custom Theme Style -->
+    <link href="../../public/css/profile.css" rel="stylesheet">
 </head>
 <body style="background-color:#E2788B">
 <div class="container">
@@ -30,8 +33,21 @@
 
                 <p>
                     <strong>UserID</strong>:<%= user._id %><br>
-                    <strong>Email</strong>:<%= user.local.email %><br>
+                    <strong>Email</strong>:<%= user.local.email %><br><br>
                 </p>
+                <% if (!user.local.picture) { %>
+                <b>Upload a profile photo:</b>
+                <form action="/profile/photo" method="POST" enctype="multipart/form-data">
+                    <label for="file-upload" class="custom-file-upload">
+                        <i class="fa fa-cloud-upload"></i> Upload Photo
+                    </label>
+                    <input id="file-upload" type="file" name="avatar">
+                    <input type="submit" value="submit">
+                </form>
+                <% } else { %>
+                <img id="profile_picture" src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP" align="left">
+                <a href="/profile/photo/delete/<%= user.local.picture%>" class="btn btn-danger btn-sm">Delete Photo</a>
+                <% } %>
 
                 <a href="/unlink/local" class="btn btn-default">Unlink</a>
                 <% } else { %>
@@ -80,6 +96,7 @@
                 <% if (user.facebook.token) { %>
 
                 <p>
+                    <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
                     <strong>id</strong>: <%= user.facebook.id %><br>
                     <strong>token</strong>: <%= user.facebook.token %><br>
                     <strong>email</strong>: <%= user.facebook.email %><br>
@@ -103,6 +120,7 @@
                 <% if (user.twitter.token) { %>
 
                 <p>
+                    <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
                     <strong>id</strong>: <%= user.twitter.id %><br>
                     <strong>token</strong>: <%= user.twitter.token %><br>
                     <strong>username</strong>: <%= user.twitter.username %><br>
@@ -127,6 +145,7 @@
                 <% if (user.google.token) { %>
 
                 <p>
+                    <img src="<%= user.google.picture %>" alt="G_PP" align="left">
                     <strong>id</strong>: <%= user.google.id %><br>
                     <strong>token</strong>: <%= user.google.token %><br>
                     <strong>email</strong>: <%= user.google.email %><br>
@@ -149,6 +168,7 @@
                 <% if (user.github.id) { %>
 
                 <p>
+                    <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
                     <strong>id</strong>: <%= user.github.id %><br>
                     <strong>token</strong>: <%= user.github.token %><br>
                     <strong>email</strong>: <%= user.github.email %><br>
@@ -169,6 +189,7 @@
 </div>
 <!-- jQuery -->
 <script src="../../public/vendors/jquery/dist/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="../../public/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- FastClick -->
