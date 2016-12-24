@@ -24,7 +24,6 @@
     "fs": "0.0.1-security",
     "gridfs-stream": "^1.1.1",
     "method-override": "*",
-    "mongodb": "^2.2.11",
     "mongoose": "*",
     "mongoose-file": "0.0.2",
     "morgan": "*",

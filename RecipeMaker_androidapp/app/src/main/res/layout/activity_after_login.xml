@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_after_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.souparni.recipemaker.afterLogin"
+    android:backgroundTint="#e8eb446b"
+    android:background="#fd0942">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="400dp"
+        app:srcCompat="@drawable/applepieimage1"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_dislike"
+        android:layout_marginEnd="41dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="49dp"
+        android:textSize="24sp"
+        android:typeface="serif"
+        android:textStyle="normal|bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:fontFamily="cursive"
+        android:textAllCaps="true" />
+
+    <Button
+        android:text="Like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:id="@+id/btn_like"
+        android:layout_alignBaseline="@+id/btn_dislike"
+        android:layout_alignBottom="@+id/btn_dislike"
+        android:layout_alignParentStart="true"
+        android:textSize="24sp"
+        android:typeface="serif"
+        android:fontFamily="cursive"
+        android:textStyle="normal|bold" />
+
+</RelativeLayout>
