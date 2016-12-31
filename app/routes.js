@@ -45,10 +45,13 @@ module.exports = function(app, passport) {
     }));
 
     app.get('/profile', isLoggedIn, function(req, res) {
-        var user_info = req.params.user_info;
+        var user_info = req.query.user_info;
 
         if (user_info == 1) {
-
+            User.findById(req.user._id, function (err, profile) {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(profile, null, 3));
+            });
         } else {
             res.render(path.resolve(__dirname + '/../views/Profile/profile.ejs'), {
                 user: req.user
