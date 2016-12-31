@@ -45,9 +45,15 @@ module.exports = function(app, passport) {
     }));
 
     app.get('/profile', isLoggedIn, function(req, res) {
-        res.render(path.resolve(__dirname + '/../views/Profile/profile.ejs'), {
-            user : req.user
-        });
+        var user_info = req.params.user_info;
+
+        if (user_info == 1) {
+
+        } else {
+            res.render(path.resolve(__dirname + '/../views/Profile/profile.ejs'), {
+                user: req.user
+            });
+        }
     });
 
     // route for facebook authentication and login
@@ -90,7 +96,7 @@ module.exports = function(app, passport) {
 
     // Authorizations - locally
     app.get('/connect/local', function(req, res) {
-        res.render(path.resolve(__dirname + '../../views/Login/connect-local.ejs'), { message: req.flash('loginMessage') });
+        res.render(path.resolve(__dirname + '/../views/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
     });
     app.post('/connect/local', passport.authenticate('local-signup', {
         successRedirect : '/profile', // redirect to the secure profile section
@@ -184,12 +190,25 @@ module.exports = function(app, passport) {
     });
 
     app.get('/polling', isLoggedIn, function (req, res) {
+        var version = req.params.version;
+
         Recipe.aggregate({ $sample: { size: 1 } }, { $project: { _id: 1, title: 1, image: 1 } }, function (err, docs) {
             if (err) console.log(err);
-            res.render(path.resolve(__dirname + '/../views/Polling/polling.ejs'), {
-                user : req.user,
-                recipe: docs
-            });
+            if (version == 'v2') {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(docs, null, 3));
+            } else {
+                res.render(path.resolve(__dirname + '/../views/Polling/polling.ejs'), {
+                    user: req.user,
+                    recipe: docs
+                });
+            }
+        });
+    });
+
+    app.post('/polling', isLoggedIn, function (req, res) {
+        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {new: true}, function (err) {
+            if (err) return console.log(err);
         });
     });
 
@@ -227,7 +246,7 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
-    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res, next) {
+    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res) {
         var writestream = gfs.createWriteStream({
             filename: req.file.originalname
         });

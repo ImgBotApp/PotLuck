@@ -12,12 +12,24 @@ $(document).ready(function(){
         event.preventDefault();
     });
 
-    $('.btn-signup').click(function(event){ // Set initial name
+    $('.btn-signup').click(function () { // Set initial name
         var name =  $.trim($('.form-name').val());
         $.post('/signup', name);
     });
 
     $('.btn-like').click(function(event) {
-        var rating = $('.')
-    })
+        var recipeId = $(this).attr('recipe-id');
+        var rating = 1;
+        var data = {recipeId: recipeId, rating: rating};
+        $.post('/polling', data);
+        event.preventDefault();
+    });
+
+    $('.btn-dislike').click(function (event) {
+        var recipeId = $(this).attr('recipe-id');
+        var rating = 0;
+        var data = {recipeId: recipeId, rating: rating};
+        $.post('/polling', data);
+        event.preventDefault();
+    });
 });

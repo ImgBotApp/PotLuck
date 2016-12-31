@@ -11,7 +11,6 @@ var flash        = require('connect-flash');
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
-var serveStatic = require('serve-static');
 var session      = require('express-session');
 var serveStatic  = require('serve-static');
 var path         = require('path');
@@ -30,7 +29,17 @@ var configSesh   = require(__dirname + '/config/sesh_conf.js');
     mongoose.Promise = global.Promise;
     console.log('MongoDB Connection Initializing');
 
-    mongoose.connect(configDB.url); // connect to the database
+mongoose.connect(configDB.url, function (err) {
+    if (err) {
+        var asterisks = '';
+        for (var i = 0; i < err.toString().length; i++) {
+            asterisks += '*'
+        }
+        console.log('Connection to \'' + configDB.name + '\' Database: Failed.\n' + asterisks + '\n' + err + '\n' + asterisks + '\n');
+    } else {
+        console.log('Connection to \'' + configDB.name + '\' Database: Established.');
+    }
+}); // connect to the database
 
 require(__dirname + '/config/passport')(passport); // pass passport for configuration
 

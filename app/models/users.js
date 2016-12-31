@@ -14,9 +14,11 @@ var userSchema = mongoose.Schema({
         name         : String,
         email        : String,
         password     : String,
+        picture: {
+            type: String
+        },
         feedback     : [ {
-            type: ObjectId,
-            ref: 'Rating',
+            recipeId: ObjectId,
             rating: Number
             } ]
     },
@@ -24,27 +26,47 @@ var userSchema = mongoose.Schema({
         id           : String,
         token        : String,
         email        : String,
-        name         : String
+        name: String,
+        picture: {
+            type: String,
+            match: /^https:\/\//i
+            //required: true,
+        }
     },
     twitter          : {
         id           : String,
         token        : String,
         displayName  : String,
         username     : String,
-        email        : String
+        email: String,
+        picture: {
+            type: String,
+            //required: true,
+            match: /^https:\/\//i
+        }
     },
     google           : {
         id           : String,
         token        : String,
         email        : String,
-        name         : String
+        name: String,
+        picture: {
+            type: String,
+            //required: true,
+            match: /^https:\/\//i
+        }
     },
     github           : {
         id           : String,
         token        : String,
         email        : String,
         username     : String,
-        name         : String
+        name: String,
+        picture: {
+            type: String,
+            //required: true,
+            match: /^https:\/\//i
+        }
     }
 
 });
