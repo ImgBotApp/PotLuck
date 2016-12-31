@@ -190,10 +190,11 @@ module.exports = function(app, passport) {
     });
 
     app.get('/polling', isLoggedIn, function (req, res) {
-        var version = req.params.version;
+        var version = req.query.version;
 
         Recipe.aggregate({ $sample: { size: 1 } }, { $project: { _id: 1, title: 1, image: 1 } }, function (err, docs) {
             if (err) console.log(err);
+            console.log(version);
             if (version == 'v2') {
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify(docs, null, 3));
