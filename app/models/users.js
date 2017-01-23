@@ -17,10 +17,10 @@ var userSchema = mongoose.Schema({
         picture: {
             type: String
         },
-        feedback     : [ {
+        feedback: [new mongoose.Schema({
             recipeId: ObjectId,
             rating: Number
-            } ]
+        }, {_id: false})]
     },
     facebook         : {
         id           : String,

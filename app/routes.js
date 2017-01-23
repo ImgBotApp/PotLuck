@@ -59,6 +59,18 @@ module.exports = function(app, passport) {
         }
     });
 
+    app.get('/user_list', function (req, res) {
+        User.find({}, function (err, user) {
+            var userMap = {};
+
+            user.forEach(function (user) {
+                userMap[user._id] = user;
+            });
+
+            res.send(userMap);
+        })
+    });
+
     // route for facebook authentication and login
     app.get('/auth/facebook', passport.authenticate('facebook', { scope : ['email', 'public_profile'] }));
 
@@ -197,7 +209,6 @@ module.exports = function(app, passport) {
 
         Recipe.aggregate({ $sample: { size: 1 } }, { $project: { _id: 1, title: 1, image: 1 } }, function (err, docs) {
             if (err) console.log(err);
-            console.log(version);
             if (version == 'v2') {
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify(docs, null, 3));
@@ -211,8 +222,14 @@ module.exports = function(app, passport) {
     });
 
     app.post('/polling', isLoggedIn, function (req, res) {
-        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {new: true}, function (err) {
+        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {
+            safe: true,
+            upsert: true,
+            new: true
+        }, function (err) {
             if (err) return console.log(err);
+
+            res.redirect('/polling');
         });
     });
 

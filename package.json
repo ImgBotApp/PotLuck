@@ -1,5 +1,5 @@
 {
-  "name": "recipemaker",
+  "name": "potluck",
   "version": "0.0.1",
   "description": "Contributers:<br /> Omar Taylor<br /> Souparni Agnihotri<br />",
   "main": "server.js",
@@ -8,9 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Acesonnall/RecipeMaker.git"
+    "url": "git+https://github.com/Acesonnall/PotLuck.git"
   },
-  "author": "Omar, Souparni, Chinmay, Charlie",
+  "authors": [
+    "Omar Taylor",
+    "Souparni Agnihotri",
+    "Chinmay Hegde",
+    "Charles Hubbard"
+  ],
   "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "*",
@@ -36,11 +41,12 @@
     "passport-local": "*",
     "passport-twitter": "*",
     "serve-static": "^1.11.1",
+    "socket.io": "^1.7.2",
     "tunnel-ssh": "^4.1.1",
     "unirest": "*"
   },
   "bugs": {
-    "url": "https://github.com/Acesonnall/RecipeMaker/issues"
+    "url": "https://github.com/Acesonnall/PotLuck/issues"
   },
-  "homepage": "https://github.com/Acesonnall/RecipeMaker#readme"
+  "homepage": "https://github.com/Acesonnall/PotLuck#readme"
 }

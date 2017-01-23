@@ -10,6 +10,7 @@ $(document).ready(function(){
         var data = { email : email, name : name, pass: pass }; // Convert to JSON string
         $.post('/profile', data); // Post to profile
         event.preventDefault();
+        window.location.replace("http://localhost:8080/profile");
     });
 
     $('.btn-signup').click(function () { // Set initial name
@@ -23,6 +24,7 @@ $(document).ready(function(){
         var data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
+        window.location.replace("http://localhost:8080/polling");
     });
 
     $('.btn-dislike').click(function (event) {
@@ -31,5 +33,6 @@ $(document).ready(function(){
         var data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
+        window.location.replace("http://localhost:8080/polling");
     });
 });
