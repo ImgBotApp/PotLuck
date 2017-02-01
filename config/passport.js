@@ -59,7 +59,6 @@ module.exports = function (passport) {
 
                     // check to see if theres already a user with that email
                     if (user) {
-
                         // if there is a user id already but no token (user was linked at one point and then removed)
                         // just add our token and profile information
                         if (!user.local.name) {
@@ -67,7 +66,7 @@ module.exports = function (passport) {
                             user.local.password = user.generateHash(password);
                             user.local.name = req.body.name;
 
-                            user.save(function(err) {
+                            user.save(function (err) {
                                 if (err)
                                     throw err;
                                 return done(null, user);
@@ -157,7 +156,7 @@ module.exports = function (passport) {
             clientSecret: configAuth.facebookAuth.clientSecret,
             callbackURL: configAuth.facebookAuth.callbackURL,
             profileFields: ['id', 'emails', 'name'],
-            passReqToCallback : true
+            passReqToCallback: true
         },
 
         // facebook will send back the token and profile
@@ -187,13 +186,13 @@ module.exports = function (passport) {
                             // just add our token and profile information
                             if (!user.facebook.token) {
                                 user.facebook.token = accessToken;
-                                user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
+                                user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
                                 user.facebook.email = profile.emails[0].value;
                                 user.facebook.picture = 'http://graph.facebook.com/' +
                                     profile.id.toString() + '/picture?type=large';
                                 //user.facebook.picture
 
-                                user.save(function(err) {
+                                user.save(function (err) {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -226,18 +225,18 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user            = req.user; // pull the user out of the session
+                    var user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
-                    user.facebook.id    = profile.id;
+                    user.facebook.id = profile.id;
                     user.facebook.token = accessToken;
-                    user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
+                    user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
                     user.facebook.email = profile.emails[0].value;
                     user.facebook.picture = 'https://graph.facebook.com/v2.8/' +
                         profile.id.toString() + '/picture?type=large';
 
                     // save the user
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -253,7 +252,7 @@ module.exports = function (passport) {
             consumerSecret: configAuth.twitterAuth.consumerSecret,
             callbackURL: configAuth.twitterAuth.callbackURL,
             includeEmail: true, // Only works if configure twitter app settings to allow permissions (A ToS and Privacy page were required)
-            passReqToCallback : true
+            passReqToCallback: true
         },
         function (req, token, tokenSecret, profile, done) {
 
@@ -276,12 +275,12 @@ module.exports = function (passport) {
                             // just add our token and profile information
                             if (!user.twitter.token) {
                                 user.twitter.token = token;
-                                user.twitter.diplayName  = profile.displayName;
+                                user.twitter.diplayName = profile.displayName;
                                 user.twitter.username = profile.username;
                                 user.twitter.email = profile.emails[0].value;
                                 user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
-                                user.save(function(err) {
+                                user.save(function (err) {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -311,18 +310,18 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user            = req.user; // pull the user out of the session
+                    var user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
-                    user.twitter.id    = profile.id;
+                    user.twitter.id = profile.id;
                     user.twitter.token = token;
-                    user.twitter.displayName  = profile.displayName;
+                    user.twitter.displayName = profile.displayName;
                     user.twitter.username = profile.username;
                     user.twitter.email = profile.emails[0].value;
                     user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                     // save the user
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -334,16 +333,16 @@ module.exports = function (passport) {
 
     passport.use(new GoogleStrategy({
 
-            clientID        : configAuth.googleAuth.clientID,
-            clientSecret    : configAuth.googleAuth.clientSecret,
-            callbackURL     : configAuth.googleAuth.callbackURL,
-            passReqToCallback : true
+            clientID: configAuth.googleAuth.clientID,
+            clientSecret: configAuth.googleAuth.clientSecret,
+            callbackURL: configAuth.googleAuth.callbackURL,
+            passReqToCallback: true
         },
-        function(req, token, refreshToken, profile, done) {
+        function (req, token, refreshToken, profile, done) {
 
             // make the code asynchronous
             // User.findOne won't fire until we have all our data back from Google
-            process.nextTick(function() {
+            process.nextTick(function () {
 
                 if (!req.user) {
 
@@ -358,11 +357,11 @@ module.exports = function (passport) {
                             // just add our token and profile information
                             if (!user.google.token) {
                                 user.google.token = token;
-                                user.google.diplayName  = profile.displayName;
+                                user.google.diplayName = profile.displayName;
                                 user.google.email = profile.emails[0].value;
                                 user.google.picture = profile.photos[0].value;
 
-                                user.save(function(err) {
+                                user.save(function (err) {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -392,17 +391,17 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user            = req.user; // pull the user out of the session
+                    var user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
-                    user.google.id    = profile.id;
+                    user.google.id = profile.id;
                     user.google.token = token;
-                    user.google.name  = profile.displayName;
+                    user.google.name = profile.displayName;
                     user.google.email = profile.emails[0].value;
                     user.google.picture = profile.photos[0].value.substring(0, profile.photos[0].value.length - 6);
 
                     // save the user
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -412,13 +411,13 @@ module.exports = function (passport) {
         }));
 
     passport.use(new GitHubStrategy({
-            clientID     : configAuth.githubAuth.clientID,
-            clientSecret : configAuth.githubAuth.clientSecret,
-            callbackURL  : configAuth.githubAuth.callbackURL,
-            passReqToCallback : true
+            clientID: configAuth.githubAuth.clientID,
+            clientSecret: configAuth.githubAuth.clientSecret,
+            callbackURL: configAuth.githubAuth.callbackURL,
+            passReqToCallback: true
         },
-        function(req, accessToken, refreshToken, profile, done) {
-            process.nextTick(function() {
+        function (req, accessToken, refreshToken, profile, done) {
+            process.nextTick(function () {
 
                 if (!req.user) {
 
@@ -434,12 +433,12 @@ module.exports = function (passport) {
                             if (!user.github.id) {
                                 user.github.id = profile.id;
                                 user.github.token = accessToken;
-                                user.github.name  = profile.displayName;
+                                user.github.name = profile.displayName;
                                 user.github.username = profile.username;
                                 user.github.email = profile.emails[0].value;
                                 user.github.picture = profile._json.avatar_url;
 
-                                user.save(function(err) {
+                                user.save(function (err) {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -470,18 +469,18 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user            = req.user; // pull the user out of the session
+                    var user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
-                    user.github.id    = profile.id;
+                    user.github.id = profile.id;
                     user.github.token = accessToken;
-                    user.github.name  = profile.displayName;
+                    user.github.name = profile.displayName;
                     user.github.username = profile.username;
                     user.github.email = profile.emails[0].value;
                     user.github.picture = profile._json.avatar_url;
 
                     // save the user
-                    user.save(function(err) {
+                    user.save(function (err) {
                         if (err)
                             throw err;
                         return done(null, user);
