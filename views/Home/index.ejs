@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
+    <meta charset="UTF-8">
     <title>PotLuck | HomePage</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <!-- load bootstrap css -->
@@ -9,39 +10,21 @@
     <style>
         body {
             padding-top: 80px;
+            background-image: url("http://camaje.com/-/wp-content/uploads/2013/06/camaje-cooking-7.jpg");
         }
     </style>
 </head>
-<body style="background-color:#E2788B">
-<script>
-    window.fbAsyncInit = function () {
-        FB.init({
-            appId: '1804445126493863',
-            xfbml: true,
-            version: 'v2.8'
-        });
-    };
+<body style="background-color:black">
 
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
-<div class="container">
+<div>
 
-    <div class="jumbotron text-center" style="background-color:#933646">
-        <h1><span class="fa fa-lock"></span><font color="#E2526C"> PotLuck</font></h1>
+    <div class="jumbotron text-center" style="background-color:black; opacity: 0.85;">
+        <h1><span class="fa fa-lock"></span><font color="#b22222"> PotLuck</font></h1>
 
-        <p><font color="#ff69b4"> Login or Register with:</font></p>
+        <p><font color="#f5f5f5"> Login or Register with:</font></p>
 
-        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span><font color="C41E3B"> Login</font></a>
-        <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span><font color="C41E3B">
+        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span><font color="black"> Login</font></a>
+        <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span><font color="black">
                 Signup</font></a>
         <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
         <a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
@@ -50,11 +33,5 @@
     </div>
 
 </div>
-<div class="fb-like"
-     data-share="true"
-     data-width="450"
-     data-show-faces="true">
-</div>
-<h4 align="center"><a href="/privacy_policy"><font color="black">Privacy Policy</font></a> | <a href="/terms"><font color="black">Terms of Service</font></a></h4>
 </body>
 </html>
