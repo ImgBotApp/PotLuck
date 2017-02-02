@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- load bootstrap css -->
     <title>RecipeMaker | Food Preferences</title>
+    <style>
+        body {
+            padding-top: 80px;
+            background-color:black;
+            background-image: url("http://camaje.com/-/wp-content/uploads/2013/06/camaje-cooking-7.jpg");
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+<div class="jumbotron text-center">
 <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
 <p>Let's collect more information about your food preferences.</p>
 <h4><%= recipe[0].title %></h4>
-<img src=<%= recipe[0].image %> alt="recipe" style="width: 50%;height: 500px;object-fit: cover">
+<img src=<%= recipe[0].image %> alt="recipe" style="object-fit: cover">
 <br>
-
-<button type="submit" class="btn-like" recipe-id="<%= recipe[0]._id %>">Like</button>
-<button type="submit" class="btn-dislike" recipe-id="<%= recipe[0]._id %>">Dislike</button>
+    <button type="submit" class="btn-like" recipe-id="<%= recipe[0]._id %>">Like</button>
+    <button type="submit" class="btn-dislike" recipe-id="<%= recipe[0]._id %>">Dislike</button>
+</div>
+</div>
 
 <!-- jQuery -->
 <script src="../../public/vendors/jquery/dist/jquery.min.js"></script>
