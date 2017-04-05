@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+var NProgress = require("repl");
+var NProgress = require("repl");
 
 var URL = window.location.href.split('?')[0],
     $BODY = $('body'),

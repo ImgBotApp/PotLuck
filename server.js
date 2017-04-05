@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var port = process.env.PORT || 8080;
 var http = require('http');
+var https = require('https');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -14,18 +15,18 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var serveStatic = require('serve-static');
 var path = require('path');
+var tls = require('tls');
+var fs = require('fs');
+var options = {
+    key: fs.readFileSync(__dirname + '/config/server.key'),
+    cert: fs.readFileSync(__dirname + '/config/server.crt')
+};
+
 var unirest = require('unirest');
-//var client       = require('tunnel-ssh');
 
 var configDB = require(__dirname + '/config/database.js');
 var configSesh = require(__dirname + '/config/sesh_conf.js');
-//var configTunnel = require(__dirname + '/config/ssh_conf.js');
 
-/*var server = client(configTunnel, function (error, server) {
- if (error) {
- console.log("SSH connection error " + error);
- }
- });*/
 mongoose.Promise = global.Promise;
 console.log('MongoDB Connection Initializing');
 
@@ -59,6 +60,9 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 require(__dirname + '/app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
+/*https.createServer(options, app).listen(8080, function () {
+ console.log("Listening on port " + port);
+ });*/
 app.listen(port);
 console.log("Listening on port " + port);
 

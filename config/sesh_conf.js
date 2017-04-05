@@ -3,7 +3,7 @@
  */
 module.exports = {
     cookieName: 'session',
-    secret: 'ISU-DSL0',
+    secret: 'ISU-DSL',
     duration: 30 * 60 * 1000, // 30 minutes
     activeDuration: 5 * 60 * 1000,
     resave: false,

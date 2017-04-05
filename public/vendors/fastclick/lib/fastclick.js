@@ -459,11 +459,9 @@
 	FastClick.prototype.touchHasMoved = function(event) {
 		var touch = event.changedTouches[0], boundary = this.touchBoundary;
 
-		if (Math.abs(touch.pageX - this.touchStartX) > boundary || Math.abs(touch.pageY - this.touchStartY) > boundary) {
-			return true;
-		}
+        return Math.abs(touch.pageX - this.touchStartX) > boundary || Math.abs(touch.pageY - this.touchStartY) > boundary;
 
-		return false;
+
 	};
 
 
@@ -807,12 +805,10 @@
 
 		// IE11: prefixed -ms-touch-action is no longer supported and it's recomended to use non-prefixed version
 		// http://msdn.microsoft.com/en-us/library/windows/apps/Hh767313.aspx
-		if (layer.style.touchAction === 'none' || layer.style.touchAction === 'manipulation') {
-			return true;
-		}
+        return layer.style.touchAction === 'none' || layer.style.touchAction === 'manipulation';
 
-		return false;
-	};
+
+    };
 
 
 	/**

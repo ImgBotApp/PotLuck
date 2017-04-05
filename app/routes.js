@@ -22,11 +22,15 @@ module.exports = function (app, passport) {
     });
 
     app.get('/index', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Home/index.ejs'))
+        res.render(path.resolve(__dirname + '/../views/Home/index.ejs'));
     });
 
     app.get('/login', function (req, res) {
         res.render(path.resolve(__dirname + '/../views/Login/login.ejs'), {message: req.flash('loginMessage')});
+    });
+
+    app.get('/loggedIn', function (req, res) {
+        res.render(path.resolve(__dirname + '/../views/Login/loggedIn.ejs'));
     });
 
     // process the login form
@@ -63,16 +67,32 @@ module.exports = function (app, passport) {
         }
     });
 
-    app.get('/user_list', function (req, res) {
-        User.find({}, function (err, user) {
-            var userMap = {};
+    app.get('/user_list', isLoggedIn, function (req, res) {
+        var xport = req.query.export;
+        var userMap = {};
+        var i = 0;
+        if (xport) {
+            User.find({}, {$project: {_id: 1, title: 1, image: 1}}, function (err, user) {
 
-            user.forEach(function (user) {
-                userMap[user._id] = user;
-            });
+            })
+        } else {
+            User.find({}, function (err, user) {
+                user.forEach(function (user) {
+                    userMap[i++] = user;
+                });
+                res.setHeader('Content-Type', 'application/json');
+                console.log(userMap);
+                res.send(JSON.stringify(userMap, null, 3));
+            })
+        }
+    });
 
-            res.send(userMap);
-        })
+    app.get('/rand_recipe', function (req, res) {
+        Recipe.aggregate({$sample: {size: 1}}, function (err, docs) {
+            if (err) console.log(err);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(docs, null, 3));
+        });
     });
 
     // route for facebook authentication and login
@@ -213,9 +233,15 @@ module.exports = function (app, passport) {
 
         Recipe.aggregate({$sample: {size: 1}}, {$project: {_id: 1, title: 1, image: 1}}, function (err, docs) {
             if (err) console.log(err);
-            if (version == 'v2') {
+            if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(docs, null, 3));
+                var target = {
+                    "_id": docs[0]._id,
+                    "title": docs[0].title,
+                    "image": docs[0].image
+                };
+                console.log(target);
+                res.send(JSON.stringify(target, null, 3));
             } else {
                 res.render(path.resolve(__dirname + '/../views/Polling/polling.ejs'), {
                     user: req.user,
