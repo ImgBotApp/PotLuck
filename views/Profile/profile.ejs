@@ -1,195 +1,209 @@
 <!doctype html>
 <html>
 <head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <title>PotLuck | <%= user.local.name %>'s Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../public/css/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link href="../../public/css/profile.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
-        body {
-            padding-top: 80px;
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
             word-wrap: break-word;
-            background-color:black;
-            background-image: url("http://camaje.com/-/wp-content/uploads/2013/06/camaje-cooking-7.jpg");
+            min-height: 100%;
+            background: black url("http://camaje.com/-/wp-content/uploads/2013/06/camaje-cooking-7.jpg") center;
+            background-size: cover;
         }
     </style>
-
-    <!-- Custom Theme Style -->
-    <link href="../../public/css/profile.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-
-    <div class="page-header text-center">
-        <div class="jumbotron" style="background-color: darkslategray; opacity: 0.85;">
-            <h1><span class="fa fa-anchor"></span><font color="#f5f5f5">Profile Page</font></h1>
+<div class="bgimg w3-animate-opacity">
+    <div class="container">
+        <div class="page-header text-center">
+            <div class="jumbotron" style="background-color: darkslategray; opacity: 0.85;">
+                <h1><span class="fa fa-anchor"></span><font color="#f5f5f5">Profile Page</font></h1>
+            </div>
+            <a href="/logout" class="btn btn-default btn-sm">Logout</a>
         </div>
-        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+
+        <div class="row">
+
+            <!-- LOCAL INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well" style="background-color:whitesmoke">
+                    <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
+
+                    <% if (user.local.email) { %>
+
+                    <p>
+                        <strong>UserID</strong>:<%= user._id %><br>
+                        <strong>Email</strong>:<%= user.local.email %><br><br>
+                    </p>
+                    <% if (!user.local.picture) { %>
+                    <b>Upload a profile photo:</b>
+                    <form action="/profile/photo" method="POST" enctype="multipart/form-data">
+                        <label for="file-upload" class="custom-file-upload">
+                            <i class="fa fa-cloud-upload"></i> Upload Photo
+                        </label>
+                        <input id="file-upload" type="file" name="avatar">
+                        <input type="submit" value="submit">
+                    </form>
+                    <% } else { %>
+                    <img id="profile_picture" src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP"
+                         align="left">
+                    <a href="/profile/photo/delete/<%= user.local.picture %>" class="btn btn-danger btn-sm">Delete
+                        Photo</a>
+                    <% } %>
+
+                    <a href="/unlink/local" class="btn btn-default">Unlink</a>
+                    <% } else { %>
+                    <a href="/connect/local" class="btn btn-default">Connect Local</a>
+                    <% } %>
+
+                </div>
+                <div class="well" style="background-color:whitesmoke">
+                    <h3><span class="fa fa-user"></span> Change Profile Information</h3>
+
+                    <Strong>Change Email</Strong>
+                    <form action="/profile" method="post">
+                        <div class="form-group">
+                            <label><i>Email</i></label>
+                            <input type="text" class="form-control form-email" name="email">
+                        </div>
+                    </form>
+                    <p style="padding:10px;"></p>
+                    <Strong>Change Name</Strong>
+                    <form action="/profile" method="post">
+                        <div class="form-group">
+                            <label><i>Name</i></label>
+                            <input type="text" class="form-control form-name" name="name">
+                        </div>
+                    </form>
+                    <p style="padding:10px;"></p>
+                    <Strong>Change Password</Strong>
+                    <form action="/profile" method="post">
+                        <div class="form-group">
+                            <label><i>Password</i></label>
+                            <input type="password" class="form-control form-pass" name="password">
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- FACEBOOK INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well">
+                    <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+                    <!-- check if the user has this token (is the user authenticated with this social account) -->
+                    <% if (user.facebook.token) { %>
+
+                    <p>
+                        <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
+                        <strong>id</strong>: <%= user.facebook.id %><br>
+                        <strong>token</strong>: <%= user.facebook.token %><br>
+                        <strong>email</strong>: <%= user.facebook.email %><br>
+                        <strong>name</strong>: <%= user.facebook.name %>
+                    </p>
+
+                    <a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
+                    <% } else { %>
+                    <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                    <% } %>
+
+                </div>
+            </div>
+
+            <!-- TWITTER INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well">
+                    <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
+
+                    <!-- check if the user has this token (is the user authenticated with this social account) -->
+                    <% if (user.twitter.token) { %>
+
+                    <p>
+                        <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
+                        <strong>id</strong>: <%= user.twitter.id %><br>
+                        <strong>token</strong>: <%= user.twitter.token %><br>
+                        <strong>username</strong>: <%= user.twitter.username %><br>
+                        <strong>displayName</strong>: <%= user.twitter.displayName %><br>
+                        <strong>email</strong>: <%= user.twitter.email %>
+                    </p>
+
+                    <a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+                    <% } else { %>
+                    <a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+                    <% } %>
+
+                </div>
+            </div>
+
+            <!-- GOOGLE INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well">
+                    <h3 class="text-warning"><span class="fa fa-google-plus"></span> Google</h3>
+
+                    <!-- check if the user has this token (is the user authenticated with this social account) -->
+                    <% if (user.google.token) { %>
+
+                    <p>
+                        <img src="<%= user.google.picture %>" alt="G_PP" align="left">
+                        <strong>id</strong>: <%= user.google.id %><br>
+                        <strong>token</strong>: <%= user.google.token %><br>
+                        <strong>email</strong>: <%= user.google.email %><br>
+                        <strong>name</strong>: <%= user.google.name %>
+                    </p>
+
+                    <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+                    <% } else { %>
+                    <a href="/connect/google" class="btn btn-danger">Connect Google</a>
+                    <% } %>
+
+                </div>
+            </div>
+
+            <!-- GITHUB INFORMATION -->
+            <div class="col-sm-6">
+                <div class="well">
+                    <h3 class="text-muted"><span class="fa fa-github"></span> GitHub</h3>
+
+                    <% if (user.github.id) { %>
+
+                    <p>
+                        <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
+                        <strong>id</strong>: <%= user.github.id %><br>
+                        <strong>token</strong>: <%= user.github.token %><br>
+                        <strong>email</strong>: <%= user.github.email %><br>
+                        <strong>username</strong> <%= user.github.username %>
+                        <strong>name</strong>: <%= user.github.name %>
+                    </p>
+
+                    <a href="/unlink/github" class="btn btn-default">Unlink</a>
+                    <% } else { %>
+                    <a href="/connect/github" class="btn btn-default">Connect GitHub</a>
+                    <% } %>
+
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <div class="row">
-
-        <!-- LOCAL INFORMATION -->
-        <div class="col-sm-6">
-            <div class="well" style="background-color:whitesmoke">
-                <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
-
-                <% if (user.local.email) { %>
-
-                <p>
-                    <strong>UserID</strong>:<%= user._id %><br>
-                    <strong>Email</strong>:<%= user.local.email %><br><br>
-                </p>
-                <% if (!user.local.picture) { %>
-                <b>Upload a profile photo:</b>
-                <form action="/profile/photo" method="POST" enctype="multipart/form-data">
-                    <label for="file-upload" class="custom-file-upload">
-                        <i class="fa fa-cloud-upload"></i> Upload Photo
-                    </label>
-                    <input id="file-upload" type="file" name="avatar">
-                    <input type="submit" value="submit">
-                </form>
-                <% } else { %>
-                <img id="profile_picture" src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP" align="left">
-                <a href="/profile/photo/delete/<%= user.local.picture%>" class="btn btn-danger btn-sm">Delete Photo</a>
-                <% } %>
-
-                <a href="/unlink/local" class="btn btn-default">Unlink</a>
-                <% } else { %>
-                <a href="/connect/local" class="btn btn-default">Connect Local</a>
-                <% } %>
-
-            </div>
-            <div class="well" style="background-color:whitesmoke">
-                <h3><span class="fa fa-user"></span> Change Profile Information</h3>
-
-                <Strong>Change Email</Strong>
-                <form action="/profile" method="post">
-                    <div class="form-group">
-                        <label><i>Email</i></label>
-                        <input type="text" class="form-control form-email" name="email">
-                    </div>
-                </form>
-                <p style="padding:10px;"></p>
-                <Strong>Change Name</Strong>
-                <form action="/profile" method="post">
-                    <div class="form-group">
-                        <label><i>Name</i></label>
-                        <input type="text" class="form-control form-name" name="name">
-                    </div>
-                </form>
-                <p style="padding:10px;"></p>
-                <Strong>Change Password</Strong>
-                <form action="/profile" method="post">
-                    <div class="form-group">
-                        <label><i>Password</i></label>
-                        <input type="password" class="form-control form-pass" name="password">
-                    </div>
-
-                    <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes</button>
-                </form>
-
-            </div>
-        </div>
-
-        <!-- FACEBOOK INFORMATION -->
-        <div class="col-sm-6">
-            <div class="well">
-                <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
-
-                <!-- check if the user has this token (is the user authenticated with this social account) -->
-                <% if (user.facebook.token) { %>
-
-                <p>
-                    <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
-                    <strong>id</strong>: <%= user.facebook.id %><br>
-                    <strong>token</strong>: <%= user.facebook.token %><br>
-                    <strong>email</strong>: <%= user.facebook.email %><br>
-                    <strong>name</strong>: <%= user.facebook.name %>
-                </p>
-
-                <a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
-                <% } else { %>
-                <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
-                <% } %>
-
-            </div>
-        </div>
-
-        <!-- TWITTER INFORMATION -->
-        <div class="col-sm-6">
-            <div class="well">
-                <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
-
-                <!-- check if the user has this token (is the user authenticated with this social account) -->
-                <% if (user.twitter.token) { %>
-
-                <p>
-                    <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
-                    <strong>id</strong>: <%= user.twitter.id %><br>
-                    <strong>token</strong>: <%= user.twitter.token %><br>
-                    <strong>username</strong>: <%= user.twitter.username %><br>
-                    <strong>displayName</strong>: <%= user.twitter.displayName %><br>
-                    <strong>email</strong>: <%= user.twitter.email %>
-                </p>
-
-                <a href="/unlink/twitter" class="btn btn-info">Unlink</a>
-                <% } else { %>
-                <a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
-                <% } %>
-
-            </div>
-        </div>
-
-        <!-- GOOGLE INFORMATION -->
-        <div class="col-sm-6">
-            <div class="well">
-                <h3 class="text-warning"><span class="fa fa-google-plus"></span> Google</h3>
-
-                <!-- check if the user has this token (is the user authenticated with this social account) -->
-                <% if (user.google.token) { %>
-
-                <p>
-                    <img src="<%= user.google.picture %>" alt="G_PP" align="left">
-                    <strong>id</strong>: <%= user.google.id %><br>
-                    <strong>token</strong>: <%= user.google.token %><br>
-                    <strong>email</strong>: <%= user.google.email %><br>
-                    <strong>name</strong>: <%= user.google.name %>
-                </p>
-
-                <a href="/unlink/google" class="btn btn-danger">Unlink</a>
-                <% } else { %>
-                <a href="/connect/google" class="btn btn-danger">Connect Google</a>
-                <% } %>
-
-            </div>
-        </div>
-
-        <!-- GITHUB INFORMATION -->
-        <div class="col-sm-6">
-            <div class="well">
-                <h3 class="text-muted"><span class="fa fa-github"></span> GitHub</h3>
-
-                <% if (user.github.id) { %>
-
-                <p>
-                    <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
-                    <strong>id</strong>: <%= user.github.id %><br>
-                    <strong>token</strong>: <%= user.github.token %><br>
-                    <strong>email</strong>: <%= user.github.email %><br>
-                    <strong>username</strong> <%= user.github.username %>
-                    <strong>name</strong>: <%= user.github.name %>
-                </p>
-
-                <a href="/unlink/github" class="btn btn-default">Unlink</a>
-                <% } else { %>
-                <a href="/connect/github" class="btn btn-default">Connect GitHub</a>
-                <% } %>
-
-            </div>
-        </div>
-
-    </div>
-
 </div>
 <!-- jQuery -->
 <script src="../../public/vendors/jquery/dist/jquery.min.js"></script>
