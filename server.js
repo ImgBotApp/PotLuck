@@ -17,10 +17,10 @@ var serveStatic = require('serve-static');
 var path = require('path');
 var tls = require('tls');
 var fs = require('fs');
-var options = {
+/*var options = {
     key: fs.readFileSync(__dirname + '/config/server.key'),
     cert: fs.readFileSync(__dirname + '/config/server.crt')
-};
+};*/
 
 var unirest = require('unirest');
 
