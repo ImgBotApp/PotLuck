@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "58e2bea865c5ef88b854ee39",
+    "similarities": [
+      {
+        "id": "58e2bea865c5ef88b854ee05"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee06"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee07"
+      }
+    ]
+  },
+  {
+    "_id": "58e2bea865c5ef88b854ee33",
+    "similarities": [
+      {
+        "id": "58e2bea865c5ef88b854ee08"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee09"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee0a"
+      }
+    ]
+  },
+  {
+    "_id": "58e2bea865c5ef88b854ee03",
+    "similarities": [
+      {
+        "id": "58e2bea865c5ef88b854ee0b"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee0c"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee02"
+      }
+    ]
+  },
+  {
+    "_id": "58e2bea865c5ef88b854ee4d",
+    "similarities": [
+      {
+        "id": "58e2bea865c5ef88b854ee02"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee03"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee04"
+      }
+    ]
+  },
+  {
+    "_id": "58e2bea865c5ef88b854ee3e",
+    "similarities": [
+      {
+        "id": "58e2bea865c5ef88b854ee0d"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee0e"
+      },
+      {
+        "id": "58e2bea865c5ef88b854ee0f"
+      }
+    ]
+  }
+]

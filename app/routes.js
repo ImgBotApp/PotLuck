@@ -55,7 +55,7 @@ module.exports = function (app, passport) {
     app.get('/profile', isLoggedIn, function (req, res) {
         var user_info = req.query.user_info;
 
-        if (user_info == 1) {
+        if (user_info === "1") {
             User.findById(req.user._id, function (err, profile) {
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify(profile, null, 3));
@@ -65,6 +65,54 @@ module.exports = function (app, passport) {
                 user: req.user
             });
         }
+    });
+
+    app.get('/profile/suggestions', isLoggedIn, function (req, res) {
+        User.findById(req.user._id, function (err, user) {
+            User.aggregate([
+                {
+                    $match: {
+                        'local.feedback.rating': 1
+                    }
+                },
+                {
+                    $project: {
+                        'local.feedback': {
+                            $filter: {
+                                input: '$local.feedback',
+                                as: 'f',
+                                cond: {
+                                    $eq: ['$$f.rating', 1]
+                                }
+                            }
+                        }, _id: user._id
+                    }
+                }
+            ], function (err, docs) {
+                if (err) console.log(err);
+                docs[0].local.feedback.sort(function (a, b) {
+                    return a.recipeId.toString().localeCompare(b.recipeId.toString());
+                });
+                fs.readFile(__dirname + '/experimental/testSuggestions.JSON', 'utf8', function (err, data) {
+                    if (err) console.log(err);
+                    var obj = JSON.parse(data);
+                    obj.sort(function (a, b) {
+                        return a._id.localeCompare(b._id);
+                    });
+                    var userSuggestions = [];
+                    var i = 0;
+                    docs[0].local.feedback.forEach(function (feedback) {
+                        if (obj[i]._id === feedback.recipeId.toString()) {
+                            userSuggestions[i] = {
+                                _id: obj[i]._id,
+                                similarities: obj[i++].similarities
+                            }
+                        }
+                    });
+                    console.log(JSON.stringify(userSuggestions, null, 2))
+                });
+            });
+        });
     });
 
     app.get('/user_list', isLoggedIn, function (req, res) {
