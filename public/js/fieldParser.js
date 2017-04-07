@@ -1,7 +1,6 @@
 /**
  * Created by Omar on 10/24/2016.
  */
-var $ = require("mongoose/lib/schema.js");
 
 $(document).ready(function () {
     $('.btn-update-prof').click(function (event) { // Handle event when there is a a click on the class
@@ -11,7 +10,7 @@ $(document).ready(function () {
         var data = {email: email, name: name, pass: pass}; // Convert to JSON string
         $.post('/profile', data); // Post to profile
         event.preventDefault();
-        window.location.replace("http://localhost:8080/profile");
+        window.location.replace(window.location.origin + "/profile");
     });
 
     $('.btn-like').click(function (event) {
@@ -20,7 +19,7 @@ $(document).ready(function () {
         var data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
-        window.location.replace("http://localhost:8080/polling");
+        window.location.replace(window.location.origin + "/polling");
     });
 
     $('.btn-dislike').click(function (event) {
@@ -29,6 +28,6 @@ $(document).ready(function () {
         var data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
-        window.location.replace("http://localhost:8080/polling");
+        window.location.replace(window.location.origin + "/polling");
     });
 });

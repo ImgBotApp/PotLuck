@@ -45,7 +45,7 @@ module.exports = function (passport) {
             // asynchronous
             // User.findOne wont fire unless data is sent back
             process.nextTick(function () {
-                if (req.body.name.length < 1 || email < 1 || password.length < 1) {
+                if (req.body.name.length < 1 || email.length < 1 || password.length < 1) {
                     return done(null, false, req.flash('signupMessage', 'Please fill in all the fields'));
                 }
                 // find a user whose email is the same as the forms email
