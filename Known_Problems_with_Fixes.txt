@@ -10,3 +10,4 @@ Fix:
 Issue: MongoError: failed to connect to server [localhost:27017] on first connect
 Fix:
 - Apparently I need a Wifi connection to connect to localhost. I don't buy this solution though.
+************************************************************************************************************************

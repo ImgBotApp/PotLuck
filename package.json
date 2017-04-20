@@ -4,6 +4,7 @@
   "description": "Contributers:<br /> Omar Taylor<br /> Souparni Agnihotri<br />",
   "main": "server.js",
   "scripts": {
+    "watch": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -45,7 +46,7 @@
     "socket.io": "^1.7.2",
     "ssl-root-cas": "^1.2.3",
     "tunnel-ssh": "^4.1.1",
-    "unirest": "*"
+    "underscore": "*"
   },
   "bugs": {
     "url": "https://github.com/Acesonnall/PotLuck/issues"

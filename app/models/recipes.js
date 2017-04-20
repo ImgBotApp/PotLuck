@@ -3,16 +3,55 @@
  */
 // load the things we need
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
-// define the schema for our user model
+// define the schema for our recipe model
 var recipeSchema = mongoose.Schema({
 
+    vegetarian: Boolean,
+    vegan: Boolean,
+    glutenFree: Boolean,
+    dairyFree: Boolean,
+    veryHealthy: Boolean,
+    cheap: Boolean,
+    veryPopular: Boolean,
+    sustainable: Boolean,
+    weightWatcherSmartPoints: Number,
+    gaps: String,
+    lowFodmap: Boolean,
+    ketogenic: Boolean,
+    whole30: Boolean,
+    servings: Number,
+    sourceUrl: String,
+    spoonacularSourceUrl: String,
+    aggregateLikes: Number,
+    creditText: String,
+    license: String,
+    sourceName: String,
+    extendedIngredients: [{
+        id: Number,
+        aisle: String,
+        image: String,
+        name: String,
+        amount: Number,
+        unit: String,
+        unitShort: String,
+        unitLong: String,
+        originalString: String,
+        metaInformation: [String]
+    }],
+    id: Number,
     title: String,
-    image: {
-        type: String,
-        match: /^https:\/\//i
-    }
+    readyInMinutes: Number,
+    image: String,
+    imageType: String,
+    cuisines: [String],
+    instructions: String,
+    similarities: [new mongoose.Schema({
+        id: ObjectId,
+        sim: Number
+    })]
 });
 
-// create the model for users and expose it to our app
+// create the model for recipes and expose it to our app
 module.exports = mongoose.model('Recipe', recipeSchema);

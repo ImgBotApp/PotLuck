@@ -4,28 +4,28 @@
 // load the things we need
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
-var bcrypt   = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt-nodejs');
 
 
 // define the schema for our user model
 var userSchema = mongoose.Schema({
 
-    local            : {
-        name         : String,
-        email        : String,
-        password     : String,
+    local: {
+        name: String,
+        email: String,
+        password: String,
         picture: {
             type: String
         },
         feedback: [new mongoose.Schema({
             recipeId: ObjectId,
             rating: Number
-        }, {_id: false})]
+        }, {_id: false})] // Create a new schema for user feedback, but don't give it an id.
     },
-    facebook         : {
-        id           : String,
-        token        : String,
-        email        : String,
+    facebook: {
+        id: String,
+        token: String,
+        email: String,
         name: String,
         picture: {
             type: String,
@@ -33,11 +33,11 @@ var userSchema = mongoose.Schema({
             //required: true,
         }
     },
-    twitter          : {
-        id           : String,
-        token        : String,
-        displayName  : String,
-        username     : String,
+    twitter: {
+        id: String,
+        token: String,
+        displayName: String,
+        username: String,
         email: String,
         picture: {
             type: String,
@@ -45,10 +45,10 @@ var userSchema = mongoose.Schema({
             match: /^https:\/\//i
         }
     },
-    google           : {
-        id           : String,
-        token        : String,
-        email        : String,
+    google: {
+        id: String,
+        token: String,
+        email: String,
         name: String,
         picture: {
             type: String,
@@ -56,11 +56,11 @@ var userSchema = mongoose.Schema({
             match: /^https:\/\//i
         }
     },
-    github           : {
-        id           : String,
-        token        : String,
-        email        : String,
-        username     : String,
+    github: {
+        id: String,
+        token: String,
+        email: String,
+        username: String,
         name: String,
         picture: {
             type: String,
@@ -73,12 +73,12 @@ var userSchema = mongoose.Schema({
 
 // methods ======================
 // generating a hash
-userSchema.methods.generateHash = function(password) {
+userSchema.methods.generateHash = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
-userSchema.methods.validPassword = function(password) {
+userSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.local.password);
 };
 
