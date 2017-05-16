@@ -24,6 +24,8 @@ var fs = require('fs'); // Require module for interacting with file system
 var configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 var configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
 
+global.appRoot = __dirname;
+
 mongoose.Promise = global.Promise; // Use native promise
 
 // Connect to our mongoDB database

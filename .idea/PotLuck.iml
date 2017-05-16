@@ -5,15 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/../RecipeMaker/.tmp" />
-      <excludeFolder url="file://$MODULE_DIR$/../RecipeMaker/temp" />
-      <excludeFolder url="file://$MODULE_DIR$/../RecipeMaker/tmp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jquery-1.10.2" level="application" />
-    <orderEntry type="library" name="firebaseui" level="application" />
-    <orderEntry type="library" name="firebase" level="application" />
-    <orderEntry type="library" name="bootstrap" level="application" />
   </component>
 </module>

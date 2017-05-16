@@ -1,6 +1,7 @@
 /**
  * Created by O on 10/21/2016.
  */
+
 var path = require('path'); // Require path module for configuring paths
 var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 var fs = require('fs'); // Require module for interacting with file system
@@ -15,8 +16,10 @@ var _ = require('underscore'); // Our JavaScript utility-belt (used for looping 
 var conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 var gfs = Grid(conn.db);
+const _viewsdir = appRoot+'/views/';
 
 module.exports = function (app, passport) {
+
 
     // Our homepage
     app.get('/', function (req, res) {
