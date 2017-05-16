@@ -16,19 +16,19 @@ var _ = require('underscore'); // Our JavaScript utility-belt (used for looping 
 var conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 var gfs = Grid(conn.db);
-const _viewsdir = appRoot+'/views/';
+const _viewsdir = appRoot+'/views';
 
 module.exports = function (app, passport) {
 
 
     // Our homepage
     app.get('/', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Home/intro.ejs')); // Render view
+        res.render(path.resolve(_viewsdir + '/Home/intro.ejs')); // Render view
     });
 
     // Sign-in page/dashboard
     app.get('/index', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Home/index.ejs'), { // Render view with given options
+        res.render(path.resolve(_viewsdir + '/Home/index.ejs'), { // Render view with given options
             loggedin: req.user !== undefined, // Check if user is logged in and pass the result to the client
             user: req.user // Pass the user model to the client
         });
@@ -98,7 +98,7 @@ module.exports = function (app, passport) {
     // Our sign-in page
     app.get('/login', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(__dirname + '/../views/Login/login.ejs'), {message: req.flash('loginMessage')});
+        res.render(path.resolve(_viewsdir+ '/Login/login.ejs'), {message: req.flash('loginMessage')});
     });
 
     // Process the login form
@@ -111,7 +111,7 @@ module.exports = function (app, passport) {
     // Our sign-up page
     app.get('/signup', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(__dirname + '/../views/Signup/signup.ejs'), {message: req.flash('signupMessage')});
+        res.render(path.resolve(_viewsdir+ '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
     });
 
     // Process the signup form
@@ -132,7 +132,7 @@ module.exports = function (app, passport) {
                 res.send(JSON.stringify(profile, null, 3));
             });
         } else {
-            res.render(path.resolve(__dirname + '/../views/Profile/profile.ejs'), {
+            res.render(path.resolve(_viewsdir + '/Profile/profile.ejs'), {
                 user: req.user
             });
         }
@@ -305,7 +305,7 @@ module.exports = function (app, passport) {
 
     // Create a local account if previously set-up external account
     app.get('/connect/local', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
+        res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
     });
 
     // Process local account creation
@@ -419,7 +419,7 @@ module.exports = function (app, passport) {
                 console.log(target);
                 res.send(JSON.stringify(target, null, 3));
             } else {
-                res.render(path.resolve(__dirname + '/../views/Polling/polling.ejs'), {
+                res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), {
                     user: req.user,
                     recipe: docs
                 });
@@ -469,12 +469,12 @@ module.exports = function (app, passport) {
 
     // Route for privacy page
     app.get('/privacy_policy', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Privacy/privacy.ejs'));
+        res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'));
     });
 
     // Route for terms page
     app.get('/terms', function (req, res) {
-        res.render(path.resolve(__dirname + '/../views/Terms/terms.ejs'));
+        res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
     });
 
     // Route for ending session

@@ -23,8 +23,7 @@ var fs = require('fs'); // Require module for interacting with file system
 
 var configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 var configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
-
-global.appRoot = __dirname;
+global.appRoot = __dirname; //set the global path so other files may use it
 
 mongoose.Promise = global.Promise; // Use native promise
 
@@ -58,8 +57,8 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 
-require(__dirname + '/app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-
+require(__dirname + '/app/Routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+require(__dirname + 'app/')
 /*https.createServer(options, app).listen(8080, function () {
  console.log("Listening on port " + port);
  });*/
