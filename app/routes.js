@@ -31,12 +31,9 @@ module.exports = function (app, passport) {
         });
     });
 
-    // TODO Solution currently only returns top three similarities of the first liked recipe the user rated. Need to
-    // find way to get similarities of all recipes (Goal isn't currently clearly defined).
     app.get('/get_suggestions', isLoggedIn, function (req, res) {
-        var uRecipeArr = [];
-        var recipeIds = []; // Array of liked recipes by current user
-        var sRecipeArr = [];
+        var uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
+        var recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
         var i = 0;
 
         // Loop through user feedback array and collect positively rated recipes
@@ -44,7 +41,6 @@ module.exports = function (app, passport) {
             if (f.rating === 1) recipeIds[i++] = f.recipeId;
         });
 
-        i = 0;
 
         // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
         // array
@@ -53,7 +49,6 @@ module.exports = function (app, passport) {
                 _id: 1,
                 title: 1,
                 image: 1,
-                readyInMinutes: 1,
                 similarities: 1
             }
         }, {$sort: {_id: 1}}], function (err, recipes) {
@@ -64,7 +59,8 @@ module.exports = function (app, passport) {
 
             // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
             // they are similar too.
-            _.each(recipes, function (recipe, index) {
+            // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
+            _.each(recipes, function (recipe) {
                 if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
                     if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
                         uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
