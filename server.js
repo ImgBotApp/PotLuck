@@ -57,8 +57,7 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 
-require(__dirname + '/app/Routes/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-require(__dirname + 'app/')
+require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass in our app and fully configured passport
 /*https.createServer(options, app).listen(8080, function () {
  console.log("Listening on port " + port);
  });*/
