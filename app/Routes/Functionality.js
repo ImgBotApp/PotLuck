@@ -62,13 +62,13 @@ module.exports = function (app,passport) {
             });
             // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
             // of first liked recipe. Temporary solution. Needs to be more intelligent)
+            var similarities = [];
+            uRecipeArr[0].similarities[1].forEach(function (item, index) {
+                similarities[index] = item;
+            });
             Recipe.find({
                 '_id': {
-                    $in: [
-                        uRecipeArr[0].similarities[1][0].id,
-                        uRecipeArr[0].similarities[1][1].id,
-                        uRecipeArr[0].similarities[1][2].id
-                    ]
+                    $in: similarities
                 }
             }, function (err, docs) {
                 console.log(docs);

@@ -49,7 +49,9 @@ module.exports = function (app,passport) {
     });
 
 
-
+    app.get('/home',function (req,res) {
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),recommendations:);
+    });
 
 }
 

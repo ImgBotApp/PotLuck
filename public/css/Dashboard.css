@@ -1,0 +1,8 @@
+.navbar-default{
+    background-color: black;
+}
+
+.navbar-brand,.navbar-brand:hover{
+    color : #477496!important;
+    font-size: 170%;
+}

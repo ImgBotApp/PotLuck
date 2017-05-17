@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../public/css/bootstrap.css">
     <link rel="stylesheet" href="../../public/css/font-awesome.css">
     <link rel="stylesheet" href="../../public/css/index.css">
+    <link rel="stylesheet" href="../../public/css/Dashboard.css">
     <script src="../../public/js/jquery/jquery-3.2.0.js"></script>
     <script src="../../public/css/js/bootstrap.js"></script>
     <script src="../../public/js/fieldParser.js"></script>
@@ -43,15 +44,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">
-                    <img class="logo" src="../.../.../..../h.png">
-                </a>
+                <a class="navbar-brand" href="#">PotLuck</a>
 
             </div>
         </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-">
+        <ul class="nav navbar-nav navbar-right">
             <li class="active nav-item">
                 <a href="/home">Home</a>
             </li>
@@ -65,7 +64,22 @@
     </div>
 
 
-    
+    <!------------------------------------------------->
+    <!--            Recommendation section           -->
+    <!------------------------------------------------->
+    <section class="container-fluid">
+        <div class="container">
+            <h3>Based on your previous likes we Recommend</h3>
+            <ul class="recommendations">
+                <%recommendations.forEach(function(item,index){%>
+                  <li class="reco-item">
+                      <img src="<%item.image%>">
+                      <a href="#" data-name="<%item.title%>"><%item.title%></a>
+                  </li>
+                <%});%>
+            </ul>
+        </div>
+    </section>
 
 
 
