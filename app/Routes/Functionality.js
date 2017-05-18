@@ -62,10 +62,13 @@ module.exports = function (app,passport) {
             });
             // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
             // of first liked recipe. Temporary solution. Needs to be more intelligent)
+
+            //get all the items from the similarities array
             var similarities = [];
             uRecipeArr[0].similarities[1].forEach(function (item, index) {
                 similarities[index] = item;
             });
+
             Recipe.find({
                 '_id': {
                     $in: similarities
@@ -244,3 +247,5 @@ function isLoggedIn(req, res, next) {
 function generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 }
+
+

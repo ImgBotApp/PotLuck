@@ -71,12 +71,14 @@
         <div class="container">
             <h3>Based on your previous likes we Recommend</h3>
             <ul class="recommendations">
-                <%recommendations.forEach(function(item,index){%>
+                <%for(var i=0;i<reco.length;i++){%>
                   <li class="reco-item">
-                      <img src="<%item.image%>">
-                      <a href="#" data-name="<%item.title%>"><%item.title%></a>
+                      <a href="#" class="recipe-wrapper">
+                        <img src="<%=reco[i].image%>">
+                        <span data-name="<%=reco[i].title%>"> <%=reco[i].title%> </span>
+                      </a>
                   </li>
-                <%});%>
+                <%}%>
             </ul>
         </div>
     </section>

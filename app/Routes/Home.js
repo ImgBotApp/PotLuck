@@ -2,7 +2,6 @@
  * Created by yazan on 5/16/2017.
  */
 
-
 const _viewsdir = appRoot+'/views';
 const _modelsdir = appRoot + '/app/models';
 
@@ -50,7 +49,19 @@ module.exports = function (app,passport) {
 
 
     app.get('/home',function (req,res) {
-        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),recommendations:);
+        /**
+         * FOR TESTING PURPOSES
+         * @type {Array}
+         */
+        var docs = [];
+        for(var i =0;i<5;i++){
+            docs.push({
+               "title" : "Chicken Mashroob",
+                "image": "../../public/test.jpg"
+            });
+        }
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
+        //getSimilarities(req,res);
     });
 
 }
@@ -78,4 +89,62 @@ function isLoggedIn(req, res, next) {
  */
 function generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+}
+
+
+function getSimilarities(req,res) {
+    var uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
+    var recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
+    var i = 0;
+
+    // Loop through user feedback array and collect positively rated recipes
+    _.each(req.user.local.feedback, function (f) {
+        if (f.rating === 1) recipeIds[i++] = f.recipeId;
+    });
+
+
+    // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
+    // array
+    Recipe.aggregate([{
+        $project: {
+            _id: 1,
+            title: 1,
+            image: 1,
+            similarities: 1
+        }
+    }, {$sort: {_id: 1}}], function (err, recipes) {
+        // Sort users liked recipes in ascending order to allow of O(n) time looping.
+        recipeIds.sort(function (a, b) {
+            return a.toString().localeCompare(b.toString());
+        });
+
+        // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
+        // they are similar too.
+        // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
+        _.each(recipes, function (recipe) {
+            if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
+                if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
+                    uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
+                    i++;
+                }
+            }
+        });
+        // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
+        // of first liked recipe. Temporary solution. Needs to be more intelligent)
+
+        //get all the items from the similarities array
+        var similarities = [];
+        uRecipeArr[0].similarities[1].forEach(function (item, index) {
+            similarities[index] = item;
+        });
+
+        Recipe.find({
+            '_id': {
+                $in: similarities
+            }
+        }, function (err, docs) {
+            // Return result to client
+            res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{recommendations : docs});
+        })
+    });
 }
