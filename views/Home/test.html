@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>PotLuck | HomePage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../../public/css/w3.css">
+    <link href="../../public/css/fonts/Raleway.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../public/css/bootstrap.css">
+    <link rel="stylesheet" href="../../public/css/font-awesome.css">
+    <link rel="stylesheet" href="../../public/css/index.css">
+    <link rel="stylesheet" href="../../public/css/Dashboard.css">
+    <script src="../../public/js/jquery/jquery-3.2.0.js"></script>
+    <script src="../../public/css/js/bootstrap.js"></script>
+    <script src="../../public/js/fieldParser.js"></script>
+    <style>
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            padding-top: 80px;
+            min-height: 100%;
+            background: black url("../../public/images/camaje-cooking-7.jpg") center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <!------------------------------------------------->
+    <!--                 NAVBAR                      -->
+    <!------------------------------------------------->
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">PotLuck</a>
+
+            </div>
+        </div>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="active nav-item">
+                <a href="/home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/polling">Polling</a>
+            </li>
+            <li class="nav-item">
+                <a href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <!------------------------------------------------->
+    <!--            Recommendation section           -->
+    <!------------------------------------------------->
+    <section class="container-fluid reco-sect">
+        <div class="container">
+            <h3 class="reco-h">Based on your previous likes we Recommend</h3>
+            <ul class="recommendations">
+            </ul>
+        </div>
+    </section>
+
+
+
+
+
+
+</body>
+</html>
