@@ -73,9 +73,9 @@
             <ul class="recommendations">
                 <%for(var i=0;i<reco.length;i++){%>
                   <li class="reco-item">
-                      <a href="#" class="recipe-wrapper">
+                      <a href="#" class="recipe-wrapper" data-name="<%=reco[i].title%>">
                         <img src="<%=reco[i].image%>">
-                        <span data-name="<%=reco[i].title%>"> <%=reco[i].title%> </span>
+                        <!--<span data-name="<%=reco[i].title%>"> <%=reco[i].title%> </span>-->
                       </a>
                   </li>
                 <%}%>
