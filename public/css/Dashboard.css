@@ -8,7 +8,7 @@
 }
 
 .recommendations{
-    column-count: 3;
+    column-count: 0;
     list-style-type: none;
     position: relative;
     padding: 0;
@@ -17,7 +17,8 @@
 .reco-item{
     display: inline-block;
     position: relative;
-    padding: 10px;
+    padding: 0;
+    margin: 10px;
 
 }
 .reco-item a{
@@ -33,17 +34,32 @@
 }
 
 .reco-item a:after{
+    content: '\A';
+    top:0;left:0;
+    background: black;
     width: 100%;
+    height: 100%;
+}
+
+
+/*.reco-item a:hover:before{
+    width: 100%;
+    transition: background-color ease 0.4s;
     height: 100%;
     top:0;
     left:0;
     background-color: rgba(0,0,0,0.6);
+    position: absolute;
+}*/
+
+.reco-item a:after{
+    transition: none;
 }
 
 .reco-item a:before{
     content: attr(data-name);
     width: 87%;
-    color: black;
+    color: white;
     position: absolute;
     z-index: 99;
     top:50%;
