@@ -57,11 +57,27 @@ module.exports = function (app,passport) {
         for(var i =0;i<5;i++){
             docs.push({
                "title" : "Chicken Mashroob",
-                "image": "../../public/test.jpg"
+                "image": "../../public/test.jpg",
+                "_id" : "123123"
             });
         }
         res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
         //getSimilarities(req,res);
+    });
+
+
+    app.get('/get_recipe',function (req,res) {
+        var id = req.query.id;
+        var data = {
+            "ing" : ["rice","krispies","chicken"],
+            "method" : ["do this", "then that", "thjen fire"]
+        }
+        //get from database but nah
+        if(id === '123123'){
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(data));
+        }
+
     });
 
 }

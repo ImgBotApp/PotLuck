@@ -35,7 +35,7 @@
     <!------------------------------------------------->
     <!--                 NAVBAR                      -->
     <!------------------------------------------------->
-    <div class="navbar navbar-default navbar-fixed-top">
+    <!--<div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -61,7 +61,32 @@
                 <a href="/logout">Logout</a>
             </li>
         </ul>
-    </div>
+    </div>-->
+    <div class="container">
+
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">PotLuck</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active" ><a style="color:white!important;" href="/home">Home</a></li>
+                        <li><a href="/polling">Polling</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
+
 
 
     <!------------------------------------------------->
@@ -73,7 +98,7 @@
             <ul class="recommendations">
                 <%for(var i=0;i<reco.length;i++){%>
                   <li class="reco-item">
-                      <a href="#" class="recipe-wrapper" data-name="<%=reco[i].title%>">
+                      <a href="#" class="recipe-wrapper" data-name="<%=reco[i].title%>" data-id="<%=reco[i]._id%>">
                         <img src="<%=reco[i].image%>">
                         <!--<span data-name="<%=reco[i].title%>"> <%=reco[i].title%> </span>-->
                       </a>
@@ -85,7 +110,46 @@
 
 
 
+    <!------------------------------------------------->
+    <!--         Modal Section                       -->
+    <!------------------------------------------------->
+    <button id="modal-button" type="button" style="display: none" data-toggle="modal" data-target="#recipe-modal"></button>
 
+    <div class="modal fade" id="recipe-modal" tabindex="-1" role="dialog" aria-labelledby="recipe-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+    $('.recipe-wrapper').click(function (e) {
+        e.preventDefault();
+        $('#modal-button').click();
+        $.get('/get_recipe?id=' + this.getAttribute('data-id'),function (data,status) {
+            $('.modal-body').empty();
+            $('.modal-body').append('<p>' + data + '</p>');
+        });
+
+
+
+    });
+</script>
 
 
 </body>

@@ -1,3 +1,8 @@
+body{
+    padding-top: 50px;
+}
+
+
 .navbar-default{
     background-color: black;
     border: none;
@@ -6,6 +11,17 @@
 .navbar-brand,.navbar-brand:hover{
     color : #2196F3!important;
     font-size: 170%;
+}
+
+.nav li a{
+    color: #2196F3!important;
+}
+.nav li a:not{
+    color: black;!important;
+}
+.active a{
+    background-color: #2196F3!important;
+    color: black!important;
 }
 
 .reco-sect{
@@ -23,6 +39,7 @@
 
 .reco-h{
     color:#2196F3;
+    text-align: center;
 }
 
 .reco-item{
