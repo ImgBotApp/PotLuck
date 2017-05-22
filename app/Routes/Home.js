@@ -69,8 +69,8 @@ module.exports = function (app,passport) {
     app.get('/get_recipe',function (req,res) {
         var id = req.query.id;
         var data = {
-            "ing" : ["rice","krispies","chicken"],
-            "method" : ["do this", "then that", "thjen fire"]
+            "extendedIngredients" : ["rice","krispies","chicken"],
+            "instructions" : "First do this\n then That\n then do all this"
         }
         //get from database but nah
         if(id === '123123'){
