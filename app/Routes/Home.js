@@ -48,7 +48,7 @@ module.exports = function (app,passport) {
     });
 
 
-    app.get('/home',function (req,res) {
+    app.get('/home',isLoggedIn,function (req,res) {
         /**
          * FOR TESTING PURPOSES
          * @type {Array}
@@ -61,8 +61,8 @@ module.exports = function (app,passport) {
                 "_id" : "123123"
             });
         }
-        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
-        //getSimilarities(req,res);
+        //res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
+        getSimilarities(req,res);
     });
 
 
@@ -72,40 +72,30 @@ module.exports = function (app,passport) {
             "extendedIngredients" : ["rice","krispies","chicken"],
             "instructions" : "First do this\n then That\n then do all this"
         }
-        //get from database but nah
-        if(id === '123123'){
+        // //get from database but nah
+        // if(id === '123123'){
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     res.end(JSON.stringify(data));
+        // }
+
+        Recipe.find({
+            '_id': {
+                $in: id
+            }
+        }, function (err, docs) {
             res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify(data));
-        }
+            if(err){
+                res.end("{}");
+            }
+            else
+                res.end(JSON.stringify(data));
+        })
 
     });
 
 }
 
 
-/**
- * Function for checking if the user requesting the page is logged in
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function isLoggedIn(req, res, next) {
-
-    if (req.isAuthenticated())
-        return next();
-
-    res.redirect('/');
-}
-
-/**
- * Function for generating a hash
- * @param password Password to be hashed
- * @returns {*} Encrypted password
- */
-function generateHash(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-}
 
 
 function getSimilarities(req,res) {
@@ -129,7 +119,7 @@ function getSimilarities(req,res) {
             similarities: 1
         }
     }, {$sort: {_id: 1}}], function (err, recipes) {
-        // Sort users liked recipes in ascending order to allow of O(n) time looping.
+        // Sort users liked recipes in ascending order to allow of O(nlogn) time looping.
         recipeIds.sort(function (a, b) {
             return a.toString().localeCompare(b.toString());
         });
@@ -164,3 +154,30 @@ function getSimilarities(req,res) {
         })
     });
 }
+
+
+/**
+ * Function for checking if the user requesting the page is logged in
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*}
+ */
+function isLoggedIn(req, res, next) {
+
+    if (req.isAuthenticated())
+        return next();
+
+    res.redirect('/');
+}
+
+
+/**
+ * Function for generating a hash
+ * @param password Password to be hashed
+ * @returns {*} Encrypted password
+ */
+function generateHash(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+}
+
