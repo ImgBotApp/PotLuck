@@ -1,9 +1,10 @@
 import json
 
-#recipe_data = open('rnew_test.JSON','r')
+
+#EDIT THIS FIELD WITH THE JSON FILE YOU WANT TO GET OBJECT IDS FOR
 recipe_data = open('randRecipes_1000.json','r')
-#recipes = json.load(recipe_data)
-#jsons = json.load(recipe_data)
+
+
 jsons = []
 for json_obj in recipe_data:
     jsons.append(json.loads(json_obj));
