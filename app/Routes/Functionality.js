@@ -2,7 +2,7 @@
  * Created by yazan on 5/16/2017.
  */
 
-const _viewsdir = appRoot+'/views';
+const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
 var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
@@ -11,17 +11,16 @@ var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 var fs = require('fs'); // Require module for interacting with file system
 var Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
 var User = require(_modelsdir + '/users.js'); // Require our user model
-var Recipe = require(_modelsdir+'/recipes.js'); // Require of recipe model
+var Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
 var mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
 var multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
 var upload = multer({dest: "./uploads"}); // Set upload location (destination)
-var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 var conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 var gfs = Grid(conn.db);
 
 
-module.exports = function (app,passport) {
+module.exports = function (app, passport) {
 
     app.get('/get_suggestions', isLoggedIn, function (req, res) {
         var uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
@@ -220,8 +219,7 @@ module.exports = function (app,passport) {
     });
 
 
-
-}
+};
 
 
 /**

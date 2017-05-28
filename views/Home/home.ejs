@@ -32,139 +32,134 @@
 </head>
 <body>
 
-    <!------------------------------------------------->
-    <!--                 NAVBAR                      -->
-    <!------------------------------------------------->
-    <!--<div class="navbar navbar-default navbar-fixed-top">
+<!------------------------------------------------->
+<!--                 NAVBAR                      -->
+<!------------------------------------------------->
+<!--<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">PotLuck</a>
+
+        </div>
+    </div>
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+    <ul class="nav navbar-nav navbar-right">
+        <li class="active nav-item">
+            <a href="/home">Home</a>
+        </li>
+        <li class="nav-item">
+            <a href="/polling">Polling</a>
+        </li>
+        <li class="nav-item">
+            <a href="/logout">Logout</a>
+        </li>
+    </ul>
+</div>-->
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">PotLuck</a>
-
             </div>
-        </div>
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="active nav-item">
-                <a href="/home">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/polling">Polling</a>
-            </li>
-            <li class="nav-item">
-                <a href="/logout">Logout</a>
-            </li>
-        </ul>
-    </div>-->
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
+                    <li><a href="/polling">Polling</a></li>
+                    <li><a href="/logout">Log Out</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+</div> <!-- /container -->
+
+
+<!------------------------------------------------->
+<!--            Recommendation section           -->
+<!------------------------------------------------->
+<section class="container-fluid reco-sect">
     <div class="container">
-
-        <!-- Static navbar -->
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">PotLuck</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="active" ><a style="color:white!important;" href="/home">Home</a></li>
-                        <li><a href="/polling">Polling</a></li>
-                        <li><a href="/logout">Log Out</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div><!--/.container-fluid -->
-        </nav>
-    </div> <!-- /container -->
+        <h3 class="reco-h">Based on your previous likes we Recommend</h3>
+        <ul class="recommendations">
+            <% for(var i = 0;i < reco.length;i++){ %>
+            <li class="reco-item">
+                <a href="#" class="recipe-wrapper" data-name="<%= reco[i].title %>" data-id="<%= reco[i]._id %>">
+                    <img src="<%= reco[i].image %>">
+                    <!--<span data-name="<%= reco[i].title %>"> <%= reco[i].title %> </span>-->
+                </a>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+</section>
 
 
+<!------------------------------------------------->
+<!--                Modal Section                -->
+<!------------------------------------------------->
+<button id="modal-button" type="button" style="display: none" data-toggle="modal" data-target="#recipe-modal"></button>
 
-    <!------------------------------------------------->
-    <!--            Recommendation section           -->
-    <!------------------------------------------------->
-    <section class="container-fluid reco-sect">
-        <div class="container">
-            <h3 class="reco-h">Based on your previous likes we Recommend</h3>
-            <ul class="recommendations">
-                <%for(var i=0;i<reco.length;i++){%>
-                  <li class="reco-item">
-                      <a href="#" class="recipe-wrapper" data-name="<%=reco[i].title%>" data-id="<%=reco[i]._id%>">
-                        <img src="<%=reco[i].image%>">
-                        <!--<span data-name="<%=reco[i].title%>"> <%=reco[i].title%> </span>-->
-                      </a>
-                  </li>
-                <%}%>
-            </ul>
-        </div>
-    </section>
+<div class="modal fade" id="recipe-modal" tabindex="-1" role="dialog" aria-labelledby="recipe-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Modal title</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Ingredients</h4>
+                <ul id="ing" class="ingredients">
 
+                </ul>
+                <h4>Methods</h4>
+                <ul id="method">
 
-
-    <!------------------------------------------------->
-    <!--                Modal Section                -->
-    <!------------------------------------------------->
-    <button id="modal-button" type="button" style="display: none" data-toggle="modal" data-target="#recipe-modal"></button>
-
-    <div class="modal fade" id="recipe-modal" tabindex="-1" role="dialog" aria-labelledby="recipe-modal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalLongTitle">Modal title</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4 >Ingredients</h4>
-                    <ul id="ing" class="ingredients">
-
-                    </ul>
-                    <h4>Methods</h4>
-                    <ul id="method">
-
-                    </ul>
-                    <h4>Rate this recipe</h4>
-                    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+                </ul>
+                <h4>Rate this recipe</h4>
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-
+</div>
 
 
 <script>
     var modalHTML =
 
 
+        $('.recipe-wrapper').click(function (e) {
+            e.preventDefault();
+            $('#modal-button').click();
+            $.get('/get_recipe?id=' + this.getAttribute('data-id'), function (data, status) {
+                $('#ing').append(parseIngredients(data));
+                $('#method').append(parseMethod(data));
+            });
 
-
-
-    $('.recipe-wrapper').click(function (e) {
-        e.preventDefault();
-        $('#modal-button').click();
-        $.get('/get_recipe?id=' + this.getAttribute('data-id'),function (data,status) {
-            $('#ing').append(parseIngredients(data));
-            $('#method').append(parseMethod(data));
         });
-
-    });
 
     function parseIngredients(data) {
         var out = "";
-        data.extendedIngredients.forEach(function (item,index) {
+        data.extendedIngredients.forEach(function (item, index) {
             out += '<li>' + item.name + '</li>'
         });
         return out;
@@ -174,14 +169,11 @@
         var out = "";
         var instructions = data.instructions.split('\n');
         var counter = 0;
-        instructions.forEach(function (item,index) {
-           out += '<li>' +counter++ + ". " + item + '</li>';
+        instructions.forEach(function (item, index) {
+            out += '<li>' + counter++ + ". " + item + '</li>';
         });
         return out;
     }
-
-
-
 
 
 </script>

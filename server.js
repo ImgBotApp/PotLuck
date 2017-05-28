@@ -17,9 +17,9 @@ var path = require('path'); // Require path module for configuring paths
 var tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 var fs = require('fs'); // Require module for interacting with file system
 /*var options = {
-    key: fs.readFileSync(__dirname + '/config/server.key'),
-    cert: fs.readFileSync(__dirname + '/config/server.crt')
-};*/
+ key: fs.readFileSync(__dirname + '/config/server.key'),
+ cert: fs.readFileSync(__dirname + '/config/server.crt')
+ };*/
 
 var configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 var configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations

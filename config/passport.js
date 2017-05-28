@@ -76,7 +76,7 @@ module.exports = function (passport) {
                         }
                     } else {
 
-                        if (req.originalUrl != '/connect/local') {
+                        if (req.originalUrl !== '/connect/local') {
 
                             // if there is no user with that email
                             // create the user

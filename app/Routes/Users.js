@@ -3,7 +3,7 @@
  */
 
 
-const _viewsdir = appRoot+'/views';
+const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
 var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
@@ -12,24 +12,21 @@ var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 var fs = require('fs'); // Require module for interacting with file system
 var Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
 var User = require(_modelsdir + '/users.js'); // Require our user model
-var Recipe = require(_modelsdir+'/recipes.js'); // Require of recipe model
+var Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
 var mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
 var multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
 var upload = multer({dest: "./uploads"}); // Set upload location (destination)
-var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 var conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 var gfs = Grid(conn.db);
 
 
-
-
-module.exports = function (app,passport) {
+module.exports = function (app, passport) {
 
     // Our sign-in page
     app.get('/login', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir+ '/Login/login.ejs'), {message: req.flash('loginMessage')});
+        res.render(path.resolve(_viewsdir + '/Login/login.ejs'), {message: req.flash('loginMessage')});
     });
 
     // Process the login form
@@ -42,7 +39,7 @@ module.exports = function (app,passport) {
     // Our sign-up page
     app.get('/signup', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir+ '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
+        res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
     });
 
 
@@ -79,7 +76,7 @@ module.exports = function (app,passport) {
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
             successRedirect: '/profile',
-                failureRedirect: '/'
+            failureRedirect: '/'
         }));
 
     // route for twitter authentication and login
@@ -166,50 +163,49 @@ module.exports = function (app,passport) {
 
     // Unlink local account
     app.get('/unlink/local', function (req, res) {
-            var user = req.user;
-            user.local.password = undefined;
-            user.local.email = undefined;
-            user.save(function (err) {
-                res.redirect('/profile');
-            });
+        var user = req.user;
+        user.local.password = undefined;
+        user.local.email = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
         });
+    });
 
-        // Unlink facebook account
+    // Unlink facebook account
     app.get('/unlink/facebook', function (req, res) {
-            var user = req.user;
-            user.facebook.token = undefined;
-            user.save(function (err) {
-                res.redirect('/profile');
-            });
+        var user = req.user;
+        user.facebook.token = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
         });
+    });
 
     // Unlink twitter account
     app.get('/unlink/twitter', function (req, res) {
-            var user = req.user;
-            user.twitter.token = undefined;
-            user.save(function (err) {
-                res.redirect('/profile');
-            });
+        var user = req.user;
+        user.twitter.token = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
         });
+    });
 
     // Unlink google account
     app.get('/unlink/google', function (req, res) {
-            var user = req.user;
-            user.google.token = undefined;
-            user.save(function (err) {
-                res.redirect('/profile');
-            });
+        var user = req.user;
+        user.google.token = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
         });
+    });
 
     // Unlink github account
     app.get('/unlink/github', function (req, res) {
-            var user = req.user;
-            user.github.id = undefined;
-            user.save(function (err) {
-                res.redirect('/profile');
-            });
+        var user = req.user;
+        user.github.id = undefined;
+        user.save(function (err) {
+            res.redirect('/profile');
         });
-
+    });
 
 
     // Process user form submission
@@ -245,7 +241,6 @@ module.exports = function (app,passport) {
         req.logout();
         res.redirect('/');
     });
-
 
 
     app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res) {
@@ -293,7 +288,7 @@ module.exports = function (app,passport) {
     });
 
 
-}
+};
 
 
 /**

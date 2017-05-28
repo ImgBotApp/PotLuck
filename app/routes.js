@@ -16,7 +16,7 @@ var _ = require('underscore'); // Our JavaScript utility-belt (used for looping 
 var conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 var gfs = Grid(conn.db);
-const _viewsdir = appRoot+'/views';
+const _viewsdir = appRoot + '/views';
 
 module.exports = function (app, passport) {
 
@@ -94,7 +94,7 @@ module.exports = function (app, passport) {
     // Our sign-in page
     app.get('/login', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir+ '/Login/login.ejs'), {message: req.flash('loginMessage')});
+        res.render(path.resolve(_viewsdir + '/Login/login.ejs'), {message: req.flash('loginMessage')});
     });
 
     // Process the login form
@@ -107,7 +107,7 @@ module.exports = function (app, passport) {
     // Our sign-up page
     app.get('/signup', function (req, res) {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir+ '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
+        res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
     });
 
     // Process the signup form
