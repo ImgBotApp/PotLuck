@@ -95,13 +95,7 @@ _testmain.go
 ############
 *.psd
 
-
-
-
-
-
-.idea/.name
-.idea/inspectionProfiles/
+.idea
 app/experimental/Output0.txt
 app/experimental/Output1.txt
 app/experimental/Rand_Recipes_IDs(1000).json
@@ -116,3 +110,4 @@ config/server.key.org
 public/images/
 uploads/
 views/Dashboard/
+dist/
