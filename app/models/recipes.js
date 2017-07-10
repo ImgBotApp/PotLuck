@@ -47,9 +47,9 @@ const recipeSchema = mongoose.Schema({
     cuisines: [String],
     instructions: String,
     similarities: [new mongoose.Schema({
-        id: ObjectId,
+        id: String,
         sim: Number
-    })]
+    }, {_id: false})]
 });
 
 // create the model for recipes and expose it to our app

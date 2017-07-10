@@ -7,7 +7,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 
 
 // load up the user model
-const User = require('../app/models/users');
+const User = require('../app/models/users').User;
 
 const configAuth = require('./auth');
 

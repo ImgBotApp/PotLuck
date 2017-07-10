@@ -63,37 +63,48 @@ require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass 
 app.listen(port);
 console.log("Listening on port " + port);
 
-setInterval(function () {
-    // Collected recipes, projecting the results by their ids
-    Recipe.aggregate([{$project: {_id: 1}}], function (err, recipes) {
-        // Read similarities JSON file
-        fs.readFile(__dirname + '/app/experimental/sims_test-1000.json', 'utf8', function (err, data) {
-            if (err) console.log(err); // Log any errors out to the console
+setInterval(() => {
+    fs.readFile(__dirname + '/app/experimental/sims_test-1000.json', 'utf8', (err, data) => {
+        if (err) console.log(err); // Log any errors out to the console
 
-            const obj = JSON.parse(data); // Parse JSON data as JavaScript object
+        function bulkLink(obj) {
+            // Initialise the bulk operations array
+            let bulkUpdateOps = [],
+                counter = 0;
 
-            // Sort parsed similarities file for efficient looping.
-            obj.sort(function (a, b) {
-                return a._id.localeCompare(b._id);
-            });
-
-            // Link each recipe with its corresponding list of related recipes
-            obj.forEach(function (similarity) {
-                recipes.some(function (recipe, index) {
-                    const isEqual = similarity._id === recipe._id.toString();
-                    if (isEqual) {
-                        Recipe.findByIdAndUpdate(recipe._id, {$push: {'similarities': similarity.similarities}}, {
-                            upsert: true,
-                            sort: {_id: 1}
-                        }, function (err) {
-                            if (err) return console.log(err);
-                        });
+            obj.forEach(sims => {
+                bulkUpdateOps.push({
+                    "updateOne": {
+                        "filter": {"_id": sims._id},
+                        "update": {"$set": {"similarities": sims.similarities}}
                     }
-                    return isEqual;
                 });
+
+                if (++counter % 500 === 0) {
+                    Recipe.bulkWrite(bulkUpdateOps); // Get the underlying collection via the native node.js driver collection object
+                    bulkUpdateOps = []; // re-initialize
+                }
             });
+
+            // Deposit remainder
+            if (counter % 500 !== 0) Recipe.bulkWrite(bulkUpdateOps);
+        }
+
+        const obj = JSON.parse(data); // Parse JSON data as JavaScript object
+
+        // Sort parsed similarities file for efficient looping.
+        obj.sort((a, b) => a._id.localeCompare(b._id));
+
+        // Clear "similarities" field for all documents in the recipes collection
+
+        Recipe.update({}, {$unset: {similarities: ""}}, {multi: true}, (err) => {
+            if (err) console.log(err);
+            // Link recipes with their corresponding list of related recipes
+            bulkLink(obj);
         });
+
+        // console.log("Similarities array for recipes in database updated.")
     });
-}, 10000);
+}, 30000);
 
 module.exports = app;
