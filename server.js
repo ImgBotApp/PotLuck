@@ -6,7 +6,7 @@ const app = express(); // Instantiate our module
 const port = process.env.PORT || 8080; // Set to port 8080 if environment variable not set
 const https = require('https'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const mongoose = require('mongoose'); // Require our database module
-const Recipe = require('./app/models/recipes'); // Require of recipe model
+const Recipe = require('./app/models/recipes').Recipe; // Require of recipe model
 const passport = require('passport'); // Require our authentication module
 const flash = require('connect-flash'); // Require our module for flash module
 const morgan = require('morgan'); // Require our server activity logger module
@@ -63,37 +63,37 @@ require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass 
 app.listen(port);
 console.log("Listening on port " + port);
 
-/*setInterval(function () {
- // Collected recipes, projecting the results by their ids
- Recipe.aggregate([{$project: {_id: 1}}], function (err, recipes) {
- // Read similarities JSON file
- fs.readFile(__dirname + '/app/experimental/sims_test-1000.json', 'utf8', function (err, data) {
- if (err) console.log(err); // Log any errors out to the console
+setInterval(function () {
+    // Collected recipes, projecting the results by their ids
+    Recipe.aggregate([{$project: {_id: 1}}], function (err, recipes) {
+        // Read similarities JSON file
+        fs.readFile(__dirname + '/app/experimental/sims_test-1000.json', 'utf8', function (err, data) {
+            if (err) console.log(err); // Log any errors out to the console
 
- var obj = JSON.parse(data); // Parse JSON data as JavaScript object
+            const obj = JSON.parse(data); // Parse JSON data as JavaScript object
 
- // Sort parsed similarities file for efficient looping.
- obj.sort(function (a, b) {
- return a._id.localeCompare(b._id);
- });
+            // Sort parsed similarities file for efficient looping.
+            obj.sort(function (a, b) {
+                return a._id.localeCompare(b._id);
+            });
 
- // Link each recipe with its corresponding list of related recipes
- obj.forEach(function (similarity) {
- recipes.some(function (recipe, index) {
- var isEqual = similarity._id === recipe._id.toString();
- if (isEqual) {
- Recipe.findByIdAndUpdate(recipe._id, {$push: {'similarities': similarity.similarities}}, {
- upsert: true,
- sort: {_id: 1}
- }, function (err) {
- if (err) return console.log(err);
- });
- }
- return isEqual;
- });
- });
- });
- });
- }, 10000);*/
+            // Link each recipe with its corresponding list of related recipes
+            obj.forEach(function (similarity) {
+                recipes.some(function (recipe, index) {
+                    const isEqual = similarity._id === recipe._id.toString();
+                    if (isEqual) {
+                        Recipe.findByIdAndUpdate(recipe._id, {$push: {'similarities': similarity.similarities}}, {
+                            upsert: true,
+                            sort: {_id: 1}
+                        }, function (err) {
+                            if (err) return console.log(err);
+                        });
+                    }
+                    return isEqual;
+                });
+            });
+        });
+    });
+}, 10000);
 
 module.exports = app;

@@ -53,4 +53,4 @@ const recipeSchema = mongoose.Schema({
 });
 
 // create the model for recipes and expose it to our app
-module.exports = mongoose.model('Recipe', recipeSchema);
+module.exports.Recipe = mongoose.model('Recipe', recipeSchema);
