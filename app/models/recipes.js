@@ -1,12 +1,11 @@
 /**
  * Created by O on 10/21/2016.
  */
-// load the things we need
-var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // define the schema for our recipe model
-var recipeSchema = mongoose.Schema({
+const recipeSchema = mongoose.Schema({
 
     vegetarian: Boolean,
     vegan: Boolean,

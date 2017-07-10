@@ -5,19 +5,19 @@
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
-var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
-var path = require('path'); // Require path module for configuring paths
-var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
-var fs = require('fs'); // Require module for interacting with file system
-var Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
-var User = require(_modelsdir + '/users.js'); // Require our user model
-var Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
-var mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
-var multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
-var upload = multer({dest: "./uploads"}); // Set upload location (destination)
-var conn = mongoose.connection;
+const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const path = require('path'); // Require path module for configuring paths
+const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
+const fs = require('fs'); // Require module for interacting with file system
+const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
+const User = require(_modelsdir + '/users.js'); // Require our user model
+const Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
+const mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
+const multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
+const upload = multer({dest: "./uploads"}); // Set upload location (destination)
+const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
-var gfs = Grid(conn.db);
+const gfs = Grid(conn.db);
 
 
 module.exports = function (app, passport) {
@@ -51,8 +51,8 @@ module.exports = function (app, passport) {
          * FOR TESTING PURPOSES
          * @type {Array}
          */
-        var docs = [];
-        for (var i = 0; i < 5; i++) {
+        const docs = [];
+        for (let i = 0; i < 5; i++) {
             docs.push({
                 "title": "Chicken Mashroob",
                 "image": "../../public/test.jpg",
@@ -65,8 +65,8 @@ module.exports = function (app, passport) {
 
 
     app.get('/get_recipe', function (req, res) {
-        var id = req.query.id;
-        var data = {
+        const id = req.query.id;
+        const data = {
             "extendedIngredients": ["rice", "krispies", "chicken"],
             "instructions": "First do this\n then That\n then do all this"
         };
@@ -95,9 +95,9 @@ module.exports = function (app, passport) {
 
 
 function getSimilarities(req, res) {
-    var uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
-    var recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
-    var i = 0;
+    const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
+    const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
+    let i = 0;
 
     // Loop through user feedback array and collect positively rated recipes
     _.each(req.user.local.feedback, function (f) {
@@ -135,7 +135,7 @@ function getSimilarities(req, res) {
         // of first liked recipe. Temporary solution. Needs to be more intelligent)
 
         //get all the items from the similarities array
-        var similarities = [];
+        const similarities = [];
         uRecipeArr[0].similarities[1].forEach(function (item, index) {
             similarities[index] = item;
         });

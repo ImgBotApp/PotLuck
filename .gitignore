@@ -4,7 +4,6 @@
 *.com
 *.class
 *.dll
-*.exe
 *.o
 *.so
 
@@ -25,8 +24,6 @@
 ######################
 # Logs and databases #
 ######################
-*.log
-*.sql
 *.sqlite
 
 #############
@@ -48,13 +45,10 @@
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db
-
 ##############
 #Nodejs Files#
 ##############
 logs
-*.log
 npm-debug.log*
 pids
 *.pid
@@ -76,10 +70,7 @@ jspm_packages
 #GO Files#
 ##########
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
-*.o
 *.a
-*.so
-
 # Folders
 _obj
 _test
@@ -96,17 +87,8 @@ _cgo_export.*
 
 _testmain.go
 
-*.exe
 *.test
 *.prof
-
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-##############
-#Photo Thumbs#
-##############
-*.db
 
 ############
 #Photo Shop#
@@ -118,3 +100,19 @@ _testmain.go
 
 
 
+.idea/.name
+.idea/inspectionProfiles/
+app/experimental/Output0.txt
+app/experimental/Output1.txt
+app/experimental/Rand_Recipes_IDs(1000).json
+app/experimental/db_simFile_check.js
+app/experimental/recipe_100_with_sims.JSON
+app/experimental/recipes_100.JSON
+app/experimental/recipes_100_new.JSON
+config/server.crt
+config/server.csr
+config/server.key
+config/server.key.org
+public/images/
+uploads/
+views/Dashboard/

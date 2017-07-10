@@ -6,19 +6,19 @@
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
-var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
-var path = require('path'); // Require path module for configuring paths
-var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
-var fs = require('fs'); // Require module for interacting with file system
-var Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
-var User = require(_modelsdir + '/users.js'); // Require our user model
-var Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
-var mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
-var multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
-var upload = multer({dest: "./uploads"}); // Set upload location (destination)
-var conn = mongoose.connection;
+const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const path = require('path'); // Require path module for configuring paths
+const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
+const fs = require('fs'); // Require module for interacting with file system
+const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
+const User = require(_modelsdir + '/users.js'); // Require our user model
+const Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
+const mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
+const multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
+const upload = multer({dest: "./uploads"}); // Set upload location (destination)
+const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
-var gfs = Grid(conn.db);
+const gfs = Grid(conn.db);
 
 
 module.exports = function (app, passport) {
@@ -53,7 +53,7 @@ module.exports = function (app, passport) {
 
     // Our profile page
     app.get('/profile', isLoggedIn, function (req, res) {
-        var user_info = req.query.user_info; // Get url parameter value (Temporary testing parameter)
+        const user_info = req.query.user_info; // Get url parameter value (Temporary testing parameter)
 
         // If value is 'true', return the skeleton of current user as JSON. Otherwise, render the user page
         if (user_info === "1") {
@@ -163,7 +163,7 @@ module.exports = function (app, passport) {
 
     // Unlink local account
     app.get('/unlink/local', function (req, res) {
-        var user = req.user;
+        const user = req.user;
         user.local.password = undefined;
         user.local.email = undefined;
         user.save(function (err) {
@@ -173,7 +173,7 @@ module.exports = function (app, passport) {
 
     // Unlink facebook account
     app.get('/unlink/facebook', function (req, res) {
-        var user = req.user;
+        const user = req.user;
         user.facebook.token = undefined;
         user.save(function (err) {
             res.redirect('/profile');
@@ -182,7 +182,7 @@ module.exports = function (app, passport) {
 
     // Unlink twitter account
     app.get('/unlink/twitter', function (req, res) {
-        var user = req.user;
+        const user = req.user;
         user.twitter.token = undefined;
         user.save(function (err) {
             res.redirect('/profile');
@@ -191,7 +191,7 @@ module.exports = function (app, passport) {
 
     // Unlink google account
     app.get('/unlink/google', function (req, res) {
-        var user = req.user;
+        const user = req.user;
         user.google.token = undefined;
         user.save(function (err) {
             res.redirect('/profile');
@@ -200,7 +200,7 @@ module.exports = function (app, passport) {
 
     // Unlink github account
     app.get('/unlink/github', function (req, res) {
-        var user = req.user;
+        const user = req.user;
         user.github.id = undefined;
         user.save(function (err) {
             res.redirect('/profile');
@@ -210,12 +210,13 @@ module.exports = function (app, passport) {
 
     // Process user form submission
     app.post('/profile', isLoggedIn, function (req, res) {
-        var email = req.body.email;
-        var name = req.body.name;
+        let target;
+        const email = req.body.email;
+        const name = req.body.name;
         if (req.body.pass > 0) {
-            var password = generateHash(req.body.pass);
+            const password = generateHash(req.body.pass);
 
-            var target = {
+            target = {
                 "local.email": email,
                 "local.name": name,
                 "local.password": password
@@ -244,7 +245,7 @@ module.exports = function (app, passport) {
 
 
     app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res) {
-        var writestream = gfs.createWriteStream({
+        const writestream = gfs.createWriteStream({
             filename: req.file.originalname
         });
         fs.createReadStream('./uploads/' + req.file.filename)
@@ -263,7 +264,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/profile/photo/:filename', isLoggedIn, function (req, res) {
-        var readstream = gfs.createReadStream({filename: req.params.filename});
+        const readstream = gfs.createReadStream({filename: req.params.filename});
         readstream.on('error', function (err) {
             res.send('No image found with that title');
         });

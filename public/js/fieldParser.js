@@ -4,30 +4,30 @@
 
 $(document).ready(function () {
     $('.btn-update-prof').click(function (event) { // Handle event when there is a a click on the class
-        var email = $('.form-email').val(); // Set email to the value that's in the text field
-        var name = $('.form-name').val(); // Set name to the value that's in the text field
-        var pass = $('.form-pass').val(); // Set pass to the value that's in the text field
+        let email = $('.form-email').val(); // Set email to the value that's in the text field
+        let name = $('.form-name').val(); // Set name to the value that's in the text field
+        const pass = $('.form-pass').val(); // Set pass to the value that's in the text field
         email = email.length < 1 ? user.local.email : email;
         name = name.length < l ? user.local.name : name;
-        var data = {email: email, name: name, pass: pass}; // Convert to JSON string
+        const data = {email: email, name: name, pass: pass}; // Convert to JSON string
         $.post('/profile', data); // Post to profile
         event.preventDefault();
         window.location.replace(window.location.origin + "/profile");
     });
 
     $('.btn-like').click(function (event) {
-        var recipeId = $(this).attr('recipe-id');
-        var rating = 1;
-        var data = {recipeId: recipeId, rating: rating};
+        const recipeId = $(this).attr('recipe-id');
+        const rating = 1;
+        const data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
         window.location.replace(window.location.origin + "/polling");
     });
 
     $('.btn-dislike').click(function (event) {
-        var recipeId = $(this).attr('recipe-id');
-        var rating = 0;
-        var data = {recipeId: recipeId, rating: rating};
+        const recipeId = $(this).attr('recipe-id');
+        const rating = 0;
+        const data = {recipeId: recipeId, rating: rating};
         $.post('/polling', data);
         event.preventDefault();
         window.location.replace(window.location.origin + "/polling");

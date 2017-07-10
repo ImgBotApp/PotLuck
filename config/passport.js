@@ -1,15 +1,15 @@
 // load all the things we need
-var LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
-var TwitterStrategy = require('passport-twitter').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var GitHubStrategy = require('passport-github2').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GitHubStrategy = require('passport-github2').Strategy;
 
 
 // load up the user model
-var User = require('../app/models/users');
+const User = require('../app/models/users');
 
-var configAuth = require('./auth');
+const configAuth = require('./auth');
 
 // expose this function to our app using module.exports
 module.exports = function (passport) {
@@ -80,7 +80,7 @@ module.exports = function (passport) {
 
                             // if there is no user with that email
                             // create the user
-                            var newUser = new User();
+                            const newUser = new User();
 
                             // set the user's local credentials
                             newUser.local.email = email;
@@ -202,7 +202,7 @@ module.exports = function (passport) {
                             return done(null, user); // user found, return that user
                         } else {
                             // if there is no user found with that facebook id, create them
-                            var newUser = new User();
+                            const newUser = new User();
 
                             // set all of the facebook information in our user model
                             newUser.facebook.id = profile.id; // set the users facebook id
@@ -225,7 +225,7 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user = req.user; // pull the user out of the session
+                    const user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
                     user.facebook.id = profile.id;
@@ -290,7 +290,7 @@ module.exports = function (passport) {
                             return done(null, user); // user found, return that user
                         } else {
                             // if there is no user, create them
-                            var newUser = new User();
+                            const newUser = new User();
 
                             // set all of the user data that we need
                             newUser.twitter.id = profile.id;
@@ -310,7 +310,7 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user = req.user; // pull the user out of the session
+                    const user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
                     user.twitter.id = profile.id;
@@ -372,7 +372,7 @@ module.exports = function (passport) {
                             return done(null, user);
                         } else {
                             // if the user isnt in our database, create a new user
-                            var newUser = new User();
+                            const newUser = new User();
 
                             // set all of the relevant information
                             newUser.google.id = profile.id;
@@ -391,7 +391,7 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user = req.user; // pull the user out of the session
+                    const user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
                     user.google.id = profile.id;
@@ -449,7 +449,7 @@ module.exports = function (passport) {
                             return done(null, user);
                         } else {
                             // if the user isnt in our database, create a new user
-                            var newUser = new User();
+                            const newUser = new User();
 
                             // set all of the relevant information
                             newUser.github.id = profile.id;
@@ -469,7 +469,7 @@ module.exports = function (passport) {
                     });
                 } else {
                     // user already exists and is logged in, we have to link accounts
-                    var user = req.user; // pull the user out of the session
+                    const user = req.user; // pull the user out of the session
 
                     // update the current users facebook credentials
                     user.github.id = profile.id;

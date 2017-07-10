@@ -1,14 +1,13 @@
 /**
  * Created by O on 10/21/2016.
  */
-// load the things we need
-var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
-var bcrypt = require('bcrypt-nodejs');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+const bcrypt = require('bcrypt-nodejs');
 
 
 // define the schema for our user model
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
 
     local: {
         name: String,

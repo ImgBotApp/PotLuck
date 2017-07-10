@@ -5,27 +5,27 @@
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
-var _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
-var path = require('path'); // Require path module for configuring paths
-var bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
-var fs = require('fs'); // Require module for interacting with file system
-var Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
-var User = require(_modelsdir + '/users.js'); // Require our user model
-var Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
-var mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
-var multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
-var upload = multer({dest: "./uploads"}); // Set upload location (destination)
-var conn = mongoose.connection;
+const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const path = require('path'); // Require path module for configuring paths
+const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
+const fs = require('fs'); // Require module for interacting with file system
+const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
+const User = require(_modelsdir + '/users.js'); // Require our user model
+const Recipe = require(_modelsdir + '/recipes.js'); // Require of recipe model
+const mongoose = require('mongoose'); // Require mongoose (used from GridFS connection)
+const multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
+const upload = multer({dest: "./uploads"}); // Set upload location (destination)
+const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
-var gfs = Grid(conn.db);
+const gfs = Grid(conn.db);
 
 
 module.exports = function (app, passport) {
 
     app.get('/get_suggestions', isLoggedIn, function (req, res) {
-        var uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
-        var recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
-        var i = 0;
+        const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
+        const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
+        let i = 0;
 
         // Loop through user feedback array and collect positively rated recipes
         _.each(req.user.local.feedback, function (f) {
@@ -63,7 +63,7 @@ module.exports = function (app, passport) {
             // of first liked recipe. Temporary solution. Needs to be more intelligent)
 
             //get all the items from the similarities array
-            var similarities = [];
+            const similarities = [];
             uRecipeArr[0].similarities[1].forEach(function (item, index) {
                 similarities[index] = item;
             });
@@ -94,7 +94,7 @@ module.exports = function (app, passport) {
                 fs.readFile(__dirname + '/experimental/sims_test.json', 'utf8', function (err, data) {
                     if (err) console.log(err); // Log any errors out to the console
 
-                    var obj = JSON.parse(data); // Parse JSON data as JavaScript object
+                    const obj = JSON.parse(data); // Parse JSON data as JavaScript object
 
                     // Sort parsed similarities file for efficient looping.
                     obj.sort(function (a, b) {
@@ -181,7 +181,7 @@ module.exports = function (app, passport) {
 
     // Route for polling users on their food preferences
     app.get('/polling', isLoggedIn, function (req, res) {
-        var version = req.query.version;
+        const version = req.query.version;
 
         // Collect single random recipe from the database, projecting only its id, title, and image
         // TODO To increase uniqueness of polling sample, increase sample size
@@ -189,7 +189,7 @@ module.exports = function (app, passport) {
             if (err) console.log(err);
             if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');
-                var target = {
+                const target = {
                     "_id": docs[0]._id,
                     "title": docs[0].title,
                     "image": docs[0].image

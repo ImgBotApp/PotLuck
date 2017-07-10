@@ -1,8 +1,8 @@
 /**
  * Created by O on 10/13/2016.
  */
-var dbURL = 'mongodb://localhost:27017/PotLuck';
-var dbName = dbURL.split('/');
+const dbURL = 'mongodb://localhost:27017/PotLuck';
+const dbName = dbURL.split('/');
 
 module.exports = {
     'name': dbName[dbName.length - 1],

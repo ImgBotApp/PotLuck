@@ -1,7 +1,7 @@
 /**
  * Created by O on 11/11/2016.
  */
-var client = require('tunnel-ssh');
+const client = require('tunnel-ssh');
 module.exports = {
     username: 'root',
     host: '162.243.2.42',
