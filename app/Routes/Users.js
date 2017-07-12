@@ -21,10 +21,10 @@ Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
 
 
-module.exports = function (app, passport) {
+module.exports = (app, passport) => {
 
     // Our sign-in page
-    app.get('/login', function (req, res) {
+    app.get('/login', (req, res) => {
         // render the page and pass in any flash data if it exists
         res.render(path.resolve(_viewsdir + '/Login/login.ejs'), {message: req.flash('loginMessage')});
     });
@@ -37,7 +37,7 @@ module.exports = function (app, passport) {
     }));
 
     // Our sign-up page
-    app.get('/signup', function (req, res) {
+    app.get('/signup', (req, res) => {
         // render the page and pass in any flash data if it exists
         res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
     });
@@ -52,12 +52,12 @@ module.exports = function (app, passport) {
 
 
     // Our profile page
-    app.get('/profile', isLoggedIn, function (req, res) {
+    app.get('/profile', isLoggedIn, (req, res) => {
         const user_info = req.query.user_info; // Get url parameter value (Temporary testing parameter)
 
         // If value is 'true', return the skeleton of current user as JSON. Otherwise, render the user page
         if (user_info === "1") {
-            User.findById(req.user._id, function (err, profile) {
+            User.findById(req.user._id, (err, profile) => {
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify(profile, null, 3));
             });
@@ -110,7 +110,7 @@ module.exports = function (app, passport) {
         }));
 
     // Create a local account if previously set-up external account
-    app.get('/connect/local', function (req, res) {
+    app.get('/connect/local', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
     });
 
@@ -162,54 +162,54 @@ module.exports = function (app, passport) {
         }));
 
     // Unlink local account
-    app.get('/unlink/local', function (req, res) {
+    app.get('/unlink/local', (req, res) => {
         const user = req.user;
         user.local.password = undefined;
         user.local.email = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink facebook account
-    app.get('/unlink/facebook', function (req, res) {
+    app.get('/unlink/facebook', (req, res) => {
         const user = req.user;
         user.facebook.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink twitter account
-    app.get('/unlink/twitter', function (req, res) {
+    app.get('/unlink/twitter', (req, res) => {
         const user = req.user;
         user.twitter.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink google account
-    app.get('/unlink/google', function (req, res) {
+    app.get('/unlink/google', (req, res) => {
         const user = req.user;
         user.google.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink github account
-    app.get('/unlink/github', function (req, res) {
+    app.get('/unlink/github', (req, res) => {
         const user = req.user;
         user.github.id = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
 
     // Process user form submission
-    app.post('/profile', isLoggedIn, function (req, res) {
+    app.post('/profile', isLoggedIn, (req, res) => {
         let target;
         const email = req.body.email;
         const name = req.body.name;
@@ -227,7 +227,7 @@ module.exports = function (app, passport) {
             "local.name": name
         };
 
-        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, function (err) {
+        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, err => {
             if (err) return console.log(err);
             console.log(target);
             console.log(req.user._id);
@@ -238,46 +238,46 @@ module.exports = function (app, passport) {
 
 
     // Route for ending session
-    app.get('/logout', function (req, res) {
+    app.get('/logout', (req, res) => {
         req.logout();
         res.redirect('/');
     });
 
 
-    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res) {
+    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
         const writestream = gfs.createWriteStream({
             filename: req.file.originalname
         });
         fs.createReadStream('./uploads/' + req.file.filename)
-            .on('end', function () {
-                fs.unlink('./uploads/' + req.file.filename, function (err) {
+            .on('end', () => {
+                fs.unlink('./uploads/' + req.file.filename, err => {
                     res.redirect('/profile');
                 })
             })
-            .on('err', function () {
+            .on('err', () => {
                 res.send('Error uploading image')
             })
             .pipe(writestream);
-        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, function (err) {
+        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, err => {
             if (err) return console.log(err);
         });
     });
 
-    app.get('/profile/photo/:filename', isLoggedIn, function (req, res) {
+    app.get('/profile/photo/:filename', isLoggedIn, (req, res) => {
         const readstream = gfs.createReadStream({filename: req.params.filename});
-        readstream.on('error', function (err) {
+        readstream.on('error', err => {
             res.send('No image found with that title');
         });
         readstream.pipe(res);
     });
 
-    app.get('/profile/photo/delete/:filename', isLoggedIn, function (req, res) {
-        gfs.exist({filename: req.params.filename}, function (err, found) {
+    app.get('/profile/photo/delete/:filename', isLoggedIn, (req, res) => {
+        gfs.exist({filename: req.params.filename}, (err, found) => {
             if (err) return res.send('Error occured');
             if (found) {
-                gfs.remove({filename: req.params.filename}, function (err) {
+                gfs.remove({filename: req.params.filename}, err => {
                     if (err) return res.send('Error occured');
-                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, function (err) {
+                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, err => {
                         if (err) return console.log(err);
                     });
                     res.redirect('/profile');

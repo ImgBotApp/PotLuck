@@ -31,7 +31,7 @@ global.appRoot = __dirname; //set the global path so other files may use it
 mongoose.Promise = global.Promise; // Use native promise
 
 // Connect to our mongoDB database
-mongoose.connect(configDB.url, function (err) {
+mongoose.connect(configDB.url, err => {
     console.log('MongoDB Connection Initializing');
     if (err) { // Report any errors
         let asterisks = '';

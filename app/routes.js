@@ -17,29 +17,29 @@ Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
 const _viewsdir = appRoot + '/views';
 
-module.exports = function (app, passport) {
+module.exports = (app, passport) => {
 
 
     // Our homepage
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Home/intro.ejs')); // Render view
     });
 
     // Sign-in page/dashboard
-    app.get('/index', function (req, res) {
+    app.get('/index', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Home/index.ejs'), { // Render view with given options
             loggedin: req.user !== undefined, // Check if user is logged in and pass the result to the client
             user: req.user // Pass the user model to the client
         });
     });
 
-    app.get('/get_suggestions', isLoggedIn, function (req, res) {
+    app.get('/get_suggestions', isLoggedIn, (req, res) => {
         const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
         const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
         let i = 0;
 
         // Loop through user feedback array and collect positively rated recipes
-        _.each(req.user.local.feedback, function (f) {
+        _.each(req.user.local.feedback, f => {
             if (f.rating === 1) recipeIds[i++] = f.recipeId;
         });
 
@@ -53,16 +53,14 @@ module.exports = function (app, passport) {
                 image: 1,
                 similarities: 1
             }
-        }, {$sort: {_id: 1}}], function (err, recipes) {
+        }, {$sort: {_id: 1}}], (err, recipes) => {
             // Sort users liked recipes in ascending order to allow of O(n) time looping.
-            recipeIds.sort(function (a, b) {
-                return a.toString().localeCompare(b.toString());
-            });
+            recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
 
             // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
             // they are similar too.
             // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
-            _.each(recipes, function (recipe) {
+            _.each(recipes, recipe => {
                 if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
                     if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
                         uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
@@ -80,7 +78,7 @@ module.exports = function (app, passport) {
                         uRecipeArr[0].similarities[1][2].id
                     ]
                 }
-            }, function (err, docs) {
+            }, (err, docs) => {
                 console.log(docs);
 
                 // Return result to client
@@ -91,7 +89,7 @@ module.exports = function (app, passport) {
     });
 
     // Our sign-in page
-    app.get('/login', function (req, res) {
+    app.get('/login', (req, res) => {
         // render the page and pass in any flash data if it exists
         res.render(path.resolve(_viewsdir + '/Login/login.ejs'), {message: req.flash('loginMessage')});
     });
@@ -104,7 +102,7 @@ module.exports = function (app, passport) {
     }));
 
     // Our sign-up page
-    app.get('/signup', function (req, res) {
+    app.get('/signup', (req, res) => {
         // render the page and pass in any flash data if it exists
         res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
     });
@@ -117,12 +115,12 @@ module.exports = function (app, passport) {
     }));
 
     // Our profile page
-    app.get('/profile', isLoggedIn, function (req, res) {
+    app.get('/profile', isLoggedIn, (req, res) => {
         const user_info = req.query.user_info; // Get url parameter value (Temporary testing parameter)
 
         // If value is 'true', return the skeleton of current user as JSON. Otherwise, render the user page
         if (user_info === "1") {
-            User.findById(req.user._id, function (err, profile) {
+            User.findById(req.user._id, (err, profile) => {
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify(profile, null, 3));
             });
@@ -133,113 +131,18 @@ module.exports = function (app, passport) {
         }
     });
 
-    // Our algorithm for binding the similarities to the recipes they coorespond to
-    // TODO Fix issue of duplicate similary binding on each run
-    app.get('/similarities', isLoggedIn, function (req, res) {
-        // Require password to prevent accidental use of route (temporary weak solution)
-        if (req.query.password === "recsys2016") {
-            // Collected recipes, projecting the results by their ids
-            Recipe.aggregate([{$project: {_id: 1}}], function (err, recipes) {
-                // Read similarities JSON file
-                fs.readFile(__dirname + '/experimental/sims_test.json', 'utf8', function (err, data) {
-                    if (err) console.log(err); // Log any errors out to the console
-
-                    const obj = JSON.parse(data); // Parse JSON data as JavaScript object
-
-                    // Sort parsed similarities file for efficient looping.
-                    obj.sort(function (a, b) {
-                        return a._id.localeCompare(b._id);
-                    });
-
-                    // Link each recipe with its corresponding list of related recipes
-                    obj.forEach(function (similarity) {
-                        _.each(recipes, function (recipe, index) {
-                            if (similarity._id === recipe._id.toString()) {
-                                Recipe.findByIdAndUpdate(recipe._id, {$push: {'similarities': similarity.similarities}}, {
-                                    safe: true,
-                                    upsert: true,
-                                    sort: {_id: 1},
-                                    new: true
-                                }, function (err) {
-                                    if (err) return console.log(err);
-                                });
-                            }
-                        });
-                    });
-                });
-            });
-        } else {
-            res.send("You are no allowed here.");
-        }
-        /*User.findById(req.user._id, function (err, user) {
-         User.aggregate([
-         {
-         $match: {
-         'local.feedback.rating': 1
-         }
-         },
-         {
-         $project: {
-         'local.feedback': {
-         $filter: {
-         input: '$local.feedback',
-         as: 'f',
-         cond: {
-         $eq: ['$$f.rating', 1]
-         }
-         }
-         }, _id: user._id
-         }
-         }
-         ], function (err, docs) {
-         if (err) console.log(err);
-         docs[0].local.feedback.sort(function (a, b) {
-         return a.recipeId.toString().localeCompare(b.recipeId.toString());
-         });
-         fs.readFile(__dirname + '/experimental/sims.json', 'utf8', function (err, data) {
-         if (err) console.log(err);
-         var obj = JSON.parse(data);
-         obj.sort(function (a, b) {
-         return a._id.localeCompare(b._id);
-         });
-         var i = 0;
-         obj.forEach(function (similarity) {
-         docs[0].local.feedback.forEach(function (feedback) {
-         if (similarity._id === feedback.recipeId.toString()) {
-         User.update(
-         {_id: req.user._id, 'local.feedback.recipeId': feedback.recipeId},
-         {
-         $push: {
-         'local.feedback.$.similarities': obj[i].similarities
-         }
-         }
-         , function (err) {
-         if (err) console.log(err);
-         else console.log("Success");
-         })
-         }
-         });
-         });
-         res.render(path.resolve(__dirname + '/../views/Profile/mySuggestions.ejs'), {
-         user: req.user
-         });
-         });
-         });
-         });*/
-    });
-
     // Displays list of registered users (for testing purposes)
-    app.get('/user_list', isLoggedIn, function (req, res) {
+    app.get('/user_list', isLoggedIn, (req, res) => {
         const xport = req.query.export;
         const userMap = {};
         let i = 0;
         if (xport) {
-            User.find({}, {$project: {_id: 1, title: 1, image: 1}}, function (err, user) {
+            User.find({}, {$project: {_id: 1, title: 1, image: 1}}, (err, user) => {
 
             })
         } else {
-            User.find({}, function (err, user) {
-                user.forEach(function (user) {
+            User.find({}, (err, user) => {
+                user.forEach(user => {
                     userMap[i++] = user;
                 });
                 res.setHeader('Content-Type', 'application/json');
@@ -250,8 +153,8 @@ module.exports = function (app, passport) {
     });
 
     // Displays random recipe from the database (for testing purposes)
-    app.get('/rand_recipe', function (req, res) {
-        Recipe.aggregate({$sample: {size: 1}}, function (err, docs) {
+    app.get('/rand_recipe', (req, res) => {
+        Recipe.aggregate({$sample: {size: 1}}, (err, docs) => {
             if (err) console.log(err);
             res.setHeader('Content-Type', 'application/json');
             res.send(JSON.stringify(docs, null, 3));
@@ -299,7 +202,7 @@ module.exports = function (app, passport) {
         }));
 
     // Create a local account if previously set-up external account
-    app.get('/connect/local', function (req, res) {
+    app.get('/connect/local', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
     });
 
@@ -351,58 +254,58 @@ module.exports = function (app, passport) {
         }));
 
     // Unlink local account
-    app.get('/unlink/local', function (req, res) {
+    app.get('/unlink/local', (req, res) => {
         const user = req.user;
         user.local.password = undefined;
         user.local.email = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink facebook account
-    app.get('/unlink/facebook', function (req, res) {
+    app.get('/unlink/facebook', (req, res) => {
         const user = req.user;
         user.facebook.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink twitter account
-    app.get('/unlink/twitter', function (req, res) {
+    app.get('/unlink/twitter', (req, res) => {
         const user = req.user;
         user.twitter.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink google account
-    app.get('/unlink/google', function (req, res) {
+    app.get('/unlink/google', (req, res) => {
         const user = req.user;
         user.google.token = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Unlink github account
-    app.get('/unlink/github', function (req, res) {
+    app.get('/unlink/github', (req, res) => {
         const user = req.user;
         user.github.id = undefined;
-        user.save(function (err) {
+        user.save(err => {
             res.redirect('/profile');
         });
     });
 
     // Route for polling users on their food preferences
-    app.get('/polling', isLoggedIn, function (req, res) {
+    app.get('/polling', isLoggedIn, (req, res) => {
         const version = req.query.version;
 
         // Collect single random recipe from the database, projecting only its id, title, and image
         // TODO To increase uniqueness of polling sample, increase sample size
-        Recipe.aggregate({$sample: {size: 1}}, {$project: {_id: 1, title: 1, image: 1}}, function (err, docs) {
+        Recipe.aggregate({$sample: {size: 1}}, {$project: {_id: 1, title: 1, image: 1}}, (err, docs) => {
             if (err) console.log(err);
             if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');
@@ -423,12 +326,12 @@ module.exports = function (app, passport) {
     });
 
     // Process user feedback results
-    app.post('/polling', isLoggedIn, function (req, res) {
+    app.post('/polling', isLoggedIn, (req, res) => {
         User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {
             safe: true,
             upsert: true,
             new: true
-        }, function (err) {
+        }, err => {
             if (err) return console.log(err);
 
             res.redirect('/polling');
@@ -436,7 +339,7 @@ module.exports = function (app, passport) {
     });
 
     // Process user form submission
-    app.post('/profile', isLoggedIn, function (req, res) {
+    app.post('/profile', isLoggedIn, (req, res) => {
         let target;
         const email = req.body.email;
         const name = req.body.name;
@@ -454,7 +357,7 @@ module.exports = function (app, passport) {
             "local.name": name
         };
 
-        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, function (err) {
+        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, err => {
             if (err) return console.log(err);
             console.log(target);
             console.log(req.user._id);
@@ -464,55 +367,55 @@ module.exports = function (app, passport) {
     });
 
     // Route for privacy page
-    app.get('/privacy_policy', function (req, res) {
+    app.get('/privacy_policy', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'));
     });
 
     // Route for terms page
-    app.get('/terms', function (req, res) {
+    app.get('/terms', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
     });
 
     // Route for ending session
-    app.get('/logout', function (req, res) {
+    app.get('/logout', (req, res) => {
         req.logout();
         res.redirect('/');
     });
 
-    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), function (req, res) {
+    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
         const writestream = gfs.createWriteStream({
             filename: req.file.originalname
         });
         fs.createReadStream('./uploads/' + req.file.filename)
-            .on('end', function () {
-                fs.unlink('./uploads/' + req.file.filename, function (err) {
+            .on('end', () => {
+                fs.unlink('./uploads/' + req.file.filename, err => {
                     res.redirect('/profile');
                 })
             })
-            .on('err', function () {
+            .on('err', () => {
                 res.send('Error uploading image')
             })
             .pipe(writestream);
-        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, function (err) {
+        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, err => {
             if (err) return console.log(err);
         });
     });
 
-    app.get('/profile/photo/:filename', isLoggedIn, function (req, res) {
+    app.get('/profile/photo/:filename', isLoggedIn, (req, res) => {
         const readstream = gfs.createReadStream({filename: req.params.filename});
-        readstream.on('error', function (err) {
+        readstream.on('error', err => {
             res.send('No image found with that title');
         });
         readstream.pipe(res);
     });
 
-    app.get('/profile/photo/delete/:filename', isLoggedIn, function (req, res) {
-        gfs.exist({filename: req.params.filename}, function (err, found) {
+    app.get('/profile/photo/delete/:filename', isLoggedIn, (req, res) => {
+        gfs.exist({filename: req.params.filename}, (err, found) => {
             if (err) return res.send('Error occured');
             if (found) {
-                gfs.remove({filename: req.params.filename}, function (err) {
+                gfs.remove({filename: req.params.filename}, err => {
                     if (err) return res.send('Error occured');
-                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, function (err) {
+                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, err => {
                         if (err) return console.log(err);
                     });
                     res.redirect('/profile');

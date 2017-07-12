@@ -20,14 +20,14 @@ Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
 
 
-module.exports = function (app, passport) {
+module.exports = (app, passport) => {
     // Our homepage
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Home/intro.ejs')); // Render view
     });
 
     // Sign-in page/dashboard
-    app.get('/index', function (req, res) {
+    app.get('/index', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Home/index.ejs'), { // Render view with given options
             loggedin: req.user !== undefined, // Check if user is logged in and pass the result to the client
             user: req.user // Pass the user model to the client
@@ -36,17 +36,17 @@ module.exports = function (app, passport) {
 
 
     // Route for privacy page
-    app.get('/privacy_policy', function (req, res) {
+    app.get('/privacy_policy', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'));
     });
 
     // Route for terms page
-    app.get('/terms', function (req, res) {
+    app.get('/terms', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
     });
 
 
-    app.get('/home', isLoggedIn, function (req, res) {
+    app.get('/home', isLoggedIn, (req, res) => {
         /**
          * FOR TESTING PURPOSES
          * @type {Array}
@@ -64,7 +64,7 @@ module.exports = function (app, passport) {
     });
 
 
-    app.get('/get_recipe', function (req, res) {
+    app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
         const data = {
             "extendedIngredients": ["rice", "krispies", "chicken"],
@@ -80,7 +80,7 @@ module.exports = function (app, passport) {
             '_id': {
                 $in: id
             }
-        }, function (err, docs) {
+        }, (err, docs) => {
             res.writeHead(200, {"Content-Type": "application/json"});
             if (err) {
                 res.end("{}");
@@ -100,7 +100,7 @@ function getSimilarities(req, res) {
     let i = 0;
 
     // Loop through user feedback array and collect positively rated recipes
-    _.each(req.user.local.feedback, function (f) {
+    _.each(req.user.local.feedback, f => {
         if (f.rating === 1) recipeIds[i++] = f.recipeId;
     });
 
@@ -114,16 +114,14 @@ function getSimilarities(req, res) {
             image: 1,
             similarities: 1
         }
-    }, {$sort: {_id: 1}}], function (err, recipes) {
+    }, {$sort: {_id: 1}}], (err, recipes) => {
         // Sort users liked recipes in ascending order to allow of O(nlogn) time looping.
-        recipeIds.sort(function (a, b) {
-            return a.toString().localeCompare(b.toString());
-        });
+        recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
 
         // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
         // they are similar too.
         // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
-        _.each(recipes, function (recipe) {
+        _.each(recipes, recipe => {
             if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
                 if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
                     uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
@@ -136,7 +134,7 @@ function getSimilarities(req, res) {
 
         //get all the items from the similarities array
         const similarities = [];
-        uRecipeArr[0].similarities[1].forEach(function (item, index) {
+        uRecipeArr[0].similarities[1].forEach((item, index) => {
             similarities[index] = item;
         });
 
@@ -144,7 +142,7 @@ function getSimilarities(req, res) {
             '_id': {
                 $in: similarities
             }
-        }, function (err, docs) {
+        }, (err, docs) => {
             // Return result to client
             res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: docs});
         })

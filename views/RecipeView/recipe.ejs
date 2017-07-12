@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="title">Recipe | </title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
+    <script src="../../node_modules/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <style>
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            min-height: 100%;
+            background: black url("<%= recipe.image%>") center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-animate-left" style="display:none;z-index:5" id="potluckSidebar">
+    <button class="w3-bar-item w3-button w3-large" onclick="w3_close()">Close &times;</button>
+    <% for (let i = 0; i < navbar.length; i++) { %>
+    <a href="/<%= navbar[i] %>" class="w3-bar-item w3-button"><%= navbar[i] %></a>
+    <% } %>
+</div>
+
+<!-- Page Content -->
+<div class="w3-overlay w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="potluckOverlay"></div>
+
+<div>
+    <button class="w3-button w3-white w3-xxlarge" onclick="w3_open()">&#9776;</button>
+    <div class="w3-container">
+        <h1><%= recipe.title %></h1>
+        <p id="instructions"></p>
+    </div>
+</div>
+
+<script>
+    function decodeHtml(html) {
+        const txt = document.createElement('textarea');
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
+    document.getElementById('title').innerHTML += decodeHtml("<%= (recipe.title.length > 20) ? recipe.title.substr(0, 20 - 1) + '&hellip;' : recipe.title %>");
+
+    document.getElementById("instructions").innerHTML = decodeHtml("<%= recipe.instructions %>");
+
+    function w3_open() {
+        document.getElementById("potluckSidebar").style.display = "block";
+        document.getElementById("potluckOverlay").style.display = "block";
+    }
+    function w3_close() {
+        document.getElementById("potluckSidebar").style.display = "none";
+        document.getElementById("potluckOverlay").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

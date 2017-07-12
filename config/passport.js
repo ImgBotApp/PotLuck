@@ -12,7 +12,7 @@ const User = require('../app/models/users').User;
 const configAuth = require('./auth');
 
 // expose this function to our app using module.exports
-module.exports = function (passport) {
+module.exports = passport => {
 
     // =========================================================================
     // passport session setup ==================================================
@@ -20,12 +20,12 @@ module.exports = function (passport) {
     // required for persistent login sessions
     // passport needs ability to serialize and unserialize users out of session
     // High level user serialize/de-serialize configuration used for passport
-    passport.serializeUser(function (user, done) {
+    passport.serializeUser((user, done) => {
         done(null, user._id);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function (id, done) {
+    passport.deserializeUser((id, done) => {
         User.findById(id).exec(done);
     });
 
@@ -41,16 +41,16 @@ module.exports = function (passport) {
             passwordField: 'password',
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
-        function (req, email, password, done) {
+        (req, email, password, done) => {
             // asynchronous
             // User.findOne wont fire unless data is sent back
-            process.nextTick(function () {
+            process.nextTick(() => {
                 if (req.body.name.length < 1 || email.length < 1 || password.length < 1) {
                     return done(null, false, req.flash('signupMessage', 'Please fill in all the fields'));
                 }
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
-                User.findOne({'local.email': req.body.email}, function (err, user) {
+                User.findOne({'local.email': req.body.email}, (err, user) => {
                     // if there are any errors, return the error
                     if (err) {
                         err.status = 1000;
@@ -66,7 +66,7 @@ module.exports = function (passport) {
                             user.local.password = user.generateHash(password);
                             user.local.name = req.body.name;
 
-                            user.save(function (err) {
+                            user.save(err => {
                                 if (err)
                                     throw err;
                                 return done(null, user);
@@ -88,7 +88,7 @@ module.exports = function (passport) {
                             newUser.local.name = req.body.name;
 
                             // save the user
-                            newUser.save(function (err) {
+                            newUser.save(err => {
                                 if (err) throw err;
                                 return done(null, newUser);
                             });
@@ -101,7 +101,7 @@ module.exports = function (passport) {
                             user.local.name = req.body.name;
 
                             // save the user
-                            user.save(function (err) {
+                            user.save(err => {
                                 if (err)
                                     throw err;
                                 return done(null, user);
@@ -128,11 +128,11 @@ module.exports = function (passport) {
             passwordField: 'password',
             passReqToCallback: true // allows us to pass back the entire request to the callback
         },
-        function (req, email, password, done) { // callback with email and password from our form
+        (req, email, password, done) => { // callback with email and password from our form
 
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
-            User.findOne({'local.email': email}, function (err, user) {
+            User.findOne({'local.email': email}, (err, user) => {
                 // if there are any errors, return the error before anything else
                 if (err)
                     return done(err);
@@ -160,19 +160,19 @@ module.exports = function (passport) {
         },
 
         // facebook will send back the token and profile
-        function (req, accessToken, refreshToken, profile, done) {
+        (req, accessToken, refreshToken, profile, done) => {
             console.log('profile', profile); // debugging
             if (!profile.emails || !profile.emails.length) {
                 return done('No emails associated with this account!');
             }
 
             // asynchronous
-            process.nextTick(function () {
+            process.nextTick(() => {
 
                 if (!req.user) {
 
                     // find the user in the database based on their facebook id
-                    User.findOne({'facebook.id': profile.id}, function (err, user) {
+                    User.findOne({'facebook.id': profile.id}, (err, user) => {
 
                         // if there is an error, stop everything and return that
                         // ie an error connecting to the database
@@ -192,7 +192,7 @@ module.exports = function (passport) {
                                     profile.id.toString() + '/picture?type=large';
                                 //user.facebook.picture
 
-                                user.save(function (err) {
+                                user.save(err => {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -213,7 +213,7 @@ module.exports = function (passport) {
                                 profile.id.toString() + '/picture?type=large';
 
                             // save our user to the database
-                            newUser.save(function (err) {
+                            newUser.save(err => {
                                 if (err)
                                     throw err;
 
@@ -236,7 +236,7 @@ module.exports = function (passport) {
                         profile.id.toString() + '/picture?type=large';
 
                     // save the user
-                    user.save(function (err) {
+                    user.save(err => {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -254,15 +254,15 @@ module.exports = function (passport) {
             includeEmail: true, // Only works if configure twitter app settings to allow permissions (A ToS and Privacy page were required)
             passReqToCallback: true
         },
-        function (req, token, tokenSecret, profile, done) {
+        (req, token, tokenSecret, profile, done) => {
 
             // make the code asynchronous
             // User.findOne won't fire until we have all our data back from Twitter
-            process.nextTick(function () {
+            process.nextTick(() => {
 
                 if (!req.user) {
 
-                    User.findOne({'twitter.id': profile.id}, function (err, user) {
+                    User.findOne({'twitter.id': profile.id}, (err, user) => {
 
                         // if there is an error, stop everything and return that
                         // ie an error connecting to the database
@@ -280,7 +280,7 @@ module.exports = function (passport) {
                                 user.twitter.email = profile.emails[0].value;
                                 user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
-                                user.save(function (err) {
+                                user.save(err => {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -301,7 +301,7 @@ module.exports = function (passport) {
                             newUser.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                             // save our user into the database
-                            newUser.save(function (err) {
+                            newUser.save(err => {
                                 if (err)
                                     throw err;
                                 return done(null, newUser);
@@ -321,7 +321,7 @@ module.exports = function (passport) {
                     user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
 
                     // save the user
-                    user.save(function (err) {
+                    user.save(err => {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -338,16 +338,16 @@ module.exports = function (passport) {
             callbackURL: configAuth.googleAuth.callbackURL,
             passReqToCallback: true
         },
-        function (req, token, refreshToken, profile, done) {
+        (req, token, refreshToken, profile, done) => {
 
             // make the code asynchronous
             // User.findOne won't fire until we have all our data back from Google
-            process.nextTick(function () {
+            process.nextTick(() => {
 
                 if (!req.user) {
 
                     // try to find the user based on their google id
-                    User.findOne({'google.id': profile.id}, function (err, user) {
+                    User.findOne({'google.id': profile.id}, (err, user) => {
                         if (err)
                             return done(err);
 
@@ -361,7 +361,7 @@ module.exports = function (passport) {
                                 user.google.email = profile.emails[0].value;
                                 user.google.picture = profile.photos[0].value;
 
-                                user.save(function (err) {
+                                user.save(err => {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -382,7 +382,7 @@ module.exports = function (passport) {
                             newUser.google.picture = profile.photos[0].value;
 
                             // save the user
-                            newUser.save(function (err) {
+                            newUser.save(err => {
                                 if (err)
                                     throw err;
                                 return done(null, newUser);
@@ -401,7 +401,7 @@ module.exports = function (passport) {
                     user.google.picture = profile.photos[0].value.substring(0, profile.photos[0].value.length - 6);
 
                     // save the user
-                    user.save(function (err) {
+                    user.save(err => {
                         if (err)
                             throw err;
                         return done(null, user);
@@ -416,13 +416,13 @@ module.exports = function (passport) {
             callbackURL: configAuth.githubAuth.callbackURL,
             passReqToCallback: true
         },
-        function (req, accessToken, refreshToken, profile, done) {
-            process.nextTick(function () {
+        (req, accessToken, refreshToken, profile, done) => {
+            process.nextTick(() => {
 
                 if (!req.user) {
 
                     // try to find the user based on their google id
-                    User.findOne({'github.id': profile.id}, function (err, user) {
+                    User.findOne({'github.id': profile.id}, (err, user) => {
                         if (err)
                             return done(err);
 
@@ -438,7 +438,7 @@ module.exports = function (passport) {
                                 user.github.email = profile.emails[0].value;
                                 user.github.picture = profile._json.avatar_url;
 
-                                user.save(function (err) {
+                                user.save(err => {
                                     if (err)
                                         throw err;
                                     return done(null, user);
@@ -460,7 +460,7 @@ module.exports = function (passport) {
                             newUser.github.email = profile._json.avatar_url;
 
                             // save the user
-                            newUser.save(function (err) {
+                            newUser.save(err => {
                                 if (err)
                                     throw err;
                                 return done(null, newUser);
@@ -480,7 +480,7 @@ module.exports = function (passport) {
                     user.github.picture = profile._json.avatar_url;
 
                     // save the user
-                    user.save(function (err) {
+                    user.save(err => {
                         if (err)
                             throw err;
                         return done(null, user);

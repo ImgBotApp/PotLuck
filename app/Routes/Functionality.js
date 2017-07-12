@@ -20,15 +20,25 @@ Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
 
 
-module.exports = function (app, passport) {
+module.exports = (app, passport) => {
 
-    app.get('/get_suggestions', isLoggedIn, function (req, res) {
+    app.get('/recipe/:id', isLoggedIn, (req, res) => {
+        Recipe.findById(req.params.id, (err, recipe) => {
+            if (err) console.log(err);
+            res.render(path.resolve(_viewsdir + '/RecipeView/recipe.ejs'), {
+                recipe: recipe,
+                navbar: ['Home', 'Dashboard', 'Profile', 'Polling', 'About', 'Logout']
+            });
+        });
+    });
+
+    app.get('/get_suggestions', isLoggedIn, (req, res) => {
         const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
         const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
         let i = 0;
 
         // Loop through user feedback array and collect positively rated recipes
-        _.each(req.user.local.feedback, function (f) {
+        _.each(req.user.local.feedback, f => {
             if (f.rating === 1) recipeIds[i++] = f.recipeId;
         });
 
@@ -42,16 +52,14 @@ module.exports = function (app, passport) {
                 image: 1,
                 similarities: 1
             }
-        }, {$sort: {_id: 1}}], function (err, recipes) {
+        }, {$sort: {_id: 1}}], (err, recipes) => {
             // Sort users liked recipes in ascending order to allow of O(n) time looping.
-            recipeIds.sort(function (a, b) {
-                return a.toString().localeCompare(b.toString());
-            });
+            recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
 
             // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
             // they are similar too.
             // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
-            _.each(recipes, function (recipe) {
+            _.each(recipes, recipe => {
                 if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
                     if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
                         uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
@@ -64,7 +72,7 @@ module.exports = function (app, passport) {
 
             //get all the items from the similarities array
             const similarities = [];
-            uRecipeArr[0].similarities[1].forEach(function (item, index) {
+            uRecipeArr[0].similarities[1].forEach((item, index) => {
                 similarities[index] = item;
             });
 
@@ -72,7 +80,7 @@ module.exports = function (app, passport) {
                 '_id': {
                     $in: similarities
                 }
-            }, function (err, docs) {
+            }, (err, docs) => {
                 console.log(docs);
 
                 // Return result to client
@@ -82,110 +90,13 @@ module.exports = function (app, passport) {
         });
     });
 
-
-    // Our algorithm for binding the similarities to the recipes they coorespond to
-    // TODO Fix issue of duplicate similary binding on each run
-    app.get('/similarities', isLoggedIn, function (req, res) {
-        // Require password to prevent accidental use of route (temporary weak solution)
-        if (req.query.password === "recsys2016") {
-            // Collected recipes, projecting the results by their ids
-            Recipe.aggregate([{$project: {_id: 1}}], function (err, recipes) {
-                // Read similarities JSON file
-                fs.readFile(__dirname + '/experimental/sims_test.json', 'utf8', function (err, data) {
-                    if (err) console.log(err); // Log any errors out to the console
-
-                    const obj = JSON.parse(data); // Parse JSON data as JavaScript object
-
-                    // Sort parsed similarities file for efficient looping.
-                    obj.sort(function (a, b) {
-                        return a._id.localeCompare(b._id);
-                    });
-
-                    // Link each recipe with its corresponding list of related recipes
-                    obj.forEach(function (similarity) {
-                        _.each(recipes, function (recipe, index) {
-                            if (similarity._id === recipe._id.toString()) {
-                                Recipe.findByIdAndUpdate(recipe._id, {$push: {'similarities': similarity.similarities}}, {
-                                    safe: true,
-                                    upsert: true,
-                                    sort: {_id: 1},
-                                    new: true
-                                }, function (err) {
-                                    if (err) return console.log(err);
-                                });
-                            }
-                        });
-                    });
-                });
-            });
-        } else {
-            res.send("You are no allowed here.");
-        }
-        /*User.findById(req.user._id, function (err, user) {
-         User.aggregate([
-         {
-         $match: {
-         'local.feedback.rating': 1
-         }
-         },
-         {
-         $project: {
-         'local.feedback': {
-         $filter: {
-         input: '$local.feedback',
-         as: 'f',
-         cond: {
-         $eq: ['$$f.rating', 1]
-         }
-         }
-         }, _id: user._id
-         }
-         }
-         ], function (err, docs) {
-         if (err) console.log(err);
-         docs[0].local.feedback.sort(function (a, b) {
-         return a.recipeId.toString().localeCompare(b.recipeId.toString());
-         });
-         fs.readFile(__dirname + '/experimental/sims.json', 'utf8', function (err, data) {
-         if (err) console.log(err);
-         var obj = JSON.parse(data);
-         obj.sort(function (a, b) {
-         return a._id.localeCompare(b._id);
-         });
-         var i = 0;
-         obj.forEach(function (similarity) {
-         docs[0].local.feedback.forEach(function (feedback) {
-         if (similarity._id === feedback.recipeId.toString()) {
-         User.update(
-         {_id: req.user._id, 'local.feedback.recipeId': feedback.recipeId},
-         {
-         $push: {
-         'local.feedback.$.similarities': obj[i].similarities
-         }
-         }
-         , function (err) {
-         if (err) console.log(err);
-         else console.log("Success");
-         })
-         }
-         });
-         });
-         res.render(path.resolve(__dirname + '/../views/Profile/mySuggestions.ejs'), {
-         user: req.user
-         });
-         });
-         });
-         });*/
-    });
-
-
     // Route for polling users on their food preferences
-    app.get('/polling', isLoggedIn, function (req, res) {
+    app.get('/polling', isLoggedIn, (req, res) => {
         const version = req.query.version;
 
         // Collect single random recipe from the database, projecting only its id, title, and image
         // TODO To increase uniqueness of polling sample, increase sample size
-        Recipe.aggregate({$sample: {size: 1}}, {$project: {_id: 1, title: 1, image: 1}}, function (err, docs) {
+        Recipe.aggregate({$sample: {size: 1}}, {$project: {_id: 1, title: 1, image: 1}}, (err, docs) => {
             if (err) console.log(err);
             if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');
@@ -206,12 +117,12 @@ module.exports = function (app, passport) {
     });
 
     // Process user feedback results
-    app.post('/polling', isLoggedIn, function (req, res) {
+    app.post('/polling', isLoggedIn, (req, res) => {
         User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {
             safe: true,
             upsert: true,
             new: true
-        }, function (err) {
+        }, err => {
             if (err) return console.log(err);
 
             res.redirect('/polling');
@@ -220,7 +131,6 @@ module.exports = function (app, passport) {
 
 
 };
-
 
 /**
  * Function for checking if the user requesting the page is logged in
