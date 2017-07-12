@@ -152,15 +152,6 @@ module.exports = (app, passport) => {
         }
     });
 
-    // Displays random recipe from the database (for testing purposes)
-    app.get('/rand_recipe', (req, res) => {
-        Recipe.aggregate({$sample: {size: 1}}, (err, docs) => {
-            if (err) console.log(err);
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(docs, null, 3));
-        });
-    });
-
     // route for facebook authentication and login
     app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email', 'public_profile']}));
 
