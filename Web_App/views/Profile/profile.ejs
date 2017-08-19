@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PotLuck | <%= user.local.name %>'s Profile</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="../../public/css/profile.css">
+    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
+    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <script src="../../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <style>
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            word-wrap: break-word;
+            min-height: 100%;
+            background: black url("../../public/images/camaje-cooking-7.jpg") center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="bgimg">
+<div class="w3-animate-opacity">
+    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1">
+        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+    </div>
+    <div class="w3-display-container" style="padding-top: 80px;">
+        <div class="col-sm-8 col-sm-offset-2 w3-animate-bottom">
+            <div class="page-header text-center">
+                <div class="jumbotron" style="background-color: darkslategray; opacity: 0.85;">
+                    <h1><span class="fa fa-anchor"></span><span style="color: #f5f5f5; ">My Profile</span></h1>
+                </div>
+                <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+            </div>
+
+            <div class="row">
+
+                <!-- LOCAL INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well" style="background-color:whitesmoke">
+                        <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
+
+                        <% if (user.local.email) { %>
+
+                        <p>
+                            <strong>Email</strong>:<%= user.local.email %><br><br>
+                        </p>
+                        <% if (!user.local.picture) { %>
+                        <b>Upload a profile photo:</b>
+                        <form action="/profile/photo" method="POST" enctype="multipart/form-data">
+                            <label for="file-upload" class="custom-file-upload">
+                                <i class="fa fa-cloud-upload"></i> Upload Photo
+                            </label>
+                            <input id="file-upload" type="file" name="avatar">
+                            <input type="submit" value="submit">
+                        </form>
+                        <% } else { %>
+                        <img id="profile_picture" src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP"
+                             align="left">
+                        <a href="/profile/photo/delete/<%= user.local.picture %>" class="btn btn-danger btn-sm">Delete
+                            Photo</a>
+                        <% } %>
+
+                        <a href="/unlink/local" class="btn btn-default">Unlink</a>
+                        <% } else { %>
+                        <a href="/connect/local" class="btn btn-default">Connect Local</a>
+                        <% } %>
+
+                    </div>
+                    <div class="well" style="background-color:whitesmoke">
+                        <h3><span class="fa fa-user"></span> Change Profile Information</h3>
+
+                        <Strong>Change Email</Strong>
+                        <form action="/profile" method="post">
+                            <div class="form-group">
+                                <label><i>Email</i></label>
+                                <input type="text" class="form-control form-email" name="email">
+                            </div>
+                        </form>
+                        <p style="padding:10px;"></p>
+                        <Strong>Change Name</Strong>
+                        <form action="/profile" method="post">
+                            <div class="form-group">
+                                <label><i>Name</i></label>
+                                <input type="text" class="form-control form-name" name="name">
+                            </div>
+                        </form>
+                        <p style="padding:10px;"></p>
+                        <Strong>Change Password</Strong>
+                        <form action="/profile" method="post">
+                            <div class="form-group">
+                                <label><i>Password</i></label>
+                                <input type="password" class="form-control form-pass" name="password">
+                            </div>
+
+                            <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes</button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- FACEBOOK INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well">
+                        <h3 class="text-info"><span class="fa fa-lightbulb-o"></span> Recommended Recipes</h3>
+                    </div>
+                    <div class="well">
+                        <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+                        <!-- check if the user has this token (is the user authenticated with this social account) -->
+                        <% if (user.facebook.token) { %>
+
+                        <p>
+                            <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
+                            <strong>id</strong>: <%= user.facebook.id %><br>
+                            <strong>token</strong>: <%= user.facebook.token %><br>
+                            <strong>email</strong>: <%= user.facebook.email %><br>
+                            <strong>name</strong>: <%= user.facebook.name %>
+                        </p>
+
+                        <a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
+                        <% } else { %>
+                        <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                        <% } %>
+
+                    </div>
+                </div>
+
+                <!-- TWITTER INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well">
+                        <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
+
+                        <!-- check if the user has this token (is the user authenticated with this social account) -->
+                        <% if (user.twitter.token) { %>
+
+                        <p>
+                            <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
+                            <strong>id</strong>: <%= user.twitter.id %><br>
+                            <strong>token</strong>: <%= user.twitter.token %><br>
+                            <strong>username</strong>: <%= user.twitter.username %><br>
+                            <strong>displayName</strong>: <%= user.twitter.displayName %><br>
+                            <strong>email</strong>: <%= user.twitter.email %>
+                        </p>
+
+                        <a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+                        <% } else { %>
+                        <a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+                        <% } %>
+
+                    </div>
+                </div>
+
+                <!-- GOOGLE INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well">
+                        <h3 class="text-warning"><span class="fa fa-google-plus"></span> Google</h3>
+
+                        <!-- check if the user has this token (is the user authenticated with this social account) -->
+                        <% if (user.google.token) { %>
+
+                        <p>
+                            <img src="<%= user.google.picture %>" alt="G_PP" align="left">
+                            <strong>id</strong>: <%= user.google.id %><br>
+                            <strong>token</strong>: <%= user.google.token %><br>
+                            <strong>email</strong>: <%= user.google.email %><br>
+                            <strong>name</strong>: <%= user.google.name %>
+                        </p>
+
+                        <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+                        <% } else { %>
+                        <a href="/connect/google" class="btn btn-danger">Connect Google</a>
+                        <% } %>
+
+                    </div>
+                </div>
+
+                <!-- GITHUB INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well">
+                        <h3 class="text-muted"><span class="fa fa-github"></span> GitHub</h3>
+
+                        <% if (user.github.id) { %>
+
+                        <p>
+                            <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
+                            <strong>id</strong>: <%= user.github.id %><br>
+                            <strong>token</strong>: <%= user.github.token %><br>
+                            <strong>email</strong>: <%= user.github.email %><br>
+                            <strong>username</strong> <%= user.github.username %>
+                            <strong>name</strong>: <%= user.github.name %>
+                        </p>
+
+                        <a href="/unlink/github" class="btn btn-default">Unlink</a>
+                        <% } else { %>
+                        <a href="/connect/github" class="btn btn-default">Connect GitHub</a>
+                        <% } %>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(() => {
+        $('.btn-update-prof').click(event => { // Handle event when there is a a click on the class
+            let email = $('.form-email').val(); // Set email to the value that's in the text field
+            let name = $('.form-name').val(); // Set name to the value that's in the text field
+            const pass = $('.form-pass').val(); // Set pass to the value that's in the text field
+            email = email.length < 1 ? user.local.email : email;
+            name = name.length < l ? user.local.name : name;
+            const data = {email: email, name: name, pass: pass}; // Convert to JSON string
+            $.post('/profile', data); // Post to profile
+            event.preventDefault();
+            window.location.replace(window.location.origin + "/profile");
+        });
+    }
+</script>
+</body>
+</html>

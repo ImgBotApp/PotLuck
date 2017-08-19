@@ -1,0 +1,63 @@
+{
+  "name": "potluck",
+  "version": "0.0.1",
+  "description": "Contributers:<br /> Omar Taylor<br /> Souparni Agnihotri<br />",
+  "main": "server.js",
+  "scripts": {
+    "watch": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acesonnall/PotLuck.git"
+  },
+  "authors": [
+    "Omar Taylor",
+    "Souparni Agnihotri",
+    "Chinmay Hegde",
+    "Charles Hubbard"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "*",
+    "body-parser": "*",
+    "bootstrap": "^3.3.7",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
+    "font-awesome": "^4.7.0",
+    "formidable": "^1.0.17",
+    "fs": "^0.0.1-security",
+    "gridfs-stream": "^1.1.1",
+    "https": "^1.0.0",
+    "jquery": "^3.2.1",
+    "method-override": "*",
+    "mongoose": "^4.11.6",
+    "mongoose-file": "0.0.2",
+    "morgan": "*",
+    "multer": "^1.2.1",
+    "nodemon": "^1.11.0",
+    "passport": "^0.4.0",
+    "passport-facebook": "*",
+    "passport-github2": "^0.1.10",
+    "passport-google-oauth": "*",
+    "passport-local": "*",
+    "passport-twitter": "*",
+    "serve-static": "^1.12.4",
+    "socket.io": "^1.7.4",
+    "ssl-root-cas": "^1.2.3",
+    "tunnel-ssh": "^4.1.1",
+    "underscore": "*",
+    "w3-css": "^4.0.4"
+  },
+  "bugs": {
+    "url": "https://github.com/Acesonnall/PotLuck/issues"
+  },
+  "homepage": "https://github.com/Acesonnall/PotLuck#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0"
+  }
+}

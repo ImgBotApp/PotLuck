@@ -1,7 +1,0 @@
-#######################
-###How Routing Works###
-
-Routing is configuerd within server.js using the express middleware. From there I am able to make POST and GET requests
-within routes.js. As you can see, this file mostly consists of an exported array of GET and POST requests with a few
-functions at the bottom to handle user authentication. The gist of what is happening is best explained in basic terms
-here: https://expressjs.com/en/starter/basic-routing.html

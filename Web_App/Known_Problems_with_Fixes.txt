@@ -1,0 +1,13 @@
+Issue: Google Passport login error
+Fix:
+- Enable Google+ API
+- Do not use port number with Authorized Redirect URIs
+************************************************************************************************************************
+Issue: MongoImport as json array running into errors
+Fix:
+- Correct format for importing: [{DOCUMENT0}, {DOCUMENT1}, {DOCUMENT2}, ..., {DOCUMENTn}]
+************************************************************************************************************************
+Issue: MongoError: failed to connect to server [localhost:27017] on first connect
+Fix:
+- Apparently I need a Wifi connection to connect to localhost. I don't buy this solution though.
+************************************************************************************************************************

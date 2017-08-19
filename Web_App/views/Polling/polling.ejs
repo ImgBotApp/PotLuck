@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PotLuck | Polling</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" ref="../../public/css/fonts/Raleway.css">
+    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <script src="../../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <style>
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            min-height: 100%;
+            background: black url("../../public/images/camaje-cooking-7.jpg") center;
+            background-size: cover;
+        }
+    </style>
+    <%let i = 0; %>
+</head>
+<body>
+<div class="bgimg w3-animate-opacity">
+    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1">
+        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+    </div>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
+            <p>Let's collect more information about your food preferences.</p>
+            <div id="recipeTitle">
+                <h4><%= recipe[i].title %></h4>
+            </div>
+            <div id="recipeImg">
+                <img src=<%= recipe[i].image %> alt="recipe" style="object-fit: cover; width: 540px; height: auto">
+            </div>
+            <br>
+            <div class="row w3-padding-32">
+                <div id="recipeLikeId" class="col-md-4">
+                    <button type="submit" class="btn btn-like w3-button w3-round w3-green"
+                            recipe-id="<%= recipe[i]._id %>">Like
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-finish w3-button w3-round w3-gray">
+                        Finish
+                    </button>
+                </div>
+                <div id="recipeDislikeId" class="col-md-4">
+                    <button type="submit" class="btn btn-dislike w3-button w3-round w3-red"
+                            recipe-id="<%= recipe[i]._id %>">Dislike
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.btn-like').click(function (event) {
+            const recipeId = $(this).attr('recipe-id');
+            const rating = 1;
+            const data = {recipeId: recipeId, rating: rating};
+            $.post('/polling', data);
+
+            document.getElementById("recipeTitle").innerHTML = "<h4><%= recipe[++i].title %></h4>"
+            document.getElementById("recipeImg").innerHTML = "<img src=<%= recipe[++i].image %> alt='recipe' style='object-fit: cover; width: 540px; height: auto'>"
+            document.getElementById("recipeLikeId").innerHTML = "<button type='submit' class='btn btn-like w3-button w3-round w3-green' recipe-id='<%= recipe[++i]._id %>'>Like </button>"
+            document.getElementById("recipeDislikeId").innerHTML = "<button type='submit' class='btn btn-dislike w3-button w3-round w3-red' recipe-id='<%= recipe[i]._id %>'>Dislike </button>"
+                //event.preventDefault();
+                //window.location.replace(window.location.origin + "/profile");
+        });
+
+        $('.btn-dislike').click(function (event) {
+            const recipeId = $(this).attr('recipe-id');
+            const rating = 0;
+            const data = {recipeId: recipeId, rating: rating};
+            $.post('/polling', data);
+
+            document.getElementById("recipeTitle").innerHTML = "<h4><%= recipe[++i].title %></h4>"
+            document.getElementById("recipeImg").innerHTML = "<img src=<%= recipe[++i].image %> alt='recipe' style='object-fit: cover; width: 540px; height: auto'>"
+            document.getElementById("recipeLikeId").innerHTML = "<button type='submit' class='btn btn-like w3-button w3-round w3-green' recipe-id='<%= recipe[++i]._id %>'>Like </button>"
+            document.getElementById("recipeDislikeId").innerHTML = "<button type='submit' class='btn btn-dislike w3-button w3-round w3-red' recipe-id='<%= recipe[i]._id %>'>Dislike </button>"
+
+                //event.preventDefault();
+                //window.location.replace(window.location.origin + "/profile");
+
+        });
+
+        $('.btn-finish').click(function (event) {
+            window.location.replace(window.location.origin + "/index");
+        });
+    });
+</script>
+</body>
+</html>

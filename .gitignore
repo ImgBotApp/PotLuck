@@ -29,13 +29,11 @@
 #############
 # IDE FILES #
 #############
-*.xml
+Web_App/.idea/vcs.xml
 .idea/dataSources.ids
 *.iws
 .idea_modules/
-.idea/libraries
-
-
+*.iml
 ######################
 # OS generated files #
 ######################
@@ -95,19 +93,17 @@ _testmain.go
 ############
 *.psd
 
-.idea
-app/experimental/Output0.txt
-app/experimental/Output1.txt
-app/experimental/Rand_Recipes_IDs(1000).json
-app/experimental/db_simFile_check.js
-app/experimental/recipe_100_with_sims.JSON
-app/experimental/recipes_100.JSON
-app/experimental/recipes_100_new.JSON
-config/server.crt
-config/server.csr
-config/server.key
-config/server.key.org
-public/images/
-uploads/
-views/Dashboard/
-dist/
+*.idea
+Web_App/app/experimental/Output0.txt
+Web_App/app/experimental/Output1.txt
+Web_App/app/experimental/db_simFile_check.js
+Web_App/config/server.crt
+Web_App/config/server.csr
+Web_App/config/server.key
+Web_App/config/server.key.org
+Web_App/public/images/
+Web_App/uploads/
+Web_App/views/Dashboard/
+Web_App/dist/
+Web_App/media/
+Web_App/public/js/
