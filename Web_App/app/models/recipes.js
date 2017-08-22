@@ -6,7 +6,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // define the schema for our recipe model
 const recipeSchema = mongoose.Schema({
-
+    _id: Number,
     vegetarian: Boolean,
     vegan: Boolean,
     glutenFree: Boolean,

@@ -63,7 +63,7 @@ app.listen(port);
 console.log("Listening on port " + port);
 
 setInterval(() => {
-    fs.readFile(__dirname + '/app/experimental/sims_test-1000.json', 'utf8', (err, data) => {
+    fs.readFile('../Files/Recipes/Similarities_Appended/Aug_sims_test-534.json', 'utf8', (err, data) => {
         if (err) console.log(err); // Log any errors out to the console
 
         function bulkLink(obj) {
@@ -74,7 +74,7 @@ setInterval(() => {
             obj.forEach(sims => {
                 bulkUpdateOps.push({
                     "updateOne": {
-                        "filter": {"_id": sims._id},
+                        "filter": {"_id": sims.id},
                         "update": {"$set": {"similarities": sims.similarities}}
                     }
                 });
@@ -92,7 +92,9 @@ setInterval(() => {
         const obj = JSON.parse(data); // Parse JSON data as JavaScript object
 
         // Sort parsed similarities file for efficient looping.
-        obj.sort((a, b) => a._id.localeCompare(b._id));
+        obj.sort((a, b) => {
+            return a.id < b.id ? -1 : a.id === b.id ? 0 : 1;
+        });
 
         // Clear "similarities" field for all documents in the recipes collection
 
