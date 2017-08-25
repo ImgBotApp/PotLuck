@@ -56,9 +56,11 @@ app.use('/node_modules/jquery', serveStatic('node_modules/jquery'));
 app.use('/node_modules/w3-css', serveStatic('node_modules/w3-css'));
 
 require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass in our app and fully configured passport
-/*https.createServer(options, app).listen(8080, function () {
- console.log("Listening on port " + port);
- });*/
+/*
+https.createServer(options, app).listen(8080, function () {
+console.log("Listening on port " + port);
+});
+*/
 app.listen(port);
 console.log("Listening on port " + port);
 
@@ -73,9 +75,9 @@ setInterval(() => {
 
             obj.forEach(sims => {
                 bulkUpdateOps.push({
-                    "updateOne": {
-                        "filter": {"_id": sims.id},
-                        "update": {"$set": {"similarities": sims.similarities}}
+                    updateOne: {
+                        filter: {"_id": sims.id},
+                        update: {"$set": {"similarities": sims.similarities}}
                     }
                 });
 
