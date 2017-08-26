@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema({
             type: String
         },
         feedback: [new mongoose.Schema({
-            recipeId: ObjectId,
+            recipeId: Number,
             rating: Number
         }, {_id: false})] // Create a new schema for user feedback, but don't give it an id.
     },

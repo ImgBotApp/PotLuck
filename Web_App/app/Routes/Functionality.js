@@ -112,7 +112,7 @@ module.exports = (app, passport) => {
             } else {
                 res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), {
                     user: req.user,
-                    recipe: docs
+                    recipes: docs
                 });
             }
         });
@@ -120,14 +120,16 @@ module.exports = (app, passport) => {
 
     // Process user feedback results
     app.post('/polling', isLoggedIn, (req, res) => {
-        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": req.body}}, {
-            safe: true,
-            upsert: true,
-            new: true
-        }, err => {
-            if (err) return console.log(err);
+        let ratings = [];
 
-            res.redirect('/polling');
+        for (let key in req.body) if (req.body.hasOwnProperty(key)) ratings[key] = req.body[key];
+
+        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": {$each: ratings}}}, {upsert: true}, err => {
+            if (err) return console.log(err);
+            else res.send({
+                status: 'Success',
+                redirectTo: '/index'
+            });
         });
     });
 

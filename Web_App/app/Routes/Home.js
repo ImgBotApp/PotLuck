@@ -47,7 +47,6 @@ module.exports = (app, passport) => {
 
 
     app.get('/home', isLoggedIn, (req, res) => {
-        'use strict';
         /**
          * FOR TESTING PURPOSES
          * @type {Array}
@@ -101,9 +100,12 @@ function getSimilarities(req, res) {
     let i = 0;
 
     // Loop through user feedback array and collect positively rated recipes
-    _.each(req.user.local.feedback, f => {
-        if (f.rating === 1) recipeIds[i++] = f.recipeId;
-    });
+    const feedback = req.user.local.feedback;
+    if (feedback.length > 0)
+        _.each(req.user.local.feedback, f => {
+            if (f.rating === 1) recipeIds[i++] = f.recipeId;
+        });
+    else // TODO: Handle situation where no feedback has been given
 
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities

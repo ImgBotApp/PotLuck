@@ -25,7 +25,6 @@
             background-size: cover;
         }
     </style>
-    <%let i = 0; %>
 </head>
 <body>
 <div class="bgimg w3-animate-opacity">
@@ -33,20 +32,21 @@
         <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div class="container">
+        <% let i = 0 %>
         <div class="jumbotron text-center">
             <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
             <p>Let's collect more information about your food preferences.</p>
             <div id="recipeTitle">
-                <h4><%= recipe[i].title %></h4>
+                <h4></h4>
             </div>
-            <div id="recipeImg">
-                <img src=<%= recipe[i].image %> alt="recipe" style="object-fit: cover; width: 540px; height: auto">
+            <div>
+                <img id="recipeImg" src="" alt="recipe" style="object-fit: cover; width: 540px; height: auto">
             </div>
             <br>
             <div class="row w3-padding-32">
-                <div id="recipeLikeId" class="col-md-4">
-                    <button type="submit" class="btn btn-like w3-button w3-round w3-green"
-                            recipe-id="<%= recipe[i]._id %>">Like
+                <div class="col-md-4">
+                    <button id="" type="submit" class="btn btn-like w3-button w3-round w3-green">
+                        Like
                     </button>
                 </div>
                 <div class="col-md-4">
@@ -54,50 +54,74 @@
                         Finish
                     </button>
                 </div>
-                <div id="recipeDislikeId" class="col-md-4">
-                    <button type="submit" class="btn btn-dislike w3-button w3-round w3-red"
-                            recipe-id="<%= recipe[i]._id %>">Dislike
+                <div class="col-md-4">
+                    <button id="" type="submit" class="btn btn-dislike w3-button w3-round w3-red">
+                        Dislike
                     </button>
                 </div>
+            </div>
+            <div>
+                <p id="num_recipes"></p>
             </div>
         </div>
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $('.btn-like').click(function (event) {
-            const recipeId = $(this).attr('recipe-id');
-            const rating = 1;
-            const data = {recipeId: recipeId, rating: rating};
-            $.post('/polling', data);
+    $(document).ready(() => {
+        let recipes = [],
+            num_recipes = <%= recipes.length %>,
+            index = 0,
+            rated_data = {};
 
-            document.getElementById("recipeTitle").innerHTML = "<h4><%= recipe[++i].title %></h4>"
-            document.getElementById("recipeImg").innerHTML = "<img src=<%= recipe[++i].image %> alt='recipe' style='object-fit: cover; width: 540px; height: auto'>"
-            document.getElementById("recipeLikeId").innerHTML = "<button type='submit' class='btn btn-like w3-button w3-round w3-green' recipe-id='<%= recipe[++i]._id %>'>Like </button>"
-            document.getElementById("recipeDislikeId").innerHTML = "<button type='submit' class='btn btn-dislike w3-button w3-round w3-red' recipe-id='<%= recipe[i]._id %>'>Dislike </button>"
-                //event.preventDefault();
-                //window.location.replace(window.location.origin + "/profile");
+        <% recipes.forEach((recipe, idx) => { %>
+        recipes[<%= idx %>] = {
+            title: '<%= recipe.title %>',
+            image: '<%= recipe.image %>',
+            id: <%= recipe._id %>
+        };
+        <% }) %>
+
+        $('h4').text(recipes[index].title);
+        $('#recipeImg').attr('src', recipes[index].image);
+        $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+
+        function isFinishedRating() {
+            return index === num_recipes - 1;
+        }
+
+        function nextRecipe() {
+            $('h4').text(recipes[++index].title);
+            $('#recipeImg').attr('src', recipes[index].image);
+            $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+        }
+
+        function postToPolling(data) {
+            $.post('/polling', data, (res) => {
+                if (res.status = 'Success') window.location = res.redirectTo;
+            })
+        }
+
+        $('.btn-like').click(() => {
+            rated_data[index] = {
+                recipeId: recipes[index].id,
+                rating: 1
+            };
+
+            if (isFinishedRating()) postToPolling(rated_data);
+            else nextRecipe();
         });
 
-        $('.btn-dislike').click(function (event) {
-            const recipeId = $(this).attr('recipe-id');
-            const rating = 0;
-            const data = {recipeId: recipeId, rating: rating};
-            $.post('/polling', data);
+        $('.btn-dislike').click(() => {
+            rated_data[index] = {
+                recipeId: recipes[index].id,
+                rating: 0
+            };
 
-            document.getElementById("recipeTitle").innerHTML = "<h4><%= recipe[++i].title %></h4>"
-            document.getElementById("recipeImg").innerHTML = "<img src=<%= recipe[++i].image %> alt='recipe' style='object-fit: cover; width: 540px; height: auto'>"
-            document.getElementById("recipeLikeId").innerHTML = "<button type='submit' class='btn btn-like w3-button w3-round w3-green' recipe-id='<%= recipe[++i]._id %>'>Like </button>"
-            document.getElementById("recipeDislikeId").innerHTML = "<button type='submit' class='btn btn-dislike w3-button w3-round w3-red' recipe-id='<%= recipe[i]._id %>'>Dislike </button>"
-
-                //event.preventDefault();
-                //window.location.replace(window.location.origin + "/profile");
-
+            if (isFinishedRating()) postToPolling(rated_data);
+            else nextRecipe();
         });
 
-        $('.btn-finish').click(function (event) {
-            window.location.replace(window.location.origin + "/index");
-        });
+        $('.btn-finish').click(() => postToPolling(rated_data));
     });
 </script>
 </body>
