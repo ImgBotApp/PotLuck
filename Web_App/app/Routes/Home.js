@@ -47,6 +47,7 @@ module.exports = (app, passport) => {
 
 
     app.get('/home', isLoggedIn, (req, res) => {
+        'use strict';
         /**
          * FOR TESTING PURPOSES
          * @type {Array}
@@ -115,6 +116,10 @@ function getSimilarities(req, res) {
             similarities: 1
         }
     }, {$sort: {_id: 1}}], (err, recipes) => {
+
+        if(err)
+            console.log(err);
+
         // Sort users liked recipes in ascending order to allow of O(nlogn) time looping.
         recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
 

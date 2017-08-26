@@ -1,7 +1,7 @@
 /**
  * Created by yazan on 5/16/2017.
  */
-
+'use strict';
 
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';

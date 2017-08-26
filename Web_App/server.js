@@ -32,9 +32,11 @@ mongoose.Promise = global.Promise; // Use native promise
 
 // Connect to our mongoDB database
 mongoose.connect(configDB.url, err => {
+    'use strict';
     if (err) { // Report any errors
-        let asterisks = '';
-        for (let i = 0; i < err.toString().length; i++) {
+        var asterisks = '';
+        var i;
+        for ( i = 0; i < err.toString().length; i++) {
             asterisks += '*'
         }
         console.log('Connection to \'' + configDB.name + '\' Database: Failed.\n' + asterisks + '\n' + err + '\n' + asterisks + '\n');
@@ -64,7 +66,8 @@ console.log("Listening on port " + port);
 
 setInterval(() => {
     fs.readFile('../Files/Recipes/Similarities_Appended/Aug_sims_test-534.json', 'utf8', (err, data) => {
-        if (err) console.log(err); // Log any errors out to the console
+    'use strict';
+    if (err) console.log(err); // Log any errors out to the console
 
         function bulkLink(obj) {
             // Initialise the bulk operations array
@@ -72,7 +75,8 @@ setInterval(() => {
                 counter = 0;
 
             obj.forEach(sims => {
-                bulkUpdateOps.push({
+                'use strict';
+            bulkUpdateOps.push({
                     "updateOne": {
                         "filter": {"_id": sims.id},
                         "update": {"$set": {"similarities": sims.similarities}}

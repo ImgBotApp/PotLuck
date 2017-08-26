@@ -1,6 +1,7 @@
 /**
  * Created by yazan on 5/16/2017.
  */
+'use strict';
 
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
@@ -33,6 +34,7 @@ module.exports = (app, passport) => {
     });
 
     app.get('/get_suggestions', isLoggedIn, (req, res) => {
+        'use strict';
         const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
         const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
         let i = 0;

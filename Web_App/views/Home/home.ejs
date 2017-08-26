@@ -132,7 +132,22 @@
 
                 </ul>
                 <h4>Rate this recipe</h4>
-                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                <div class="row w3-padding-32">
+                    <div id="recipeLikeId" class="col-md-4">
+                        <button type="submit" class="btn btn-like w3-button w3-round w3-green">Like
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-finish w3-button w3-round w3-gray">
+                            Finish
+                        </button>
+                    </div>
+                    <div id="recipeDislikeId" class="col-md-4">
+                        <button type="submit" class="btn btn-dislike w3-button w3-round w3-red"
+                                recipe-id="<%= recipe[i]._id %>">Dislike
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -159,7 +174,7 @@
     function parseIngredients(data) {
         let out = "";
         data.extendedIngredients.forEach(function (item, index) {
-            out += '<li>' + item.name + '</li>'
+            out += '<li>' + item + '</li>'
         });
         return out;
     }
