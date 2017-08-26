@@ -14,10 +14,8 @@ module.exports = (app, passport) => {
     app.get('/rand_recipe', (req, res) => {
         Recipe.aggregate({$sample: {size: 1}}, (err, doc) => {
             if (err) console.log(err);
-            res.render(path.resolve(_viewsdir + '/RecipeView/recipe.ejs'), {
-                recipe: doc[0],
-                navbar: ['Home', 'Dashboard', 'Profile', 'Polling', 'About', 'Logout']
-            })
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({recipe: doc[0]},null,3));
         });
     });
 };

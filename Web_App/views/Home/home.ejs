@@ -97,7 +97,7 @@
         <ul class="recommendations">
             <% for(var i = 0;i < reco.length; i++){ %>
             <li class="reco-item">
-                <a href="#" class="recipe-wrapper" data-name="<%= reco[i].title %>" data-id="<%= reco[i]._id %>">
+                <a href="#" class="recipe-wrapper" data-name="<%= reco[i].title %>" data-id="<%= reco[i].id %>">
                     <img src="<%= reco[i].image %>">
                     <!--<span data-name="<%= reco[i].title %>"> <%= reco[i].title %> </span>-->
                 </a>
@@ -117,7 +117,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="exampleModalLongTitle">Modal title</h3>
+                <h3 class="modal-title" id="modalTitle"></h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -133,18 +133,13 @@
                 </ul>
                 <h4>Rate this recipe</h4>
                 <div class="row w3-padding-32">
-                    <div id="recipeLikeId" class="col-md-4">
+                    <div id="recipeLikeId" class="col-xs-6">
                         <button type="submit" class="btn btn-like w3-button w3-round w3-green">Like
                         </button>
                     </div>
-                    <div class="col-md-4">
-                        <button type="button" class="btn btn-finish w3-button w3-round w3-gray">
-                            Finish
-                        </button>
-                    </div>
-                    <div id="recipeDislikeId" class="col-md-4">
-                        <button type="submit" class="btn btn-dislike w3-button w3-round w3-red"
-                                recipe-id="<%= recipe[i]._id %>">Dislike
+                    <div id="recipeDislikeId" class="col-xs-6">
+                        <button type="submit" class="btn btn-dislike w3-button w3-round w3-red">
+                            Dislike
                         </button>
                     </div>
                 </div>
@@ -158,18 +153,46 @@
 
 
 <script>
-    const modalHTML =
+    var currentRec = null;
+
+    $('.btn-like').click(function(e){
+        e.preventDefault();
+        var data = {
+            recipeId: currentRec,
+            rating: 1
+        }
+        $.post('/polling',data);
+    });
+
+    $('.btn-dislike').click(function (e) {
+        e.preventDefault();
+        var data = {
+            recipeId: currentRec,
+            rating: 0
+        }
+        $.post('/polling',data);
+    });
+
+    $('.recipe-wrapper').click(function (e) {
+        e.preventDefault();
+
+        //open the modal
+        $('#modal-button').click();
 
 
-        $('.recipe-wrapper').click(function (e) {
-            e.preventDefault();
-            $('#modal-button').click();
-            $.get('/get_recipe?id=' + this.getAttribute('data-id'), function (data, status) {
-                $('#ing').append(parseIngredients(data));
-                $('#method').append(parseMethod(data));
-            });
+        //clear the innerHTML
+        $('#ing').html('');
+        $('#method').html('');
+        $('#modalTitle').html('');
 
+        $.get('/get_recipe?id=' + this.getAttribute('data-id'), function (data, status) {
+            $('#ing').append(parseIngredients(data));
+            $('#method').append(parseMethod(data));
+            $('#modalTitle').append(data.title);
+            currentRec = data["id"];
         });
+
+    });
 
     function parseIngredients(data) {
         let out = "";

@@ -56,38 +56,40 @@ module.exports = (app, passport) => {
             docs.push({
                 "title": "Chicken Mashroob",
                 "image": "../../public/test.jpg",
-                "_id": "123123"
+                "id": "123123"
             });
         }
-        //res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
-        getSimilarities(req, res);
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
+        //getSimilarities(req, res);
     });
 
 
     app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
         const data = {
+            "id":"123123",
+            "title": "Chicken Mashrrob",
             "extendedIngredients": ["rice", "krispies", "chicken"],
             "instructions": "First do this\n then That\n then do all this"
         };
-        // //get from database but nah
-        // if(id === '123123'){
-        //     res.writeHead(200, {"Content-Type": "application/json"});
-        //     res.end(JSON.stringify(data));
-        // }
-
-        Recipe.find({
-            '_id': {
-                $in: id
-            }
-        }, (err, docs) => {
+        //get from database but nah
+        if(id === '123123'){
             res.writeHead(200, {"Content-Type": "application/json"});
-            if (err) {
-                res.end("{}");
-            }
-            else
-                res.end(JSON.stringify(data));
-        })
+            res.end(JSON.stringify(data));
+        }
+
+        // Recipe.find({
+        //     'id': {
+        //         $in: id
+        //     }
+        // }, (err, docs) => {
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     if (err) {
+        //         res.end("{}");
+        //     }
+        //     else
+        //         res.end(JSON.stringify(data));
+        // });
 
     });
 
@@ -105,19 +107,19 @@ function getSimilarities(req, res) {
         _.each(req.user.local.feedback, f => {
             if (f.rating === 1) recipeIds[i++] = f.recipeId;
         });
-    else // TODO: Handle situation where no feedback has been given
+    else; // TODO: Handle situation where no feedback has been given
 
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
     // array
     Recipe.aggregate([{
         $project: {
-            _id: 1,
+            id: 1,
             title: 1,
             image: 1,
             similarities: 1
         }
-    }, {$sort: {_id: 1}}], (err, recipes) => {
+    }, {$sort: {id: 1}}], (err, recipes) => {
 
         if(err)
             console.log(err);
@@ -130,7 +132,7 @@ function getSimilarities(req, res) {
         // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
         _.each(recipes, recipe => {
             if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
-                if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
+                if (recipe.id.toString() === recipeIds[i].toString()) {  // Found match?
                     uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
                     i++;
                 }
@@ -146,7 +148,7 @@ function getSimilarities(req, res) {
         });
 
         Recipe.find({
-            '_id': {
+            'id': {
                 $in: similarities
             }
         }, (err, docs) => {
