@@ -58,11 +58,11 @@ module.exports = (app, passport) => {
             docs.push({
                 "title": "Chicken Mashroob",
                 "image": "../../public/test.jpg",
-                "_id": "123123"
+                "id": "123123"
             });
         }
-        //res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
-        getSimilarities(req, res);
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
+        //getSimilarities(req, res);
     });
 
 
@@ -108,43 +108,86 @@ function getSimilarities(req, res) {
         _.each(req.user.local.feedback, f => {
             if (f.rating === 1) liked_recipes[i++] = f.recipeId;
         });
+<<<<<<< HEAD
     // else // TODO: Handle situation where no feedback has been given
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
     // array
     Recipe.find().where('_id').in(liked_recipes).select('_id title similarities').sort('_id').then(recipes => {
-        const recipe_queries = []; // Array of MongoDB queries
-        const sims_to_lookup = []; // Array of arrays. Array of similar recipes separated by index
-
-        // Loop through returned recipes
+        const recipe_queries = [];
+        const sims_to_lookup = [];
         for (let i = 0; i < recipes.length; i++) {
-            const most_sim = recipes[i].similarities[0].sim; // Get value of most similar recipe of recipe at current index
-            sims_to_lookup[i] = []; // Instantiate empty array to push similar recipes into
+            const most_sim = recipes[i].similarities[0].sim;
+            sims_to_lookup[i] = [];
             liked_recipes[i] = {
                 _id: recipes[i]._id,
                 title: recipes[i].title,
-            }; // Start building object to return to home.ejs
-            for (let j = 0; j < recipes[i].similarities.length; j++) // Loop through similarities array of returned recipes
-                if (most_sim * 0.5 < recipes[i].similarities[j].sim) // Push only similar recipe ids that are at least half as similar as most similar recipe
+            };
+            for (let j = 0; j < recipes[i].similarities.length; j++)
+                if (most_sim * 0.5 < recipes[i].similarities[j].sim)
                     sims_to_lookup[i].push(parseInt(recipes[i].similarities[j].id));
         }
+=======
+    else; // TODO: Handle situation where no feedback has been given
 
-        // Lookup similar recipes in data. Multiple database queries are necessary to know which returned similar recipe
-        // belongs to which user rated recipe
+
+    // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
+    // array
+    Recipe.aggregate([{
+        $project: {
+            id: 1,
+            title: 1,
+            image: 1,
+            similarities: 1
+        }
+    }, {$sort: {id: 1}}], (err, recipes) => {
+
+        if(err)
+            console.log(err);
+
+        // Sort users liked recipes in ascending order to allow of O(nlogn) time looping.
+        recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
+
+        // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
+        // they are similar too.
+        // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
+        _.each(recipes, recipe => {
+            if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
+                if (recipe.id.toString() === recipeIds[i].toString()) {  // Found match?
+                    uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
+                    i++;
+                }
+            }
+        });
+        // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
+        // of first liked recipe. Temporary solution. Needs to be more intelligent)
+>>>>>>> b29ed07d7c748620b1241e11e2574e30e9787aeb
+
         sims_to_lookup.forEach(recipe => recipe_queries.push(Recipe.find({_id: {$in: recipe}})));
 
-        // Make call to database
         return Promise.all(recipe_queries);
 
     }).then(results => {
         liked_recipes.forEach((recipe, idx) => {
             recipe.similarities = results[idx]
-        }); // Append similarities to their corresponding recipes (order is predictable so just a matter of matching indices
+        });
 
+<<<<<<< HEAD
         res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: liked_recipes});
     }).catch(err => {
         console.log(err);
     })
+=======
+        Recipe.find({
+            'id': {
+                $in: similarities
+            }
+        }, (err, docs) => {
+            // Return result to client
+            res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: docs});
+        })
+    });
+>>>>>>> b29ed07d7c748620b1241e11e2574e30e9787aeb
 }
 
 
