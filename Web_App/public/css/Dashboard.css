@@ -96,3 +96,8 @@ body{
     max-height: 300px;
     vertical-align: inherit;
 }
+
+
+.modal-body .col-xs-6{
+    text-align: center;
+}

@@ -69,27 +69,29 @@ module.exports = (app, passport) => {
     app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
         const data = {
+            "id":"123123",
+            "title": "Chicken Mashrrob",
             "extendedIngredients": ["rice", "krispies", "chicken"],
             "instructions": "First do this\n then That\n then do all this"
         };
-        // //get from database but nah
-        // if(id === '123123'){
-        //     res.writeHead(200, {"Content-Type": "application/json"});
-        //     res.end(JSON.stringify(data));
-        // }
-
-        Recipe.find({
-            '_id': {
-                $in: id
-            }
-        }, (err, docs) => {
+        //get from database but nah
+        if(id === '123123'){
             res.writeHead(200, {"Content-Type": "application/json"});
-            if (err) {
-                res.end("{}");
-            }
-            else
-                res.end(JSON.stringify(data));
-        })
+            res.end(JSON.stringify(data));
+        }
+
+        // Recipe.find({
+        //     'id': {
+        //         $in: id
+        //     }
+        // }, (err, docs) => {
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     if (err) {
+        //         res.end("{}");
+        //     }
+        //     else
+        //         res.end(JSON.stringify(data));
+        // });
 
     });
 
