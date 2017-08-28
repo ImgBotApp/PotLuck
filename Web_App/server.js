@@ -1,6 +1,9 @@
 /**
  * Created by Omar Taylor on 10/13/2016.
  */
+
+'use strict';
+
 const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
 const port = process.env.PORT || 8080; // Set to port 8080 if environment variable not set
@@ -18,6 +21,7 @@ const path = require('path'); // Require path module for configuring paths
 const tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const fs = require('fs'); // Require module for interacting with file system
 const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const toolbox = require('./toolbox/toolbox');
 
 /*var options = {
  key: fs.readFileSync(__dirname + '/config/server.key'),
@@ -32,10 +36,9 @@ mongoose.Promise = global.Promise; // Use native promise
 
 // Connect to our mongoDB database
 mongoose.connect(configDB.url, err => {
-    'use strict';
     if (err) { // Report any errors
-        var asterisks = '';
-        var i;
+        let asterisks = '';
+        let i;
         for ( i = 0; i < err.toString().length; i++) {
             asterisks += '*'
         }
@@ -68,49 +71,14 @@ console.log("Listening on port " + port);
 
 setInterval(() => {
     fs.readFile('../Files/Recipes/Similarities_Appended/Aug_sims_test-534.json', 'utf8', (err, data) => {
-    'use strict';
-    if (err) console.log(err); // Log any errors out to the console
-
-        function bulkLink(obj) {
-            // Initialise the bulk operations array
-            let bulkUpdateOps = [],
-                counter = 0;
-
-            obj.forEach(sims => {
-
-                bulkUpdateOps.push({
-                    updateOne: {
-                        filter: {"_id": sims.id},
-                        update: {"$set": {"similarities": sims.similarities}}
-                    }
-                });
-
-                if (++counter % 500 === 0) {
-                    Recipe.bulkWrite(bulkUpdateOps); // Get the underlying collection via the native node.js driver collection object
-                    bulkUpdateOps = []; // re-initialize
-                }
-            });
-
-            // Deposit remainder
-            if (counter % 500 !== 0) Recipe.bulkWrite(bulkUpdateOps);
-        }
-
+        if (err) console.log(err); // Log any errors out to the console
         const obj = JSON.parse(data); // Parse JSON data as JavaScript object
 
         // Sort parsed similarities file for efficient looping.
         obj.sort((a, b) => {
-            return a.id < b.id ? -1 : a.id === b.id ? 0 : 1;
+            return a.id - b.id;
         });
-
-        // Clear "similarities" field for all documents in the recipes collection
-
-        Recipe.update({}, {$unset: {similarities: ""}}, {multi: true}, (err) => {
-            if (err) console.log(err);
-            // Link recipes with their corresponding list of related recipes
-            bulkLink(obj);
-        });
-
-        // console.log("Similarities array for recipes in database updated.")
+        toolbox.similarity_recipe_join(obj);
     });
 }, 30000);
 

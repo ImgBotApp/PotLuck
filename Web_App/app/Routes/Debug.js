@@ -12,6 +12,7 @@ const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe 
 module.exports = (app, passport) => {
 // Displays random recipe from the database (for testing purposes)
     app.get('/rand_recipe', (req, res) => {
+
         Recipe.aggregate({$sample: {size: 1}}, (err, doc) => {
             if (err) console.log(err);
             res.render(path.resolve(_viewsdir + '/RecipeView/recipe.ejs'), {

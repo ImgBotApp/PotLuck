@@ -4,6 +4,7 @@
 
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
+const _toolboxdir = appRoot + '/toolbox/';
 
 const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 const path = require('path'); // Require path module for configuring paths
@@ -18,6 +19,7 @@ const upload = multer({dest: "./uploads"}); // Set upload location (destination)
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 const gfs = Grid(conn.db);
+const toolbox = require(_toolboxdir + '/toolbox.js');
 
 
 module.exports = (app, passport) => {
@@ -95,65 +97,47 @@ module.exports = (app, passport) => {
 
 
 function getSimilarities(req, res) {
-    const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
-    const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
+    const liked_recipes = []; // Array of liked recipes by current user stored by their ObjectIds
     let i = 0;
 
     // Loop through user feedback array and collect positively rated recipes
     const feedback = req.user.local.feedback;
     if (feedback.length > 0)
         _.each(req.user.local.feedback, f => {
-            if (f.rating === 1) recipeIds[i++] = f.recipeId;
+            if (f.rating === 1) liked_recipes[i++] = f.recipeId;
         });
-    else // TODO: Handle situation where no feedback has been given
-
+    // else // TODO: Handle situation where no feedback has been given
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
     // array
-    Recipe.aggregate([{
-        $project: {
-            _id: 1,
-            title: 1,
-            image: 1,
-            similarities: 1
+    Recipe.find().where('_id').in(liked_recipes).select('_id title similarities').sort('_id').then(recipes => {
+        const recipe_queries = [];
+        const sims_to_lookup = [];
+        for (let i = 0; i < recipes.length; i++) {
+            const most_sim = recipes[i].similarities[0].sim;
+            sims_to_lookup[i] = [];
+            liked_recipes[i] = {
+                _id: recipes[i]._id,
+                title: recipes[i].title,
+            };
+            for (let j = 0; j < recipes[i].similarities.length; j++)
+                if (most_sim * 0.5 < recipes[i].similarities[j].sim)
+                    sims_to_lookup[i].push(parseInt(recipes[i].similarities[j].id));
         }
-    }, {$sort: {_id: 1}}], (err, recipes) => {
 
-        if(err)
-            console.log(err);
+        sims_to_lookup.forEach(recipe => recipe_queries.push(Recipe.find({_id: {$in: recipe}})));
 
-        // Sort users liked recipes in ascending order to allow of O(nlogn) time looping.
-        recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
+        return Promise.all(recipe_queries);
 
-        // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
-        // they are similar too.
-        // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
-        _.each(recipes, recipe => {
-            if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
-                if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
-                    uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
-                    i++;
-                }
-            }
-        });
-        // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
-        // of first liked recipe. Temporary solution. Needs to be more intelligent)
-
-        //get all the items from the similarities array
-        const similarities = [];
-        uRecipeArr[0].similarities[1].forEach((item, index) => {
-            similarities[index] = item;
+    }).then(results => {
+        liked_recipes.forEach((recipe, idx) => {
+            recipe.similarities = results[idx]
         });
 
-        Recipe.find({
-            '_id': {
-                $in: similarities
-            }
-        }, (err, docs) => {
-            // Return result to client
-            res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: docs});
-        })
-    });
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: liked_recipes});
+    }).catch(err => {
+        console.log(err);
+    })
 }
 
 

@@ -97,7 +97,7 @@
 
         function postToPolling(data) {
             $.post('/polling', data, (res) => {
-                if (res.status = 'Success') window.location = res.redirectTo;
+                if (res.status === 'Success') window.location = res.redirectTo;
             })
         }
 
