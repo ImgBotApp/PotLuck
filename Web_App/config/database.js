@@ -1,7 +1,7 @@
 /**
  * Created by O on 10/13/2016.
  */
-const dbURL = 'mongodb://isu-dsl@fhsjafhd162.243.2.42:27017/PotLuck';
+const dbURL = 'mongodb://162.243.2.42:27017/PotLuck';
 const dbName = dbURL.split('/');
 
 module.exports = {
