@@ -35,6 +35,8 @@ body{
     position: relative;
     padding: 0;
     text-align: center;
+    display: flex;
+    overflow-x: auto;
 }
 
 .reco-h{
@@ -46,7 +48,8 @@ body{
     display: inline-block;
     position: relative;
     padding: 0;
-    margin: 10px;
+     margin: 4px;
+    width: 250px;
 
 }
 .reco-item a{
@@ -89,15 +92,45 @@ body{
     opacity:1;
 }
 .reco-item img{
-    width: 100%;
-    height:100%;
     object-fit: cover;
     border-radius:3px;
-    max-height: 300px;
+    height: 200px;
+    width: 250px;
     vertical-align: inherit;
 }
 
 
 .modal-body .col-xs-6{
     text-align: center;
+}
+
+.reco-sect .container h3{
+    color: #2196F3;
+}
+
+
+.recommendations::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #134f7f;
+    border-radius: 10px;
+}
+
+
+.recommendations::-webkit-scrollbar{
+    width: 6px;
+}
+
+
+.recommendations::-webkit-scrollbar-thumb{
+    background-color: #2196F3;
+    border-radius: 10px;
+}
+
+.reco-sect .container h3 strong{
+    color: white;
+}
+
+#method{
+    list-style-type: none;
+    padding-left: 10px;
 }

@@ -91,21 +91,25 @@
 <!------------------------------------------------->
 <!--            Recommendation section           -->
 <!------------------------------------------------->
-<section class="container-fluid reco-sect">
-    <div class="container">
-        <h3 class="reco-h">Based on your previous likes we Recommend</h3>
-        <ul class="recommendations">
-            <% for(var i = 0;i < reco.length; i++){ %>
-            <li class="reco-item">
-                <a href="#" class="recipe-wrapper" data-name="<%= reco[i].title %>" data-id="<%= reco[i].id %>">
-                    <img src="<%= reco[i].image %>">
-                    <!--<span data-name="<%= reco[i].title %>"> <%= reco[i].title %> </span>-->
-                </a>
-            </li>
-            <% } %>
-        </ul>
-    </div>
-</section>
+
+<% reco.forEach(function(recipe, index){ %>
+  <section class="container-fluid reco-sect">
+      <div class="container">
+          <h3>Because you liked <strong><%= recipe.title %></strong></h3>
+          <ul class="recommendations">
+              <% recipe.similarities.forEach(function(item,index){%>
+                    <li class="reco-item">
+                        <a href="#" class="recipe-wrapper" data-name="<%= item._doc.title%>"
+                            data-id="<%= item._doc._id%>">
+                            <img src="<%= item._doc.image %>">
+                        </a>
+                    </li>
+              <% });%>
+          </ul>
+      </div>
+  </section>
+
+<%})%>
 
 
 <!------------------------------------------------->
@@ -197,17 +201,18 @@
     function parseIngredients(data) {
         let out = "";
         data.extendedIngredients.forEach(function (item, index) {
-            out += '<li>' + item + '</li>'
+            out += '<li>' + item.name + '</li>'
         });
         return out;
     }
 
     function parseMethod(data) {
         let out = "";
-        const instructions = data.instructions.split('\n');
+        const instructions = data.instructions.split('.');
         let counter = 0;
         instructions.forEach(function (item, index) {
-            out += '<li>' + counter++ + ". " + item + '</li>';
+            out += '<li><p>' + '<strong>' + counter++ + '</strong>'+
+                    ". "+ item + '</p></li>';
         });
         return out;
     }

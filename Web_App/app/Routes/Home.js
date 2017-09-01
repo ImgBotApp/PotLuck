@@ -68,20 +68,20 @@ module.exports = (app, passport) => {
 
     app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
-        const data = {
-            "id":"123123",
-            "title": "Chicken Mashrrob",
-            "extendedIngredients": ["rice", "krispies", "chicken"],
-            "instructions": "First do this\n then That\n then do all this"
-        };
-        //get from database but nah
-        if(id === '123123'){
-            res.writeHead(200, {"Content-Type": "application/json"});
-            res.end(JSON.stringify(data));
-        }
+        // const data = {
+        //     "id":"123123",
+        //     "title": "Chicken Mashrrob",
+        //     "extendedIngredients": ["rice", "krispies", "chicken"],
+        //     "instructions": "First do this\n then That\n then do all this"
+        // };
+        // //get from database but nah
+        // if(id === '123123'){
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     res.end(JSON.stringify(data));
+        // }
 
         // Recipe.find({
-        //     'id': {
+        //     '_id': {
         //         $in: id
         //     }
         // }, (err, docs) => {
@@ -90,8 +90,15 @@ module.exports = (app, passport) => {
         //         res.end("{}");
         //     }
         //     else
-        //         res.end(JSON.stringify(data));
+        //         res.end(JSON.stringify(docs));
         // });
+
+        Recipe.find().where('_id').in(id).then( data => {
+            res.writeHead(200, {'Content-Type':'application/json'});
+            res.end(JSON.stringify(data[0]._doc,null,2));
+
+
+        });
 
     });
 
@@ -108,7 +115,9 @@ function getSimilarities(req, res) {
         _.each(req.user.local.feedback, f => {
             if (f.rating === 1) liked_recipes[i++] = f.recipeId;
         });
-    // else // TODO: Handle situation where no feedback has been given
+     else{
+         res.redirect('/polling');
+    }
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
     // array
@@ -141,7 +150,7 @@ function getSimilarities(req, res) {
             recipe.similarities = results[idx]
         }); // Append similarities to their corresponding recipes (order is predictable so just a matter of matching indices
 
-        res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {recommendations: liked_recipes});
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {reco: liked_recipes});
     }).catch(err => {
         console.log(err);
     })
