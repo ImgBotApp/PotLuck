@@ -128,7 +128,7 @@ module.exports = (app, passport) => {
             if (err) return console.log(err);
             else res.send({
                 status: 'Success',
-                redirectTo: '/index'
+                redirectTo: '/home'
             });
         });
     });

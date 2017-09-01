@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Polling</title>
+    <!-- CSS  -->
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" ref="../../public/css/fonts/Raleway.css">
     <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
-    <script src="../../node_modules/jquery/dist/jquery.js"></script>
-    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <style>
         body, h1 {
             font-family: "Raleway", sans-serif
@@ -66,6 +65,10 @@
         </div>
     </div>
 </div>
+
+<!-- Scripts  -->
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
+<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script>
     $(document).ready(() => {
         let recipes = [],
@@ -90,9 +93,14 @@
         }
 
         function nextRecipe() {
-            $('h4').text(recipes[++index].title);
-            $('#recipeImg').attr('src', recipes[index].image);
-            $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+            const recipeImg = $('#recipeImg');
+            recipeImg.attr('src', recipes[++index].image);
+            recipeImg.one('load', () => {
+                $('h4').text(recipes[index].title);
+                $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+            }).each(() => {
+                if (this.complete) $(this).load()
+            });
         }
 
         function postToPolling(data) {

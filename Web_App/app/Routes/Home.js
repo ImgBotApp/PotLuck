@@ -49,19 +49,6 @@ module.exports = (app, passport) => {
 
 
     app.get('/home', isLoggedIn, (req, res) => {
-        /**
-         * FOR TESTING PURPOSES
-         * @type {Array}
-         */
-        const docs = [];
-        for (let i = 0; i < 5; i++) {
-            docs.push({
-                "title": "Chicken Mashroob",
-                "image": "../../public/test.jpg",
-                "_id": "123123"
-            });
-        }
-        //res.render(path.resolve(_viewsdir + '/Home/home.ejs'),{reco : docs});
         getSimilarities(req, res);
     });
 
@@ -95,9 +82,7 @@ module.exports = (app, passport) => {
 
         Recipe.find().where('_id').in(id).then( data => {
             res.writeHead(200, {'Content-Type':'application/json'});
-            res.end(JSON.stringify(data[0]._doc,null,2));
-
-
+            res.end(JSON.stringify(data[0].toObject()));
         });
 
     });
