@@ -33,6 +33,7 @@
     "gridfs-stream": "^1.1.1",
     "https": "^1.0.0",
     "jquery": "^3.2.1",
+    "materialize-css": "^0.100.2",
     "method-override": "*",
     "mongoose": "^4.11.6",
     "mongoose-file": "0.0.2",

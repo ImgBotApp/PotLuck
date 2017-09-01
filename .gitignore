@@ -101,7 +101,6 @@ Web_App/config/server.crt
 Web_App/config/server.csr
 Web_App/config/server.key
 Web_App/config/server.key.org
-Web_App/public/images/
 Web_App/uploads/
 Web_App/views/Dashboard/
 Web_App/dist/

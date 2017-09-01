@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1">
+    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
         <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div id="manipulate" class="jumbotron text-center toggle_off"
@@ -49,10 +49,9 @@
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5; "> View your recommendations:</span></p>
-                        <button id="recommendations" class="btn btn-info">
-                            <span class="fa fa-lightbulb-o"></span><span
+                        <a href="/home" class="btn btn-info"><span class="fa fa-lightbulb-o"></span><span
                                     style="color: black;">
-                                My Recommendations</span></button>
+                                Dashboard</span></a>
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5;">Or logout: </span></p>
@@ -96,35 +95,5 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        $('#recommendations').click(function () {
-            if ($('#manipulate').hasClass('toggle_off')) {
-                $('.jumbotron').animate({height: '500px'}, function () {
-                    /*var s = $('<div style="color: whitesmoke">Test.</div>');
-                     $('#manipulate').append(s);
-                     s.attr('id', 'suggestions');
-                     s.attr('class', 'w3-animate-bottom');*/
-                    $.get("/get_suggestions", function (data, status) {
-                        console.log(status);
-                        $('#suggestions').show();
-                        $('#Sugg0').append($('<div class="w3-card-4" style="width:65%; background-color: rgba(255,255,255,1)">' +
-                            '<img src="' + data[0].image + '" style="width:100%"><div class="w3-container w3-center">' +
-                            '<p style="font-size: medium; padding-top: 10px">' + data[0].title + '</p></div></div>'));
-                        $('#Sugg1').append($('<div class="w3-card-4" style="width:65%; background-color: rgba(255,255,255,1)">' +
-                            '<img src="' + data[1].image + '" style="width:100%"><div class="w3-container w3-center">' +
-                            '<p style="font-size: medium; padding-top: 10px">' + data[1].title + '</p></div></div>'));
-                        $('#Sugg2').append($('<div class="w3-card-4" style="width:65%; background-color: rgba(255,255,255,1)">' +
-                            '<img src="' + data[2].image + '" style="width:100%"><div class="w3-container w3-center">' +
-                            '<p style="font-size: medium; padding-top: 10px">' + data[2].title + '</p></div></div>'));
-                    })
-                }).removeClass('toggle_off').addClass('toggle_on');
-            } else {
-                $('#suggestions').remove();
-                $('.jumbotron').animate({height: '300px'}).removeClass('toggle_on').addClass('toggle_off');
-            }
-        });
-    });
-</script>
 </body>
 </html>
