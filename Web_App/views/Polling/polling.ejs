@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Polling</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- CSS  -->
+    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css" media="screen,projection"/>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="../../public/css/Dashboard.css">
     <link rel="stylesheet" ref="../../public/css/fonts/Raleway.css">
     <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
     <style>
@@ -27,40 +33,65 @@
 </head>
 <body>
 <div class="bgimg w3-animate-opacity">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
-    </div>
+    <!------------------------------------------------->
+    <!--                 NAVBAR                      -->
+    <!------------------------------------------------->
     <div class="container">
-        <% let i = 0 %>
+
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">PotLuck</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
+                        <li><a href="/polling">Polling</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
+
+    <div class="container">
         <div class="jumbotron text-center">
             <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
             <p>Let's collect more information about your food preferences.</p>
-            <div id="recipeTitle">
-                <h4></h4>
-            </div>
-            <div>
-                <img id="recipeImg" src="" alt="recipe" style="object-fit: cover; width: 540px; height: auto">
-            </div>
-            <br>
-            <div class="row w3-padding-32">
-                <div class="col-md-4">
+            <div class="card">
+                <div class="card-image">
+                    <img id="recipeImg" class="activator" src="" alt="recipe" style="width: 100%">
+                </div>
+                <div class="card-content">
+                    <span id="recipeTitle" class="card-title activator grey-text text-darken-4"></span>
+                </div>
+                <div class="card"
+                <div class="card-action">
                     <button id="" type="submit" class="btn btn-like w3-button w3-round w3-green">
                         Like
                     </button>
                 </div>
-                <div class="col-md-4">
+                <div class="card-action">
                     <button type="button" class="btn btn-finish w3-button w3-round w3-gray">
                         Finish
                     </button>
                 </div>
-                <div class="col-md-4">
+                <div class="card-action">
                     <button id="" type="submit" class="btn btn-dislike w3-button w3-round w3-red">
                         Dislike
                     </button>
                 </div>
             </div>
             <div>
-                <p id="num_recipes"></p>
+                <p id="num_recipes"><%= recipes.length %> Recipes Left to Rate</p>
             </div>
         </div>
     </div>
@@ -69,6 +100,7 @@
 <!-- Scripts  -->
 <script src="../../node_modules/jquery/dist/jquery.js"></script>
 <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
 <script>
     $(document).ready(() => {
         let recipes = [],
@@ -84,7 +116,7 @@
         };
         <% }) %>
 
-        $('h4').text(recipes[index].title);
+        $('#recipeTitle').text(recipes[index].title);
         $('#recipeImg').attr('src', recipes[index].image);
         $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
 
@@ -101,6 +133,8 @@
             }).each(() => {
                 if (this.complete) $(this).load()
             });
+
+            $('#num_recipes').text(--num_recipes + ' Recipes Left to Rate');
         }
 
         function postToPolling(data) {
@@ -108,6 +142,8 @@
                 if (res.status === 'Success') window.location = res.redirectTo;
             })
         }
+
+        $(".button-collapse").sideNav();
 
         $('.btn-like').click(() => {
             rated_data[index] = {

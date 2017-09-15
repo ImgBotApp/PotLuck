@@ -10,6 +10,7 @@ const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
 const port = process.env.PORT || 8080; // Set to port 8080 if environment variable not set
 const https = require('https'); // For impending SSL/TLS future set up (Relevant code commented out for now)
+const favicon = require('serve-favicon');
 const mongoose = require('mongoose'); // Require our database module
 const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
 const Recipe = require('./app/models/recipes').Recipe; // Require of recipe model
@@ -61,7 +62,10 @@ app.use('/public', serveStatic('public')); // Serve up public folder
 app.use('/node_modules/bootstrap', serveStatic('node_modules/bootstrap'));
 app.use('/node_modules/font-awesome', serveStatic('node_modules/font-awesome'));
 app.use('/node_modules/jquery', serveStatic('node_modules/jquery'));
+app.use('/node_modules/materialize-css', serveStatic('node_modules/materialize-css'));
 app.use('/node_modules/w3-css', serveStatic('node_modules/w3-css'));
+
+app.use(favicon(path.join(appRoot, 'public', 'images', 'favicon.ico')));
 
 require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass in our app and fully configured passport
 /*
@@ -83,6 +87,6 @@ setInterval(() => {
         });
         toolbox.similarity_recipe_join(obj);
     });
-}, 30000);
+}, 3.6e+6);
 
 module.exports = app;
