@@ -18,13 +18,13 @@ module.exports = {
                 }
             });
 
-            if (++counter % 500 === 0) {
+            if (++counter % 200 === 0) {
                 Recipe.bulkWrite(bulkUpdateOps); // Get the underlying collection via the native node.js driver collection object
                 bulkUpdateOps = []; // re-initialize
             }
         });
 
         // Deposit remainder
-        if (counter % 500 !== 0) Recipe.bulkWrite(bulkUpdateOps);
+        if (counter % 200 !== 0) Recipe.bulkWrite(bulkUpdateOps);
     }
 };

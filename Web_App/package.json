@@ -20,10 +20,11 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "*",
-    "body-parser": "*",
+    "body-parser": "^1.18.1",
     "bootstrap": "^3.3.7",
     "connect-flash": "*",
     "cookie-parser": "*",
+    "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
@@ -35,20 +36,21 @@
     "jquery": "^3.2.1",
     "materialize-css": "^0.100.2",
     "method-override": "*",
-    "mongoose": "^4.11.6",
+    "mongoose": "^4.11.11",
     "mongoose-file": "0.0.2",
     "morgan": "*",
     "multer": "^1.2.1",
-    "nodemon": "^1.11.0",
+    "nodemon": "^1.12.1",
     "passport": "^0.4.0",
     "passport-facebook": "*",
     "passport-github2": "^0.1.10",
     "passport-google-oauth": "*",
     "passport-local": "*",
     "passport-twitter": "*",
+    "serve-favicon": "^2.4.4",
     "serve-static": "^1.12.4",
     "socket.io": "^1.7.4",
-    "ssl-root-cas": "^1.2.3",
+    "ssl-root-cas": "^1.2.4",
     "tunnel-ssh": "^4.1.1",
     "underscore": "*",
     "w3-css": "^4.0.4"
@@ -58,7 +60,7 @@
   },
   "homepage": "https://github.com/Acesonnall/PotLuck#readme",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.0"
   }
 }

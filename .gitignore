@@ -106,3 +106,7 @@ Web_App/views/Dashboard/
 Web_App/dist/
 Web_App/media/
 Web_App/public/js/
+
+
+.env
+

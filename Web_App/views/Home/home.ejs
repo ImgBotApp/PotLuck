@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="../../public/css/Dashboard.css">
     <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../../public/css/index.css">
     <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
     <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
     <script src="../../node_modules/jquery/dist/jquery.js"></script>
@@ -22,196 +21,180 @@
         }
 
         .bgimg {
-            padding-top: 80px;
             min-height: 100%;
-            background: black url("../../public/images/camaje-cooking-7.jpg") center;
+            background: black url("../../public/images/food-india.jpg") center;
             background-size: cover;
         }
     </style>
 </head>
 <body>
-
-<!------------------------------------------------->
-<!--                 NAVBAR                      -->
-<!------------------------------------------------->
-<!--<div class="navbar navbar-default navbar-fixed-top">
+<div class="bgimg w3-animate-opacity">
+    <!------------------------------------------------->
+    <!--                 NAVBAR                      -->
+    <!------------------------------------------------->
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">PotLuck</a>
 
-        </div>
-    </div>
-</div>
-<div id="navbar" class="navbar-collapse collapse">
-    <ul class="nav navbar-nav navbar-right">
-        <li class="active nav-item">
-            <a href="/home">Home</a>
-        </li>
-        <li class="nav-item">
-            <a href="/polling">Polling</a>
-        </li>
-        <li class="nav-item">
-            <a href="/logout">Logout</a>
-        </li>
-    </ul>
-</div>-->
-<div class="container">
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">PotLuck</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
+                        <li><a href="/polling">Polling</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
 
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
+
+    <!------------------------------------------------->
+    <!--            Recommendation section           -->
+    <!------------------------------------------------->
+
+    <% reco.forEach(function(recipe, index){ %>
+    <section class="container-fluid reco-sect">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">PotLuck</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
-                    <li><a href="/polling">Polling</a></li>
-                    <li><a href="/logout">Log Out</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-    </nav>
-</div> <!-- /container -->
+            <h3>Because you liked <strong><%= recipe.title %></strong></h3>
+            <ul class="recommendations">
+                <% recipe.similarities.forEach(function(item, index){ %>
+                <li class="reco-item">
+                    <a href="#" class="recipe-wrapper" data-name="<%= item._doc.title %>"
+                       data-id="<%= item._doc._id %>">
+                        <img src="<%= item._doc.image %>">
+                    </a>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
+    </section>
 
+    <% }) %>
 
-<!------------------------------------------------->
-<!--            Recommendation section           -->
-<!------------------------------------------------->
+    <!------------------------------------------------->
+    <!--                Modal Section                -->
+    <!------------------------------------------------->
+    <button id="modal-button" type="button" style="display: none" data-toggle="modal"
+            data-target="#recipe-modal"></button>
 
-<% reco.forEach(function(recipe, index){ %>
-  <section class="container-fluid reco-sect">
-      <div class="container">
-          <h3>Because you liked <strong><%= recipe.title %></strong></h3>
-          <ul class="recommendations">
-              <% recipe.similarities.forEach(function(item,index){%>
-                    <li class="reco-item">
-                        <a href="#" class="recipe-wrapper" data-name="<%= item._doc.title%>"
-                            data-id="<%= item._doc._id%>">
-                            <img src="<%= item._doc.image %>">
-                        </a>
-                    </li>
-              <% });%>
-          </ul>
-      </div>
-  </section>
+    <div class="modal fade" id="recipe-modal" tabindex="-1" role="dialog" aria-labelledby="recipe-modal"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle"></h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Ingredients</h4>
+                    <ul id="ing" class="ingredients">
 
-<%})%>
+                    </ul>
+                    <h4>Methods</h4>
+                    <ul id="method">
 
-
-<!------------------------------------------------->
-<!--                Modal Section                -->
-<!------------------------------------------------->
-<button id="modal-button" type="button" style="display: none" data-toggle="modal" data-target="#recipe-modal"></button>
-
-<div class="modal fade" id="recipe-modal" tabindex="-1" role="dialog" aria-labelledby="recipe-modal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle"></h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h4>Ingredients</h4>
-                <ul id="ing" class="ingredients">
-
-                </ul>
-                <h4>Methods</h4>
-                <ul id="method">
-
-                </ul>
-                <h4>Rate this recipe</h4>
-                <div class="row w3-padding-32">
-                    <div id="recipeLikeId" class="col-xs-6">
-                        <button type="submit" class="btn btn-like w3-button w3-round w3-green">Like
-                        </button>
-                    </div>
-                    <div id="recipeDislikeId" class="col-xs-6">
-                        <button type="submit" class="btn btn-dislike w3-button w3-round w3-red">
-                            Dislike
-                        </button>
+                    </ul>
+                    <h4>Rate this recipe</h4>
+                    <div class="row w3-padding-32">
+                        <div id="recipeLikeId" class="col-xs-6">
+                            <button type="submit" class="btn btn-like w3-button w3-round w3-green">Like
+                            </button>
+                        </div>
+                        <div id="recipeDislikeId" class="col-xs-6">
+                            <button type="submit" class="btn btn-dislike w3-button w3-round w3-red">
+                                Dislike
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-
 <script>
-    var currentRec = null;
+    $(document).ready(() => {
+        let currentRec = null;
 
-    $('.btn-like').click(function(e){
-        e.preventDefault();
-        var data = {
-            recipeId: currentRec,
-            rating: 1
-        }
-        $.post('/polling',data);
-    });
-
-    $('.btn-dislike').click(function (e) {
-        e.preventDefault();
-        var data = {
-            recipeId: currentRec,
-            rating: 0
-        }
-        $.post('/polling',data);
-    });
-
-    $('.recipe-wrapper').click(function (e) {
-        e.preventDefault();
-
-        //open the modal
-        $('#modal-button').click();
-
-
-        //clear the innerHTML
-        $('#ing').html('');
-        $('#method').html('');
-        $('#modalTitle').html('');
-
-        $.get('/get_recipe?id=' + this.getAttribute('data-id'), function (data, status) {
-            $('#ing').append(parseIngredients(data));
-            $('#method').append(parseMethod(data));
-            $('#modalTitle').append(data.title);
-            currentRec = data["id"];
+        $('.btn-like').click(e => {
+            e.preventDefault();
+            const data = {
+                0: {
+                    recipeId: currentRec,
+                    rating: 1
+                },
+            };
+            $.post('/polling', data);
         });
 
-    });
-
-    function parseIngredients(data) {
-        let out = "";
-        data.extendedIngredients.forEach(function (item, index) {
-            out += '<li>' + item.name + '</li>'
+        $('.btn-dislike').click(e => {
+            e.preventDefault();
+            const data = {
+                0: {
+                    recipeId: currentRec,
+                    rating: 0
+                }
+            };
+            $.post('/polling', data);
         });
-        return out;
-    }
 
-    function parseMethod(data) {
-        let out = "";
-        return data.instructions;
-    }
+        $('.recipe-wrapper').click(function (e) {
+            e.preventDefault();
+
+            //open the modal
+            $('#modal-button').click();
 
 
+            //clear the innerHTML
+            $('#ing').html('');
+            $('#method').html('');
+            $('#modalTitle').html('');
+
+            $.get('/get_recipe?id=' + $(this).attr('data-id'), function (data, status) {
+                $('#ing').append(parseIngredients(data));
+                $('#method').append(parseMethod(data));
+                $('#modalTitle').append(data.title);
+                currentRec = data._id;
+            });
+
+        });
+
+        function parseIngredients(data) {
+            let out = "";
+            data.extendedIngredients.forEach(function (item, index) {
+                out += '<li>' + item.name + '</li>'
+            });
+            return out;
+        }
+
+        function parseMethod(data) {
+            let out = "";
+            const instructions = data.instructions.split('.');
+            let counter = 0;
+            instructions.forEach(function (item, index) {
+                out += '<li><p>' + '<strong>' + counter++ + '</strong>' +
+                    ". " + item + '</p></li>';
+            });
+            return out;
+        }
+
+    });
 </script>
 
 

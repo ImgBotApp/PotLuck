@@ -4,11 +4,15 @@
 
 'use strict';
 
+require('dotenv').config();
+
 const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
 const port = process.env.PORT || 8080; // Set to port 8080 if environment variable not set
 const https = require('https'); // For impending SSL/TLS future set up (Relevant code commented out for now)
+const favicon = require('serve-favicon');
 const mongoose = require('mongoose'); // Require our database module
+const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
 const Recipe = require('./app/models/recipes').Recipe; // Require of recipe model
 const passport = require('passport'); // Require our authentication module
 const flash = require('connect-flash'); // Require our module for flash module
@@ -35,17 +39,17 @@ global.appRoot = __dirname; //set the global path so other files may use it
 mongoose.Promise = global.Promise; // Use native promise
 
 // Connect to our mongoDB database
-mongoose.connect(configDB.url, err => {
-    if (err) { // Report any errors
-        let asterisks = '';
-        let i;
-        for ( i = 0; i < err.toString().length; i++) {
-            asterisks += '*'
-        }
-        console.log('Connection to \'' + configDB.name + '\' Database: Failed.\n' + asterisks + '\n' + err + '\n' + asterisks + '\n');
-    } else { // Otherwise, report the successful connection
-        console.log('Connection to \'' + configDB.name + '\' Database: Established.');
+Grid.mongo = mongoose.mongo;
+mongoose.connect(configDB.url, {useMongoClient: true}).then(conn => {
+    console.log('Connection to \'' + configDB.name + '\' Database: Established.');
+    global.gfs = Grid(conn.db); // TODO: Find better solution for passing gfs variable
+}).catch(err => {
+    let asterisks = '';
+    let i;
+    for ( i = 0; i < err.toString().length; i++) {
+        asterisks += '*'
     }
+    console.log('Connection to \'' + configDB.name + '\' Database: Failed.\n' + asterisks + '\n' + err + '\n' + asterisks + '\n');
 });
 
 require(__dirname + '/config/passport')(passport); // pass our passport module for configuration
@@ -58,7 +62,10 @@ app.use('/public', serveStatic('public')); // Serve up public folder
 app.use('/node_modules/bootstrap', serveStatic('node_modules/bootstrap'));
 app.use('/node_modules/font-awesome', serveStatic('node_modules/font-awesome'));
 app.use('/node_modules/jquery', serveStatic('node_modules/jquery'));
+app.use('/node_modules/materialize-css', serveStatic('node_modules/materialize-css'));
 app.use('/node_modules/w3-css', serveStatic('node_modules/w3-css'));
+
+app.use(favicon(path.join(appRoot, 'public', 'images', 'favicon.ico')));
 
 require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass in our app and fully configured passport
 /*
@@ -80,6 +87,6 @@ setInterval(() => {
         });
         toolbox.similarity_recipe_join(obj);
     });
-}, 30000);
+}, 3.6e+6);
 
 module.exports = app;
