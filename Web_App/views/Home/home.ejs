@@ -184,13 +184,7 @@
 
         function parseMethod(data) {
             let out = "";
-            const instructions = data.instructions.split('.');
-            let counter = 0;
-            instructions.forEach(function (item, index) {
-                out += '<li><p>' + '<strong>' + counter++ + '</strong>' +
-                    ". " + item + '</p></li>';
-            });
-            return out;
+            return  data.instructions;
         }
 
     });
