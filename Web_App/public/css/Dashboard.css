@@ -133,3 +133,24 @@ body{
     list-style-type: none;
     padding-left: 10px;
 }
+
+@media screen and (max-width: 768px){
+
+
+    .reco-item a:before{
+        bottom: 0;
+        opacity: 1;
+        top: auto;
+    }
+
+    .reco-item a:after{
+        bottom: 0;
+        height: 22%;
+        opacity: 1;
+        top: auto;
+    }
+
+    .reco-sect .container h3{
+        font-size: 22px;
+    }
+}
