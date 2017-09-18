@@ -35,7 +35,7 @@
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="w3-container" style="background-color: rgba(0,0,0,0.85)">
             <div class="col-sm-6 col-sm-offset-3 w3-animate-right">
-                <form action="/connect/local" method="post" class="w3-container w3-text-blue w3-margin">
+                <form action="<%= routes.connect_local.pathname%>" method="post" class="w3-container w3-text-blue w3-margin">
                     <h2 class="w3-center">Add Local Account</h2>
 
                     <% if (message.length > 0) { %>
@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <a id="foot" class="w3-button w3-block w3-blue w3-ripple w3-animate-bottom" href="/profile">Go back to profile</a>
+    <a id="foot" class="w3-button w3-block w3-blue w3-ripple w3-animate-bottom" href="<%= routes.navbar.profile.pathname%>">Go back to profile</a>
 
 </div>
 
