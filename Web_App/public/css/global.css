@@ -1,0 +1,14 @@
+body, h1 {
+    font-family: "Raleway", sans-serif
+}
+
+body, html {
+    height: 100%
+}
+
+.bgimg {
+    padding-top: 80px;
+    min-height: 100%;
+    background: black url("../../public/images/food-india.jpg") center;
+    background-size: cover;
+}

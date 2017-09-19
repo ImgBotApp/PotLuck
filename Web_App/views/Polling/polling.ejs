@@ -27,7 +27,7 @@
         }
 
         .bgimg {
-            padding-top: 80px;
+            padding-top: 200px;
             min-height: 100%;
             background: black url("../../public/images/12265684_1010729262282686_8800740801702150174_o.jpg") center;
             background-size: cover;
@@ -52,7 +52,21 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<%= routes.index.pathname %>%>">PotLuck</a>
+                    <a class="navbar-brand" href="<%= routes.index %>">PotLuck</a>
+                    <!-- Search Bar -->
+                    <section class="searcbar">
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <i class="material-icons prefix">search</i>
+                                        <input id="icon-prefix" type="text">
+                                        <label for="icon-prefix">Find a recipe</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right"></ul>
