@@ -6,9 +6,6 @@ const _viewsdir = appRoot + '/views';
 
 const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
-const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
-const fs = require('fs');
-
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 
 let options = {routes: routes_list};
@@ -35,18 +32,5 @@ module.exports = (app, passport) => {
     // Route for terms page
     app.get('/terms', (req, res) => {
         res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
-    });
-
-
-
-    app.get('/feedback',(req,res) =>{
-        res.render(path.resolve(_viewsdir + '/Home/Feedback.ejs'));
-    });
-
-
-    app.post('/feedback',(req,res)=>{
-       var data = req.body;
-        fs.appendFile(path.resolve(appRoot + '/feedback/feedbackLog.txt'),
-        JSON.stringify(data,null,2));
     });
 };

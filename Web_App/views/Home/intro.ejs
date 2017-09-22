@@ -45,7 +45,7 @@
         <p class="w3-large w3-center">Beta Testing</p>
     </div>
     <div class="w3-display-container w3-display-bottomright w3-padding-large">
-        <a class="btn-floating btn-large teal pulse" href="/index"><i class="material-icons">restaurant</i></a>
+        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname%>"><i class="material-icons">restaurant</i></a>
     </div>
 </div>
 
@@ -60,8 +60,8 @@
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">More</h5>
                 <ul>
-                    <li><a class="grey-text text-lighten-3" href="/privacy_policy">Privacy Policy</a></li>
-                    <li><a class="grey-text text-lighten-3" href="/terms">Terms of Service</a></li>
+                    <li><a class="grey-text text-lighten-3" href="<%= routes.privacy_policy.pathname%>"><%= routes.privacy_policy.alias%></a></li>
+                    <li><a class="grey-text text-lighten-3" href="<%= routes.tos.pathname%>"><%= routes.tos.alias%></a></li>
                 </ul>
             </div>
         </div>

@@ -1,7 +1,6 @@
 /**
  * Created by yazan on 5/16/2017.
  */
-'use strict';
 
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
@@ -9,67 +8,77 @@ const _modelsdir = appRoot + '/app/models';
 const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
-const User = require(_modelsdir + '/users.js').User; // Require our user model
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
-const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 
-let options = {routes: routes_list};
+
 
 module.exports = (app, passport) => {
+    // Our homepage
+    app.get('/', (req, res) => {
+        res.render(path.resolve(_viewsdir + '/Home/intro.ejs')); // Render view
+    });
 
-    app.get('/dashboard', isLoggedIn, (req, res) => {
+    // Sign-in page/dashboard
+    app.get('/index', (req, res) => {
+        res.render(path.resolve(_viewsdir + '/Home/index.ejs'), { // Render view with given options
+            loggedin: req.user !== undefined, // Check if user is logged in and pass the result to the client
+            user: req.user // Pass the user model to the client
+        });
+    });
+
+
+    // Route for privacy page
+    app.get('/privacy_policy', (req, res) => {
+        res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'));
+    });
+
+    // Route for terms page
+    app.get('/terms', (req, res) => {
+        res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
+    });
+
+
+    app.get('/home', isLoggedIn, (req, res) => {
         getSimilarities(req, res);
     });
 
 
     app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
+        // const data = {
+        //     "id":"123123",
+        //     "title": "Chicken Mashrrob",
+        //     "extendedIngredients": ["rice", "krispies", "chicken"],
+        //     "instructions": "First do this\n then That\n then do all this"
+        // };
+        // //get from database but nah
+        // if(id === '123123'){
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     res.end(JSON.stringify(data));
+        // }
+
+        // Recipe.find({
+        //     '_id': {
+        //         $in: id
+        //     }
+        // }, (err, docs) => {
+        //     res.writeHead(200, {"Content-Type": "application/json"});
+        //     if (err) {
+        //         res.end("{}");
+        //     }
+        //     else
+        //         res.end(JSON.stringify(docs));
+        // });
+
         Recipe.find().where('_id').in(id).then( data => {
             res.writeHead(200, {'Content-Type':'application/json'});
             res.end(JSON.stringify(data[0].toObject()));
         });
+
     });
 
-    // Route for polling users on their food preferences
-    app.get('/polling', isLoggedIn, (req, res) => {
-        const version = req.query.version;
-
-        // Collect single random recipe from the database, projecting only its id, title, and image
-        // TODO To increase uniqueness of polling sample, increase sample size
-        Recipe.aggregate({$sample: {size: 15}}, {$project: {_id: 1, title: 1, image: 1}}, (err, docs) => {
-            if (err) console.log(err);
-            if (version === 'v2') {
-                res.setHeader('Content-Type', 'application/json');
-                const target = {
-                    "_id": docs[0]._id,
-                    "title": docs[0].title,
-                    "image": docs[0].image
-                };
-                console.log(target);
-                res.send(JSON.stringify(target, null, 3));
-            } else {
-                options.recipes = docs;
-                options.user = req.user;
-                res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), options);
-            }
-        });
-    });
-
-    // Process user feedback results
-    app.post('/polling', isLoggedIn, (req, res) => {
-        let ratings = [];
-
-        for (let key in req.body) if (req.body.hasOwnProperty(key)) ratings[key] = req.body[key];
-
-        User.findByIdAndUpdate(req.user._id, {$push: {"local.feedback": {$each: ratings}}}, {upsert: true}, err => {
-            if (err) return console.log(err);
-            else res.send({
-                status: 'Success',
-                redirectTo: '/dashboard'
-            });
-        });
-    });
 };
+
 
 function getSimilarities(req, res) {
     const liked_recipes = []; // Array of liked recipes by current user stored by their ObjectIds
@@ -81,8 +90,8 @@ function getSimilarities(req, res) {
         _.each(req.user.local.feedback, f => {
             if (f.rating === 1) liked_recipes[i++] = f.recipeId;
         });
-    else{
-        res.redirect('/polling');
+     else{
+         res.redirect('/polling');
     }
 
     // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
@@ -98,7 +107,7 @@ function getSimilarities(req, res) {
             liked_recipes[i] = {
                 _id: recipes[i]._id,
                 title: recipes[i].title,
-            }; // Start building object to return to dashboard.ejs
+            }; // Start building object to return to home.ejs
             for (let j = 0; j < recipes[i].similarities.length; j++) // Loop through similarities array of returned recipes
                 if (most_sim * 0.5 < recipes[i].similarities[j].sim) // Push only similar recipe ids that are at least half as similar as most similar recipe
                     sims_to_lookup[i].push(parseInt(recipes[i].similarities[j].id));
@@ -116,8 +125,7 @@ function getSimilarities(req, res) {
             recipe.similarities = results[idx]
         }); // Append similarities to their corresponding recipes (order is predictable so just a matter of matching indices
 
-        options.reco = liked_recipes;
-        res.render(path.resolve(_viewsdir + '/Dashboard/dashboard.ejs'), options);
+        res.render(path.resolve(_viewsdir + '/Home/home.ejs'), {reco: liked_recipes});
     }).catch(err => {
         console.log(err);
     })
@@ -138,3 +146,14 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
+
+
+/**
+ * Function for generating a hash
+ * @param password Password to be hashed
+ * @returns {*} Encrypted password
+ */
+function generateHash(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+}
+

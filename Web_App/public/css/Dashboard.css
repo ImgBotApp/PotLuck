@@ -2,7 +2,6 @@ body{
     padding-top: 50px;
 }
 
-
 .navbar-default{
     background-color: black;
     border: none;
@@ -11,6 +10,10 @@ body{
 .navbar-brand,.navbar-brand:hover{
     color : #2196F3!important;
     font-size: 170%;
+}
+
+nav {
+    height: inherit;
 }
 
 .nav li a{

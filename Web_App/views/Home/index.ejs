@@ -30,7 +30,7 @@
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity">
     <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+        <a href="<%= routes.index.pathname%>" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div id="manipulate" class="jumbotron text-center toggle_off"
          style="background-color: rgba(0,0,0,0.85)">
@@ -42,19 +42,19 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5; "> Go to your profile:</span></p>
-                        <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span><span
+                        <a href="<%= routes.navbar.profile.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span
                                     style="color: black;">
                     My Profile</span></a>
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5; "> View your recommendations:</span></p>
-                        <a href="/home" class="btn btn-info"><span class="fa fa-lightbulb-o"></span><span
+                        <a href="<%= routes.navbar.dashboard.pathname%>" class="btn btn-info"><span class="fa fa-lightbulb-o"></span><span
                                     style="color: black;">
                                 Dashboard</span></a>
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5;">Or logout: </span></p>
-                        <a href="/logout" class="btn btn-danger"><span class="fa fa-sign-out"></span><span
+                        <a href="<%= routes.navbar.logout.pathname%>" class="btn btn-danger"><span class="fa fa-sign-out"></span><span
                                     style="color: black;">
                     Logout</span></a>
                     </div>
@@ -82,14 +82,14 @@
             <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Sign-in Options</span></h1>
 
             <p><span style="color: #f5f5f5; "> Login or Register with:</span></p>
-            <a href="/login" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
+            <a href="<%= routes.login.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
                     Login</span></a>
-            <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
+            <a href="<%= routes.signup.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
                     Signup</span></a>
-            <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-            <a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
-            <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
-            <a href="/auth/github" class="btn btn-default"><span class="fa fa-github"></span> GitHub</a>
+            <a href="<%= routes.auth_facebook.pathname%>" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
+            <a href="<%= routes.auth_twitter.pathname%>" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
+            <a href="<%= routes.auth_google.pathname%>" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
+            <a href="<%= routes.auth_github.pathname%>" class="btn btn-default"><span class="fa fa-github"></span> GitHub</a>
             <% } %>
         </div>
     </div>

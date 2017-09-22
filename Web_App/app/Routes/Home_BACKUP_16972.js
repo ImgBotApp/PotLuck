@@ -3,13 +3,14 @@
  */
 
 const _viewsdir = appRoot + '/views';
+const _modelsdir  = appRoot + '/app/models';
 
 const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
+const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
 const fs = require('fs');
 
-const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 
 let options = {routes: routes_list};
 
@@ -37,6 +38,20 @@ module.exports = (app, passport) => {
         res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
     });
 
+    app.get('/home', (req, res) => {
+        getSimilarities(req, res);
+    });
+
+
+    app.get('/get_recipe', (req, res) => {
+        const id = req.query.id;
+        Recipe.find().where('_id').in(id).then( data => {
+            res.writeHead(200, {'Content-Type':'application/json'});
+            res.end(JSON.stringify(data[0].toObject()));
+        });
+
+    });
+
 
 
     app.get('/feedback',(req,res) =>{
@@ -49,4 +64,5 @@ module.exports = (app, passport) => {
         fs.appendFile(path.resolve(appRoot + '/feedback/feedbackLog.txt'),
         JSON.stringify(data,null,2));
     });
+
 };
