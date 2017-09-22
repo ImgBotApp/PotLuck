@@ -36,7 +36,7 @@ module.exports = (app, passport) => {
 
         // Collect single random recipe from the database, projecting only its id, title, and image
         // TODO To increase uniqueness of polling sample, increase sample size
-        Recipe.aggregate({$sample: {size: 15}}, {$project: {_id: 1, title: 1, image: 1}}, (err, docs) => {
+        Recipe.aggregate({$sample: {size: 15}}, {$project: {_id: 1, title: 1, image: 1, cuisines: 1}}, (err, docs) => {
             if (err) console.log(err);
             if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');

@@ -102,10 +102,8 @@ Web_App/config/server.csr
 Web_App/config/server.key
 Web_App/config/server.key.org
 Web_App/uploads/
-Web_App/views/Dashboard/
 Web_App/dist/
 Web_App/media/
-Web_App/public/js/
 
 
 .env

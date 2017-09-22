@@ -32,8 +32,8 @@
     <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
         <a href="<%= routes.index.pathname%>" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
-    <div id="manipulate" class="jumbotron text-center toggle_off"
-         style="background-color: rgba(0,0,0,0.85)">
+    <div id="manipulate" class="container-fluid text-center toggle_off"
+         style="background-color: rgba(0,0,0,0.85); padding-top: 80px; padding-bottom: 80px">
         <div class="w3-animate-right">
             <% if (loggedin) { %>
             <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Welcome, <%= user.local.name %></span>
