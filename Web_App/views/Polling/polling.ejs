@@ -9,12 +9,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css"
+          media="screen,projection"/>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="../../public/css/Dashboard.css">
+    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" ref="../../public/css/fonts/Raleway.css">
     <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+
     <style>
         body, h1 {
             font-family: "Raleway", sans-serif
@@ -25,6 +27,7 @@
         }
 
         .bgimg {
+            padding-top: 80px;
             min-height: 100%;
             background: black url("../../public/images/12265684_1010729262282686_8800740801702150174_o.jpg") center;
             background-size: cover;
@@ -49,14 +52,10 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">PotLuck</a>
+                    <a class="navbar-brand" href="<%= routes.index.pathname %>%>">PotLuck</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
-                        <li><a href="/polling">Polling</a></li>
-                        <li><a href="/logout">Log Out</a></li>
-                    </ul>
+                    <ul class="nav navbar-nav navbar-right"></ul>
                 </div><!--/.nav-collapse -->
             </div><!--/.container-fluid -->
         </nav>
@@ -70,10 +69,7 @@
                 <div class="card-image">
                     <img id="recipeImg" class="activator" src="" alt="recipe" style="width: 100%">
                 </div>
-                <div class="card-content">
-                    <span id="recipeTitle" class="card-title activator grey-text text-darken-4"></span>
-                </div>
-                <div class="card"
+                <div id="recipeTitle" class="card-content"></div>
                 <div class="card-action">
                     <button id="" type="submit" class="btn btn-like w3-button w3-round w3-green">
                         Like
@@ -97,26 +93,67 @@
     </div>
 </div>
 
+<footer class="page-footer black">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">PotLuck Beta Phase</h5>
+                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for dinner
+                    tonight.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">More</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2016 - 2017 ISU-DSL, All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
+        </div>
+    </div>
+</footer>
+
 <!-- Scripts  -->
 <script src="../../node_modules/jquery/dist/jquery.js"></script>
 <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
 <script>
     $(document).ready(() => {
+        let navbar_routes = "";
+
+        <% for (let key in routes.navbar) {
+        if (routes.navbar.hasOwnProperty(key))  { %>
+        if ("<%= routes.navbar[key].pathname %>" === window.location.pathname)
+            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>"
+        else
+            navbar_routes += "<li><a href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>\n";
+        <% } %>
+        <% } %>
+
+        $('.navbar-nav').html(navbar_routes);
+
         let recipes = [],
-            num_recipes = <%= recipes.length %>,
+            num_recipes = "<%= recipes.length %>",
             index = 0,
             rated_data = {};
 
         <% recipes.forEach((recipe, idx) => { %>
-        recipes[<%= idx %>] = {
+        recipes["<%= idx %>"] = {
             title: '<%= recipe.title %>',
             image: '<%= recipe.image %>',
-            id: <%= recipe._id %>
+            id: "<%= recipe._id %>"
         };
         <% }) %>
 
-        $('#recipeTitle').text(recipes[index].title);
+        $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title + '</span>');
         $('#recipeImg').attr('src', recipes[index].image);
         $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
 
@@ -128,7 +165,7 @@
             const recipeImg = $('#recipeImg');
             recipeImg.attr('src', recipes[++index].image);
             recipeImg.one('load', () => {
-                $('h4').text(recipes[index].title);
+                $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title+ '</span>');
                 $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
             }).each(() => {
                 if (this.complete) $(this).load()

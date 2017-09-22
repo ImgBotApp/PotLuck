@@ -6,20 +6,23 @@
 const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
-const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 const fs = require('fs'); // Require module for interacting with file system
 const User = require(_modelsdir + '/users.js').User; // Require our user model
 const multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
+const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 const upload = multer({dest: "./uploads"}); // Set upload location (destination)
+
+let options = {routes: routes_list};
 
 module.exports = (app, passport) => {
 
     // Our sign-in page
     app.get('/login', (req, res) => {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir + '/Login/login.ejs'), {message: req.flash('loginMessage')});
+        options.message = req.flash('loginMessage');
+        res.render(path.resolve(_viewsdir + '/Login/login.ejs'), options);
     });
 
     // Process the login form
@@ -29,10 +32,17 @@ module.exports = (app, passport) => {
         failureFlash: true // allow flash messages
     }));
 
+    // Route for ending session
+    app.get('/logout', (req, res) => {
+        req.logout();
+        res.redirect('/');
+    });
+
     // Our sign-up page
     app.get('/signup', (req, res) => {
         // render the page and pass in any flash data if it exists
-        res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), {message: req.flash('signupMessage')});
+        options.message = req.flash('signupMessage');
+        res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), options);
     });
 
 
@@ -42,7 +52,6 @@ module.exports = (app, passport) => {
         failureRedirect: '/signup', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
-
 
     // Our profile page
     app.get('/profile', isLoggedIn, (req, res) => {
@@ -55,10 +64,81 @@ module.exports = (app, passport) => {
                 res.send(JSON.stringify(profile, null, 3));
             });
         } else {
-            res.render(path.resolve(_viewsdir + '/Profile/profile.ejs'), {
-                user: req.user
-            });
+            options.user = req.user;
+            res.render(path.resolve(_viewsdir + '/Profile/profile.ejs'), options);
         }
+    });
+
+    // Process user form submission
+    app.post('/profile', isLoggedIn, (req, res) => {
+        let target;
+        const email = req.body.email;
+        const name = req.body.name;
+        if (req.body.pass > 0) {
+            const password = generateHash(req.body.pass);
+
+            target = {
+                "local.email": email,
+                "local.name": name,
+                "local.password": password
+            };
+        }
+        target = {
+            "local.email": email,
+            "local.name": name
+        };
+
+        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, err => {
+            if (err) return console.log(err);
+            console.log(target);
+            console.log(req.user._id);
+        });
+
+        res.redirect('/profile');
+    });
+
+    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
+        const writestream = gfs.createWriteStream({
+            filename: req.file.originalname
+        });
+        fs.createReadStream('./uploads/' + req.file.filename)
+            .on('end', () => {
+                fs.unlink('./uploads/' + req.file.filename, err => {
+                    res.redirect('/profile');
+                })
+            })
+            .on('err', () => {
+                res.send('Error uploading image')
+            })
+            .pipe(writestream);
+        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, err => {
+            if (err) return console.log(err);
+        });
+    });
+
+    app.get('/profile/photo/:filename', isLoggedIn, (req, res) => {
+        const readstream = gfs.createReadStream({filename: req.params.filename});
+        readstream.on('error', err => {
+            res.send('No image found with that title');
+        });
+        readstream.pipe(res);
+    });
+
+    app.get('/profile/photo/delete/:filename', isLoggedIn, (req, res) => {
+        gfs.exist({filename: req.params.filename}, (err, found) => {
+            if (err) return res.send('Error occured');
+            if (found) {
+                gfs.remove({filename: req.params.filename}, err => {
+                    if (err) return res.send('Error occured');
+                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, err => {
+                        if (err) return console.log(err);
+                    });
+                    res.redirect('/profile');
+                });
+            } else {
+                res.send('No image found with that title');
+            }
+        });
     });
 
 
@@ -199,89 +279,6 @@ module.exports = (app, passport) => {
             res.redirect('/profile');
         });
     });
-
-
-    // Process user form submission
-    app.post('/profile', isLoggedIn, (req, res) => {
-        let target;
-        const email = req.body.email;
-        const name = req.body.name;
-        if (req.body.pass > 0) {
-            const password = generateHash(req.body.pass);
-
-            target = {
-                "local.email": email,
-                "local.name": name,
-                "local.password": password
-            };
-        }
-        target = {
-            "local.email": email,
-            "local.name": name
-        };
-
-        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, err => {
-            if (err) return console.log(err);
-            console.log(target);
-            console.log(req.user._id);
-        });
-
-        res.redirect('/profile');
-    });
-
-
-    // Route for ending session
-    app.get('/logout', (req, res) => {
-        req.logout();
-        res.redirect('/');
-    });
-
-
-    app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
-        const writestream = gfs.createWriteStream({
-            filename: req.file.originalname
-        });
-        fs.createReadStream('./uploads/' + req.file.filename)
-            .on('end', () => {
-                fs.unlink('./uploads/' + req.file.filename, err => {
-                    res.redirect('/profile');
-                })
-            })
-            .on('err', () => {
-                res.send('Error uploading image')
-            })
-            .pipe(writestream);
-        User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, err => {
-            if (err) return console.log(err);
-        });
-    });
-
-    app.get('/profile/photo/:filename', isLoggedIn, (req, res) => {
-        const readstream = gfs.createReadStream({filename: req.params.filename});
-        readstream.on('error', err => {
-            res.send('No image found with that title');
-        });
-        readstream.pipe(res);
-    });
-
-    app.get('/profile/photo/delete/:filename', isLoggedIn, (req, res) => {
-        gfs.exist({filename: req.params.filename}, (err, found) => {
-            if (err) return res.send('Error occured');
-            if (found) {
-                gfs.remove({filename: req.params.filename}, err => {
-                    if (err) return res.send('Error occured');
-                    User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': undefined}}, {new: true}, err => {
-                        if (err) return console.log(err);
-                    });
-                    res.redirect('/profile');
-                });
-            } else {
-                res.send('No image found with that title');
-            }
-        });
-    });
-
-
 };
 
 

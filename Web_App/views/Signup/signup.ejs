@@ -31,7 +31,7 @@
 <body>
 <div class="bgimg w3-animate-opacity">
     <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+        <a href="<%= routes.index.pathname%>" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="w3-container" style="background-color: rgba(0,0,0,0.85)">
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <a id="foot" class="w3-button w3-block w3-blue w3-ripple w3-animate-bottom" href="/login">Already have an account?
+    <a id="foot" class="w3-button w3-block w3-blue w3-ripple w3-animate-bottom" href="<%= routes.login.pathname%>">Already have an account?
         Login here.</a>
 
 </div>

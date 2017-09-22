@@ -11,76 +11,22 @@ const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 const User = require(_modelsdir + '/users.js').User; // Require our user model
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
+const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 
+let options = {routes: routes_list};
 
 module.exports = (app, passport) => {
 
-    app.get('/recipe/:id', isLoggedIn, (req, res) => {
-        Recipe.findById(req.params.id, (err, recipe) => {
-            if (err) console.log(err);
-            res.render(path.resolve(_viewsdir + '/RecipeView/recipe.ejs'), {
-                recipe: recipe,
-                navbar: ['Home', 'Dashboard', 'Profile', 'Polling', 'About', 'Logout']
-            });
-        });
+    app.get('/dashboard', isLoggedIn, (req, res) => {
+        getSimilarities(req, res);
     });
 
-    app.get('/get_suggestions', isLoggedIn, (req, res) => {
-        'use strict';
-        const uRecipeArr = []; // Final result array (User liked recipes with appended similarities)
-        const recipeIds = []; // Array of liked recipes by current user stored by their ObjectIds
-        let i = 0;
 
-        // Loop through user feedback array and collect positively rated recipes
-        _.each(req.user.local.feedback, f => {
-            if (f.rating === 1) recipeIds[i++] = f.recipeId;
-        });
-
-
-        // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
-        // array
-        Recipe.aggregate([{
-            $project: {
-                _id: 1,
-                title: 1,
-                image: 1,
-                similarities: 1
-            }
-        }, {$sort: {_id: 1}}], (err, recipes) => {
-            // Sort users liked recipes in ascending order to allow of O(n) time looping.
-            recipeIds.sort((a, b) => a.toString().localeCompare(b.toString()));
-
-            // Find similar recipes that match what the user liked. Similar recipes correspond to the id of the recipes
-            // they are similar too.
-            // TODO Use FindById to match recipes rather than manually looking it up (what is happening now)
-            _.each(recipes, recipe => {
-                if (recipeIds[i] !== undefined) { // Poor way of checking if out of array bounds
-                    if (recipe._id.toString() === recipeIds[i].toString()) {  // Found match?
-                        uRecipeArr[i] = recipe; // Collect the recipe with its related recipe array
-                        i++;
-                    }
-                }
-            });
-            // Query database for full information (metadata) on acquired similar recipes (Returns top 3 similarities
-            // of first liked recipe. Temporary solution. Needs to be more intelligent)
-
-            //get all the items from the similarities array
-            const similarities = [];
-            uRecipeArr[0].similarities[1].forEach((item, index) => {
-                similarities[index] = item;
-            });
-
-            Recipe.find({
-                '_id': {
-                    $in: similarities
-                }
-            }, (err, docs) => {
-                console.log(docs);
-
-                // Return result to client
-                res.writeHead(200, {"Content-Type": "application/json"});
-                res.end(JSON.stringify(docs));
-            })
+    app.get('/get_recipe', (req, res) => {
+        const id = req.query.id;
+        Recipe.find().where('_id').in(id).then( data => {
+            res.writeHead(200, {'Content-Type':'application/json'});
+            res.end(JSON.stringify(data[0].toObject()));
         });
     });
 
@@ -102,10 +48,9 @@ module.exports = (app, passport) => {
                 console.log(target);
                 res.send(JSON.stringify(target, null, 3));
             } else {
-                res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), {
-                    user: req.user,
-                    recipes: docs
-                });
+                options.recipes = docs;
+                options.user = req.user;
+                res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), options);
             }
         });
     });
@@ -120,13 +65,64 @@ module.exports = (app, passport) => {
             if (err) return console.log(err);
             else res.send({
                 status: 'Success',
-                redirectTo: '/home'
+                redirectTo: '/dashboard'
             });
         });
     });
-
-
 };
+
+function getSimilarities(req, res) {
+    const liked_recipes = []; // Array of liked recipes by current user stored by their ObjectIds
+    let i = 0;
+
+    // Loop through user feedback array and collect positively rated recipes
+    const feedback = req.user.local.feedback;
+    if (feedback.length > 0)
+        _.each(req.user.local.feedback, f => {
+            if (f.rating === 1) liked_recipes[i++] = f.recipeId;
+        });
+    else{
+        res.redirect('/polling');
+    }
+
+    // Collect sorted list of recipes, projecting only their ids, titles, images, cooking time, and similarities
+    // array
+    Recipe.find().where('_id').in(liked_recipes).select('_id title similarities').sort('_id').then(recipes => {
+        const recipe_queries = []; // Array of MongoDB queries
+        const sims_to_lookup = []; // Array of arrays. Array of similar recipes separated by index
+
+        // Loop through returned recipes
+        for (let i = 0; i < recipes.length; i++) {
+            const most_sim = recipes[i].similarities[0].sim; // Get value of most similar recipe of recipe at current index
+            sims_to_lookup[i] = []; // Instantiate empty array to push similar recipes into
+            liked_recipes[i] = {
+                _id: recipes[i]._id,
+                title: recipes[i].title,
+            }; // Start building object to return to dashboard.ejs
+            for (let j = 0; j < recipes[i].similarities.length; j++) // Loop through similarities array of returned recipes
+                if (most_sim * 0.5 < recipes[i].similarities[j].sim) // Push only similar recipe ids that are at least half as similar as most similar recipe
+                    sims_to_lookup[i].push(parseInt(recipes[i].similarities[j].id));
+        }
+
+        // Lookup similar recipes in data. Multiple database queries are necessary to know which returned similar recipe
+        // belongs to which user rated recipe
+        sims_to_lookup.forEach(recipe => recipe_queries.push(Recipe.find({_id: {$in: recipe}})));
+
+        // Make call to database
+        return Promise.all(recipe_queries);
+
+    }).then(results => {
+        liked_recipes.forEach((recipe, idx) => {
+            recipe.similarities = results[idx]
+        }); // Append similarities to their corresponding recipes (order is predictable so just a matter of matching indices
+
+        options.reco = liked_recipes;
+        res.render(path.resolve(_viewsdir + '/Dashboard/dashboard.ejs'), options);
+    }).catch(err => {
+        console.log(err);
+    })
+}
+
 
 /**
  * Function for checking if the user requesting the page is logged in
@@ -142,14 +138,3 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
-
-/**
- * Function for generating a hash
- * @param password Password to be hashed
- * @returns {*} Encrypted password
- */
-function generateHash(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-}
-
-

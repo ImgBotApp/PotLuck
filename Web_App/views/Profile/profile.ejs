@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | <%= user.local.name %>'s Profile</title>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- CSS  -->
+    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css"
+          media="screen,projection"/>
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../../public/css/Dashboard.css">
     <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="../../public/css/profile.css">
     <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
     <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
-    <script src="../../node_modules/jquery/dist/jquery.js"></script>
-    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
     <style>
         body, h1 {
             font-family: "Raleway", sans-serif
@@ -28,18 +35,39 @@
         }
     </style>
 </head>
-<body class="bgimg">
-<div class="w3-animate-opacity">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
-    </div>
+<body>
+<div class="bgimg w3-animate-opacity">
+    <!------------------------------------------------->
+    <!--                 NAVBAR                      -->
+    <!------------------------------------------------->
+    <div class="container">
+
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>f
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<%= routes.index %>">PotLuck</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right"></ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
+
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="col-sm-8 col-sm-offset-2 w3-animate-bottom">
             <div class="page-header text-center">
                 <div class="jumbotron" style="background-color: darkslategray; opacity: 0.85;">
                     <h1><span class="fa fa-anchor"></span><span style="color: #f5f5f5; ">My Profile</span></h1>
                 </div>
-                <a href="/logout" class="btn btn-default btn-sm">Logout</a>
             </div>
 
             <div class="row">
@@ -211,8 +239,54 @@
         </div>
     </div>
 </div>
+
+<footer class="page-footer black">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">PotLuck Beta Phase</h5>
+                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for dinner
+                    tonight.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">More</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2016 - 2017 ISU-DSL, All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="../../node_modules/jquery/dist/jquery.js"></script>
+<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
 <script>
     $(document).ready(() => {
+        let navbar_routes = "";
+
+        <% for (let key in routes.navbar) {
+        if (routes.navbar.hasOwnProperty(key))  { %>
+        if ("<%= routes.navbar[key].pathname %>" === window.location.pathname)
+            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>"
+        else
+            navbar_routes += "<li><a href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>\n";
+        <% } %>
+        <% } %>
+
+        $('.navbar-nav').html(navbar_routes);
+
         $('.btn-update-prof').click(event => { // Handle event when there is a a click on the class
             let email = $('.form-email').val(); // Set email to the value that's in the text field
             let name = $('.form-name').val(); // Set name to the value that's in the text field
@@ -224,7 +298,7 @@
             event.preventDefault();
             window.location.replace(window.location.origin + "/profile");
         });
-    }
+    });
 </script>
 </body>
 </html>
