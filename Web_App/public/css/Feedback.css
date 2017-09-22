@@ -17,4 +17,9 @@
 
 textarea{
     height: 185px;
+    max-width: 591px;
+}
+
+.feedback-section h2{
+    padding-top: 10px;
 }
