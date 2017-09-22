@@ -3,6 +3,7 @@
  */
 
 const _viewsdir = appRoot + '/views';
+const _modelsdir = appRoot + '/app/models';
 
 const path = require('path'); // Require path module for configuring paths
 const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
