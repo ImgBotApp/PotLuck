@@ -1,0 +1,20 @@
+.feedback-section{
+    background: #2196F3;
+    color: white;
+    text-align: center;
+    width: 57%;
+    display: block;
+    right: 50%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.form-section{
+    width: 80%;
+    margin: auto;
+    padding-bottom: 20px;
+}
+
+textarea{
+    height: 185px;
+}

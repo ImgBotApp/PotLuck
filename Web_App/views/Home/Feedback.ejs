@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PotLuck | HomePage</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../../public/css/Dashboard.css">
+    <link rel="stylesheet" href="../../public/css/Feedback.css">
+    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
+    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <script src="../../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <style>
+        body, h1 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            min-height: 100%;
+            background: black url("../../public/images/food-india.jpg") center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="bgimg w3-animate-opacity">
+    <!------------------------------------------------->
+    <!--                 NAVBAR                      -->
+    <!------------------------------------------------->
+    <div class="container">
+
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">PotLuck</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="active"><a style="color:white!important;" href="/home">Home</a></li>
+                        <li><a href="/polling">Polling</a></li>
+                        <li><a href="/logout">Log Out</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+    </div> <!-- /container -->
+
+<!------------------------------------------->
+<!------------------------Feedback part-->
+<!------------------------------------------>
+<div class="feedback-section">
+    <h2>Tell us what you think</h2>
+    <div class="form-section">
+        <div class="form-group">
+            <label for="Email-addr">Email</label>
+            <input type="email" class="form-control" id="Email-addr" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label for="comments">Comments</label>
+            <textarea type="text" class="form-control" id="comments" placeholder="Comments"></textarea>
+        </div>
+        <a type="submit" href="#" id="submit" class="btn btn-primary">Submit</a>
+    </div>
+</div>
+
+</div>
+<script type="text/javascript">
+
+    $('#submit').click(function(e){
+       var formData = {};
+       formData.Email=$('#Email-addr').val();
+       formData.Comments= $('#comments').val();
+       $.post('/feedback',formData);
+
+    });
+
+</script>
+
+
+
+</body>
+</html>
