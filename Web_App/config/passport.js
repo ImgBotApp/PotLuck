@@ -10,6 +10,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('../app/models/users').User;
 
 const configAuth = require('./auth');
+const toolbox = require('../toolbox/toolbox');
 
 // expose this function to our app using module.exports
 module.exports = passport => {
@@ -45,7 +46,10 @@ module.exports = passport => {
             // asynchronous
             // User.findOne wont fire unless data is sent back
             process.nextTick(() => {
-                if (req.body.name.length < 1 || email.length < 1 || password.length < 1) {
+                // Normalize name and enact server-side form validation since client scripts can be edited (Not so fast!)
+                const name = toolbox.normalizeName(req.body.name);
+
+                if (!toolbox.validateName(name) || !toolbox.validateEmail(email) || !toolbox.validatePassword(password)) {
                     return done(null, false, req.flash('signupMessage', 'Please fill in all the fields'));
                 }
                 // find a user whose email is the same as the forms email
@@ -64,7 +68,7 @@ module.exports = passport => {
                         if (!user.local.name) {
                             user.local.email = email;
                             user.local.password = user.generateHash(password);
-                            user.local.name = req.body.name;
+                            user.local.name = name;
 
                             user.save(err => {
                                 if (err)
@@ -77,7 +81,6 @@ module.exports = passport => {
                     } else {
 
                         if (req.originalUrl !== '/connect/local') {
-
                             // if there is no user with that email
                             // create the user
                             const newUser = new User();
@@ -85,7 +88,8 @@ module.exports = passport => {
                             // set the user's local credentials
                             newUser.local.email = email;
                             newUser.local.password = newUser.generateHash(password);
-                            newUser.local.name = req.body.name;
+                            newUser.local.name = name;
+                            newUser.connected_accounts = 1;
 
                             // save the user
                             newUser.save(err => {
@@ -98,7 +102,8 @@ module.exports = passport => {
                             // update the current users facebook credentials
                             user.local.email = email;
                             user.local.password = user.generateHash(password);
-                            user.local.name = req.body.name;
+                            user.local.name = name;
+                            user.connected_accounts++;
 
                             // save the user
                             user.save(err => {
@@ -188,9 +193,9 @@ module.exports = passport => {
                                 user.facebook.token = accessToken;
                                 user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
                                 user.facebook.email = profile.emails[0].value;
-                                user.facebook.picture = 'http://graph.facebook.com/' +
+                                user.facebook.picture = 'https://graph.facebook.com/' +
                                     profile.id.toString() + '/picture?type=large';
-                                //user.facebook.picture
+                                user.connected_accounts++;
 
                                 user.save(err => {
                                     if (err)
@@ -203,6 +208,11 @@ module.exports = passport => {
                         } else {
                             // if there is no user found with that facebook id, create them
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the facebook information in our user model
                             newUser.facebook.id = profile.id; // set the users facebook id
@@ -234,6 +244,7 @@ module.exports = passport => {
                     user.facebook.email = profile.emails[0].value;
                     user.facebook.picture = 'https://graph.facebook.com/v2.8/' +
                         profile.id.toString() + '/picture?type=large';
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -279,6 +290,7 @@ module.exports = passport => {
                                 user.twitter.username = profile.username;
                                 user.twitter.email = profile.emails[0].value;
                                 user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
+                                user.connected_accounts++;
 
                                 user.save(err => {
                                     if (err)
@@ -291,6 +303,11 @@ module.exports = passport => {
                         } else {
                             // if there is no user, create them
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the user data that we need
                             newUser.twitter.id = profile.id;
@@ -312,13 +329,14 @@ module.exports = passport => {
                     // user already exists and is logged in, we have to link accounts
                     const user = req.user; // pull the user out of the session
 
-                    // update the current users facebook credentials
+                    // update the current users twitter credentials
                     user.twitter.id = profile.id;
                     user.twitter.token = token;
                     user.twitter.displayName = profile.displayName;
                     user.twitter.username = profile.username;
                     user.twitter.email = profile.emails[0].value;
                     user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -360,6 +378,7 @@ module.exports = passport => {
                                 user.google.diplayName = profile.displayName;
                                 user.google.email = profile.emails[0].value;
                                 user.google.picture = profile.photos[0].value;
+                                user.connected_accounts++;
 
                                 user.save(err => {
                                     if (err)
@@ -373,6 +392,11 @@ module.exports = passport => {
                         } else {
                             // if the user isnt in our database, create a new user
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the relevant information
                             newUser.google.id = profile.id;
@@ -399,6 +423,7 @@ module.exports = passport => {
                     user.google.name = profile.displayName;
                     user.google.email = profile.emails[0].value;
                     user.google.picture = profile.photos[0].value.substring(0, profile.photos[0].value.length - 6);
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -430,13 +455,14 @@ module.exports = passport => {
 
                             // if there is a user id already but no token (user was linked at one point and then removed)
                             // just add our token and profile information
-                            if (!user.github.id) {
+                            if (!user.github.token) {
                                 user.github.id = profile.id;
                                 user.github.token = accessToken;
                                 user.github.name = profile.displayName;
                                 user.github.username = profile.username;
                                 user.github.email = profile.emails[0].value;
                                 user.github.picture = profile._json.avatar_url;
+                                user.connected_accounts++;
 
                                 user.save(err => {
                                     if (err)
@@ -448,8 +474,13 @@ module.exports = passport => {
                             // if a user is found, log them in
                             return done(null, user);
                         } else {
-                            // if the user isnt in our database, create a new user
+                            // if the user isn't in our database, create a new user
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the relevant information
                             newUser.github.id = profile.id;
@@ -478,6 +509,7 @@ module.exports = passport => {
                     user.github.username = profile.username;
                     user.github.email = profile.emails[0].value;
                     user.github.picture = profile._json.avatar_url;
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {

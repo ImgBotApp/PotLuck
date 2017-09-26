@@ -37,7 +37,7 @@
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge"
          style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+        <a href="<%= routes.intro.pathname %>" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top" style="text-align: center">A SMARTER RECIPE FINDER</h1>
@@ -45,7 +45,7 @@
         <p class="w3-large w3-center">Beta Testing</p>
     </div>
     <div class="w3-display-container w3-display-bottomright w3-padding-large">
-        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname%>"><i class="material-icons">restaurant</i></a>
+        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname %>"><i class="material-icons">restaurant</i></a>
     </div>
 </div>
 
@@ -60,8 +60,10 @@
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">More</h5>
                 <ul>
-                    <li><a class="grey-text text-lighten-3" href="<%= routes.privacy_policy.pathname%>"><%= routes.privacy_policy.alias%></a></li>
-                    <li><a class="grey-text text-lighten-3" href="<%= routes.tos.pathname%>"><%= routes.tos.alias%></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
                 </ul>
             </div>
         </div>
@@ -69,7 +71,8 @@
     <div class="footer-copyright">
         <div class="container">
             © 2016 - 2017 ISU-DSL, All rights reserved.
-            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State Data Science Lab</a>
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
         </div>
     </div>
 </footer>

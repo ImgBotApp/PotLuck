@@ -8,12 +8,11 @@ require('dotenv').config();
 
 const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
-const port = process.env.PORT || 8080; // Set to port 8080 if environment variable not set
+const port = process.env.PORT || 80; // Set to port 80 if environment variable not set
 const https = require('https'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose'); // Require our database module
 const Grid = require('gridfs-stream'); // Require module for streaming files to and from MongoDB GridFS
-const Recipe = require('./app/models/recipes').Recipe; // Require of recipe model
 const passport = require('passport'); // Require our authentication module
 const flash = require('connect-flash'); // Require our module for flash module
 const morgan = require('morgan'); // Require our server activity logger module
@@ -24,13 +23,7 @@ const serveStatic = require('serve-static'); // Statically serve content
 const path = require('path'); // Require path module for configuring paths
 const tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const fs = require('fs'); // Require module for interacting with file system
-const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
 const toolbox = require('./toolbox/toolbox');
-
-/*var options = {
- key: fs.readFileSync(__dirname + '/config/server.key'),
- cert: fs.readFileSync(__dirname + '/config/server.crt')
- };*/
 
 const configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 const configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
@@ -46,7 +39,7 @@ mongoose.connect(configDB.url, {useMongoClient: true}).then(conn => {
 }).catch(err => {
     let asterisks = '';
     let i;
-    for ( i = 0; i < err.toString().length; i++) {
+    for (i = 0; i < err.toString().length; i++) {
         asterisks += '*'
     }
     console.log('Connection to \'' + configDB.name + '\' Database: Failed.\n' + asterisks + '\n' + err + '\n' + asterisks + '\n');
@@ -68,11 +61,7 @@ app.use('/node_modules/w3-css', serveStatic('node_modules/w3-css'));
 app.use(favicon(path.join(appRoot, 'public', 'images', 'favicon.ico')));
 
 require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass in our app and fully configured passport
-/*
-https.createServer(options, app).listen(8080, function () {
-console.log("Listening on port " + port);
-});
-*/
+
 app.listen(port);
 console.log("Listening on port " + port);
 

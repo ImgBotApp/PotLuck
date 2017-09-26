@@ -33,6 +33,9 @@ exports.routes_list = {
     connect_twitter: {
         pathname: "/connect/twitter"
     },
+    unlink_local: {
+        pathname: "/unlink/local"
+    },
     unlink_facebook: {
         pathname: "/unlink/facebook"
     },

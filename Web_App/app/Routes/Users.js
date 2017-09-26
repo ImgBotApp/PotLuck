@@ -12,6 +12,7 @@ const fs = require('fs'); // Require module for interacting with file system
 const User = require(_modelsdir + '/users.js').User; // Require our user model
 const multer = require('multer'); // Require module for handling multipart form data (used for uploading files)
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
+const toolbox = require('../../toolbox/toolbox');
 const upload = multer({dest: "./uploads"}); // Set upload location (destination)
 
 let options = {routes: routes_list};
@@ -71,30 +72,47 @@ module.exports = (app, passport) => {
 
     // Process user form submission
     app.post('/profile', isLoggedIn, (req, res) => {
-        let target;
-        const email = req.body.email;
-        const name = req.body.name;
-        if (req.body.pass > 0) {
-            const password = generateHash(req.body.pass);
-
-            target = {
-                "local.email": email,
-                "local.name": name,
-                "local.password": password
+        // TODO Use "connected_accounts" field of user model to disable user from unlinking all accounts. If a user wants to remove an account we should build a function for that.
+        let target = {};
+        User.findById(req.user._id).then(user => {
+            target = user.toObject();
+            const data = {
+                name: {},
+                email: {},
+                password: {}
             };
-        }
-        target = {
-            "local.email": email,
-            "local.name": name
-        };
 
-        User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}, err => {
-            if (err) return console.log(err);
-            console.log(target);
-            console.log(req.user._id);
+            if (toolbox.validateName(req.body.name)) {
+                target.local.name = toolbox.normalizeName(req.body.name);
+                data.name.valid = true;
+            } else
+                data.name.valid = false;
+
+            if (toolbox.validateEmail(req.body.email)) {
+                target.local.email = req.body.email;
+                data.email.valid = true;
+            } else
+                data.email.valid = false;
+
+            if (toolbox.validatePassword(req.body.pass)) {
+                target.local.password = generateHash(req.body.pass);
+                data.password.valid = true;
+            } else
+                data.password.valid = false;
+
+            data.re = '/profile';
+
+            User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}).then(user => {
+                data.name.is = user.local.name;
+                data.email.is = user.local.email;
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify(data));
+            }).catch(err => {
+                console.log(err);
+            });
+        }).catch(err => {
+            console.log(err);
         });
-
-        res.redirect('/profile');
     });
 
     app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
@@ -184,7 +202,8 @@ module.exports = (app, passport) => {
 
     // Create a local account if previously set-up external account
     app.get('/connect/local', (req, res) => {
-        res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), {message: req.flash('loginMessage')});
+        options.message = req.flash('loginMessage');
+        res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), options);
     });
 
     // Process local account creation
@@ -239,6 +258,7 @@ module.exports = (app, passport) => {
         const user = req.user;
         user.local.password = undefined;
         user.local.email = undefined;
+        user.connected_accounts--;
         user.save(err => {
             res.redirect('/profile');
         });
@@ -248,6 +268,8 @@ module.exports = (app, passport) => {
     app.get('/unlink/facebook', (req, res) => {
         const user = req.user;
         user.facebook.token = undefined;
+        user.facebook.name = undefined;
+        user.connected_accounts--;
         user.save(err => {
             res.redirect('/profile');
         });
@@ -257,6 +279,8 @@ module.exports = (app, passport) => {
     app.get('/unlink/twitter', (req, res) => {
         const user = req.user;
         user.twitter.token = undefined;
+        user.twitter.displayName = undefined;
+        user.connected_accounts--;
         user.save(err => {
             res.redirect('/profile');
         });
@@ -266,6 +290,8 @@ module.exports = (app, passport) => {
     app.get('/unlink/google', (req, res) => {
         const user = req.user;
         user.google.token = undefined;
+        user.google.name = undefined;
+        user.connected_accounts--;
         user.save(err => {
             res.redirect('/profile');
         });
@@ -274,7 +300,8 @@ module.exports = (app, passport) => {
     // Unlink github account
     app.get('/unlink/github', (req, res) => {
         const user = req.user;
-        user.github.id = undefined;
+        user.github.token = undefined;
+        user.connected_accounts--;
         user.save(err => {
             res.redirect('/profile');
         });

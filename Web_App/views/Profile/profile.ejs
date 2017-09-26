@@ -54,7 +54,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<%= routes.index %>">PotLuck</a>
+                    <a class="navbar-brand" href="<%= routes.index.pathname %>">PotLuck</a>
                     <!-- Search Bar -->
                     <section class="searcbar">
                         <div class="row">
@@ -90,12 +90,26 @@
                 <!-- LOCAL INFORMATION -->
                 <div class="col-sm-6">
                     <div class="well" style="background-color:whitesmoke">
-                        <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
+                        <%
+                        let name = "";
+                        if (user.local.name)
+                            name = user.local.name;
+                        else if (user.facebook.name)
+                            name = user.facebook.name;
+                        else if (user.twitter.displayName)
+                            name = user.twitter.displayName;
+                        else if (user.google.name)
+                            name = user.google.name;
+                        else
+                            name = user.github.name;
+                        %>
+                        <h3><span class="fa fa-user"></span> Welcome, <span data-editable
+                                                                            class="name"><%= name %></span></h3>
 
                         <% if (user.local.email) { %>
 
                         <p>
-                            <strong>Email</strong>: <%= user.local.email %><br><br>
+                            <strong>Email</strong>: <span data-editable class="email"><%= user.local.email %></span><br><br>
                         </p>
                         <% if (!user.local.picture) { %>
                         <b>Upload a profile photo:</b>
@@ -107,47 +121,35 @@
                             <input type="submit" value="submit">
                         </form>
                         <% } else { %>
-                        <img id="profile_picture" src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP"
+                        <img id="profile_picture" class="responsive-img circle"
+                             src="/profile/photo/<%= user.local.picture %>" alt="LOCAL_PP"
                              align="left">
                         <a href="/profile/photo/delete/<%= user.local.picture %>" class="btn btn-danger btn-sm">Delete
                             Photo</a>
                         <% } %>
 
-                        <a href="/unlink/local" class="btn btn-default">Unlink</a>
+                        <a href="<%= routes.unlink_local.pathname %>" class="btn btn-default">Unlink</a>
                         <% } else { %>
-                        <a href="/connect/local" class="btn btn-default">Connect Local</a>
+                        <a href="<%= routes.connect_local.pathname %>" class="btn btn-default">Connect Local</a>
                         <% } %>
-
                     </div>
+
+                    <!-- Change Profile Information -->
                     <div class="well" style="background-color:whitesmoke">
                         <h3><span class="fa fa-user"></span> Change Profile Information</h3>
 
-                        <Strong>Change Email</Strong>
-                        <form action="/profile" method="post">
-                            <div class="form-group">
-                                <label><i>Email</i></label>
-                                <input type="text" class="form-control form-email" name="email">
-                            </div>
-                        </form>
-                        <p style="padding:10px;"></p>
-                        <Strong>Change Name</Strong>
-                        <form action="/profile" method="post">
-                            <div class="form-group">
-                                <label><i>Name</i></label>
-                                <input type="text" class="form-control form-name" name="name">
-                            </div>
-                        </form>
-                        <p style="padding:10px;"></p>
-                        <Strong>Change Password</Strong>
-                        <form action="/profile" method="post">
-                            <div class="form-group">
-                                <label><i>Password</i></label>
-                                <input type="password" class="form-control form-pass" name="password">
-                            </div>
-
-                            <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes</button>
-                        </form>
-
+                        <div class="row">
+                            <form class="col s12">
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <input id="password" type="password" class="form-pass">
+                                        <label for="password">Change Password</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
@@ -164,15 +166,13 @@
 
                         <p>
                             <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
-                            <strong>id</strong>: <%= user.facebook.id %><br>
-                            <strong>token</strong>: <%= user.facebook.token %><br>
-                            <strong>email</strong>: <%= user.facebook.email %><br>
-                            <strong>name</strong>: <%= user.facebook.name %>
+                            <strong>name</strong>: <%= user.facebook.name %><br>
+                            <strong>email</strong>: <%= user.facebook.email %>
                         </p>
 
-                        <a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
+                        <a href="<%= routes.unlink_facebook.pathname %>" class="btn btn-primary">Unlink</a>
                         <% } else { %>
-                        <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                        <a href="<%= routes.connect_facebook.pathname %>" class="btn btn-primary">Connect Facebook</a>
                         <% } %>
 
                     </div>
@@ -188,16 +188,14 @@
 
                         <p>
                             <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
-                            <strong>id</strong>: <%= user.twitter.id %><br>
-                            <strong>token</strong>: <%= user.twitter.token %><br>
-                            <strong>username</strong>: <%= user.twitter.username %><br>
                             <strong>displayName</strong>: <%= user.twitter.displayName %><br>
+                            <strong>username</strong>: <%= user.twitter.username %><br>
                             <strong>email</strong>: <%= user.twitter.email %>
                         </p>
 
-                        <a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+                        <a href="<%= routes.unlink_twitter.pathname %>" class="btn btn-info">Unlink</a>
                         <% } else { %>
-                        <a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+                        <a href="<%= routes.connect_twitter.pathname %>" class="btn btn-info">Connect Twitter</a>
                         <% } %>
 
                     </div>
@@ -213,15 +211,14 @@
 
                         <p>
                             <img src="<%= user.google.picture %>" alt="G_PP" align="left">
-                            <strong>id</strong>: <%= user.google.id %><br>
-                            <strong>token</strong>: <%= user.google.token %><br>
-                            <strong>email</strong>: <%= user.google.email %><br>
-                            <strong>name</strong>: <%= user.google.name %>
+
+                            <strong>name</strong>: <%= user.google.name %><br>
+                            <strong>email</strong>: <%= user.google.email %>
                         </p>
 
-                        <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+                        <a href="<%= routes.unlink_google.pathname %>" class="btn btn-danger">Unlink</a>
                         <% } else { %>
-                        <a href="/connect/google" class="btn btn-danger">Connect Google</a>
+                        <a href="<%= routes.connect_google.pathname %>" class="btn btn-danger">Connect Google</a>
                         <% } %>
 
                     </div>
@@ -232,20 +229,18 @@
                     <div class="well">
                         <h3 class="text-muted"><span class="fa fa-github"></span> GitHub</h3>
 
-                        <% if (user.github.id) { %>
+                        <% if (user.github.token) { %>
 
                         <p>
                             <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
-                            <strong>id</strong>: <%= user.github.id %><br>
-                            <strong>token</strong>: <%= user.github.token %><br>
-                            <strong>email</strong>: <%= user.github.email %><br>
-                            <strong>username</strong> <%= user.github.username %>
-                            <strong>name</strong>: <%= user.github.name %>
+                            <strong>name</strong>: <%= user.github.name %><br>
+                            <strong>username</strong> <%= user.github.username %><br>
+                            <strong>email</strong>: <%= user.github.email %>
                         </p>
 
-                        <a href="/unlink/github" class="btn btn-default">Unlink</a>
+                        <a href="<%= routes.unlink_github.pathname %>" class="btn btn-default">Unlink</a>
                         <% } else { %>
-                        <a href="/connect/github" class="btn btn-default">Connect GitHub</a>
+                        <a href="<%= routes.connect_github.pathname %>" class="btn btn-default">Connect GitHub</a>
                         <% } %>
 
                     </div>
@@ -294,7 +289,7 @@
         <% for (let key in routes.navbar) {
         if (routes.navbar.hasOwnProperty(key))  { %>
         if ("<%= routes.navbar[key].pathname %>" === window.location.pathname)
-            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>"
+            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>";
         else
             navbar_routes += "<li><a href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>\n";
         <% } %>
@@ -302,16 +297,91 @@
 
         $('.navbar-nav').html(navbar_routes);
 
-        $('.btn-update-prof').click(event => { // Handle event when there is a a click on the class
-            let email = $('.form-email').val(); // Set email to the value that's in the text field
-            let name = $('.form-name').val(); // Set name to the value that's in the text field
-            const pass = $('.form-pass').val(); // Set pass to the value that's in the text field
-            email = email.length < 1 ? user.local.email : email;
-            name = name.length < l ? user.local.name : name;
-            const data = {email: email, name: name, pass: pass}; // Convert to JSON string
-            $.post('/profile', data); // Post to profile
+        $('.btn-update-prof').click((event) => { // Handle event when there is a a click on the class
             event.preventDefault();
-            window.location.replace(window.location.origin + "/profile");
+            const data = {
+                name: $('.name').val(),
+                email: $('.email').val(),
+                pass: $('.form-pass').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '<%= routes.navbar.profile.pathname %>',
+                data: data,
+                dataType: 'text',
+                success: res => {
+                    if (JSON.parse(res).password.valid) {
+                        Materialize.toast('Password successfully reset!', 4000, 'teal')
+                    } else
+                        Materialize.toast('Password invalid. Try again.', 4000, 'teat')
+                }
+            });
+        });
+
+        $('body').on('click', '[data-editable]', function (event) {
+            event.preventDefault();
+            const el = $(this);
+
+            let label = "";
+            if (el.hasClass('name'))
+                label = 'Name';
+            else if (el.hasClass('email'))
+                label = 'Email';
+
+
+            const div = $('<div class="input-field inline">\n' +
+                '            <input id="rename" type="text">\n' +
+                '            <label for="rename">' + label + '</label>\n' +
+                '          </div>');
+
+            const input = div.find('input');
+
+            input.val(el.text());
+            el.replaceWith(div);
+
+            const save = () => {
+                const p = $('<span data-editable class="' + label.toLowerCase() + '" />').text(input.val());
+                div.replaceWith(p);
+                const data = {
+                    pass: $('.form-pass').val()
+                };
+
+                data[label.toLowerCase()] = input.val();
+
+                // Attach remaining info to JSON
+                if (!data.hasOwnProperty('name'))
+                    data['name'] = $('.name').val();
+
+                if (!data.hasOwnProperty('email'))
+                    data['email'] = $('.email').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '<% routes.navbar.profile.pathname %>',
+                    data: data,
+                    dataType: 'text',
+                    success: res => {
+                        const res_obj = JSON.parse(res);
+                        if (label.toLowerCase() === 'name' && res_obj.name.valid)
+                            Materialize.toast('Name successfully changed to ' + res_obj.name.is, 4000, 'teal');
+                        else if (label.toLowerCase() === 'name' && !res_obj.name.valid) {
+                            Materialize.toast('Name invalid. Try again.', 4000, 'teal');
+                            $('.name').text(res_obj.name.is);
+                        }
+
+                        if (label.toLowerCase() === 'email' && res_obj.email.valid)
+                            Materialize.toast('Email successfully changed to ' + res_obj.email.is, 4000, 'teal');
+                        else if (label.toLowerCase() === 'email' && !res_obj.email.valid) {
+                            Materialize.toast('Email invalid. Try again.', 4000, 'teal');
+                            $('.email').text(res_obj.email.is);
+                        }
+                    }
+                });
+            };
+
+            input.one('blur', save).focus();
+
         });
     });
 </script>

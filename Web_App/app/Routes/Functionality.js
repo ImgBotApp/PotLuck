@@ -24,9 +24,25 @@ module.exports = (app, passport) => {
 
     app.get('/get_recipe', (req, res) => {
         const id = req.query.id;
-        Recipe.find().where('_id').in(id).then( data => {
-            res.writeHead(200, {'Content-Type':'application/json'});
+        Recipe.find().where('_id').in(id).then(data => {
+            res.writeHead(200, {'Content-Type': 'application/json'});
             res.end(JSON.stringify(data[0].toObject()));
+        }).catch(err => {
+            console.log(err);
+        })
+    });
+
+    app.get('/search', isLoggedIn, (req, res) => {
+        const query = req.query.q;
+        Recipe.find().where('title').regex('.*' + query + '.*').limit(5).sort('aggregateLikes').select('_id title').then(docs => {
+            let search_res = {};
+            docs.forEach(recipe => {
+                search_res[recipe.title] = recipe._id.toString();
+            });
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(search_res));
+        }).catch(err => {
+            console.log(err);
         });
     });
 
@@ -81,7 +97,7 @@ function getSimilarities(req, res) {
         _.each(req.user.local.feedback, f => {
             if (f.rating === 1) liked_recipes[i++] = f.recipeId;
         });
-    else{
+    else {
         res.redirect('/polling');
     }
 

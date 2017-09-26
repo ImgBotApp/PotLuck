@@ -8,7 +8,6 @@ const bcrypt = require('bcrypt-nodejs');
 
 // define the schema for our user model
 const userSchema = mongoose.Schema({
-
     local: {
         name: String,
         email: String,
@@ -66,8 +65,8 @@ const userSchema = mongoose.Schema({
             //required: true,
             match: /^https:\/\//i
         }
-    }
-
+    },
+    connected_accounts: Number
 });
 
 // methods ======================
