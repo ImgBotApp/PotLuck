@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | HomePage</title>
+    <title>PotLuck | Home Page</title>
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
-    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
     <style>
         body, h1 {
             font-family: "Raleway", sans-serif
@@ -20,18 +25,14 @@
         }
 
         .bgimg {
-            padding-top: 80px;
             min-height: 100%;
-            background: black url("../../public/images/Chinese-food-wallpaper-12-2560x1600.jpg") center;
+            background: black url("/images/Chinese-food-wallpaper-12-2560x1600.jpg") center;
             background-size: cover;
         }
     </style>
 </head>
 <body>
-<div class="bgimg w3-display-container w3-animate-opacity">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge" style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="<%= routes.index.pathname%>" style="text-decoration: none; color: #477496">PotLuck</a>
-    </div>
+<div class="bgimg w3-display-container w3-animate-opacity content">
     <div id="manipulate" class="container-fluid text-center toggle_off"
          style="background-color: rgba(0,0,0,0.85); padding-top: 80px; padding-bottom: 80px">
         <div class="w3-animate-right">
@@ -42,19 +43,22 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5; "> Go to your profile:</span></p>
-                        <a href="<%= routes.navbar.profile.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span
+                        <a href="<%= routes.navbar.profile.pathname %>" class="btn btn-default"><span
+                                    class="fa fa-user"></span><span
                                     style="color: black;">
                     My Profile</span></a>
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5; "> View your recommendations:</span></p>
-                        <a href="<%= routes.navbar.dashboard.pathname%>" class="btn btn-info"><span class="fa fa-lightbulb-o"></span><span
+                        <a href="<%= routes.navbar.dashboard.pathname %>" class="btn btn-info"><span
+                                    class="fa fa-lightbulb-o"></span><span
                                     style="color: black;">
                                 Dashboard</span></a>
                     </div>
                     <div class="col-sm-4">
                         <p><span style="color: #f5f5f5;">Or logout: </span></p>
-                        <a href="<%= routes.navbar.logout.pathname%>" class="btn btn-danger"><span class="fa fa-sign-out"></span><span
+                        <a href="<%= routes.navbar.logout.pathname %>" class="btn btn-danger"><span
+                                    class="fa fa-sign-out"></span><span
                                     style="color: black;">
                     Logout</span></a>
                     </div>
@@ -82,22 +86,90 @@
             <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Sign-in Options</span></h1>
 
             <p><span style="color: #f5f5f5; "> Login or Register with:</span></p>
-            <a href="<%= routes.login.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
+            <a href="<%= routes.login.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
+                        style="color: black;">
                     Login</span></a>
-            <a href="<%= routes.signup.pathname%>" class="btn btn-default"><span class="fa fa-user"></span><span style="color: black;">
+            <a href="<%= routes.signup.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
+                        style="color: black;">
                     Signup</span></a>
-            <a href="<%= routes.auth_facebook.pathname%>" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-            <a href="<%= routes.auth_twitter.pathname%>" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
-            <a href="<%= routes.auth_google.pathname%>" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
-            <a href="<%= routes.auth_github.pathname%>" class="btn btn-default"><span class="fa fa-github"></span> GitHub</a>
+            <a href="<%= routes.auth_facebook.pathname %>" class="btn btn-primary"><span class="fa fa-facebook"></span>
+                Facebook</a>
+            <a href="<%= routes.auth_twitter.pathname %>" class="btn btn-info"><span class="fa fa-twitter"></span>
+                Twitter</a>
+            <a href="<%= routes.auth_google.pathname %>" class="btn btn-danger"><span class="fa fa-google-plus"></span>
+                Google</a>
+            <a href="<%= routes.auth_github.pathname %>" class="btn btn-default"><span class="fa fa-github"></span>
+                GitHub</a>
             <% } %>
         </div>
     </div>
 </div>
 
+<footer class="page-footer black">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">PotLuck Beta Phase</h5>
+                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for dinner
+                    tonight.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">More</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2016 - 2017 ISU-DSL, All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
+        </div>
+    </div>
+</footer>
+
 <!-- Scripts -->
-<script src="../../node_modules/jquery/dist/jquery.js"></script>
-<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/recipe_view_search.js"></script>
+<script type="text/javascript" src="/js/navbar.js"></script>
+<script>
+    const routes = <%- JSON.stringify(routes) %>;
+    const loggedin = <%- loggedin %>;
+
+    const bgimg = $('.bgimg');
+    if (loggedin) {
+        bgimg.css('padding-top', '200px');
+        addNav(routes);
+        addModals();
+
+        let navbar_routes = "";
+        let active_set = false;
+
+        for (let key in routes.navbar) {
+            if (routes.navbar.hasOwnProperty(key)) {
+                if (routes.navbar[key].pathname === window.location.pathname) {
+                    navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                    active_set = true;
+                } else
+                    navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+            }
+        }
+
+        if (!active_set)
+            navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+
+        $(document).ready(() => $('.navbar-nav').html(navbar_routes));
+    } else {
+        bgimg.css('padding-top', '80px');
+    }
+</script>
 
 </body>
 </html>

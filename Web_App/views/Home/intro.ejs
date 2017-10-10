@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Intro</title>
 
     <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../public/css/intro.css">
-    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css"
-          media="screen,projection"/>
-    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
-    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/intro.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
         body, h1 {
@@ -27,7 +26,7 @@
 
         .bgimg {
             min-height: 100%;
-            background: black url("../../public/images/camaje-cooking-7.jpg") center;
+            background: black url("/images/camaje-cooking-7.jpg") center;
             background-size: cover;
         }
     </style>
@@ -37,7 +36,7 @@
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge"
          style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="/" style="text-decoration: none; color: #477496">PotLuck</a>
+        <a href="<%= routes.intro.pathname %>" style="text-decoration: none; color: #477496">PotLuck</a>
     </div>
     <div class="w3-display-middle">
         <h1 class="w3-jumbo w3-animate-top" style="text-align: center">A SMARTER RECIPE FINDER</h1>
@@ -45,7 +44,7 @@
         <p class="w3-large w3-center">Beta Testing</p>
     </div>
     <div class="w3-display-container w3-display-bottomright w3-padding-large">
-        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname%>"><i class="material-icons">restaurant</i></a>
+        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname %>"><i class="material-icons">restaurant</i></a>
     </div>
 </div>
 
@@ -60,8 +59,10 @@
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">More</h5>
                 <ul>
-                    <li><a class="grey-text text-lighten-3" href="<%= routes.privacy_policy.pathname%>"><%= routes.privacy_policy.alias%></a></li>
-                    <li><a class="grey-text text-lighten-3" href="<%= routes.tos.pathname%>"><%= routes.tos.alias%></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
                 </ul>
             </div>
         </div>
@@ -69,16 +70,17 @@
     <div class="footer-copyright">
         <div class="container">
             © 2016 - 2017 ISU-DSL, All rights reserved.
-            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State Data Science Lab</a>
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
         </div>
     </div>
 </footer>
 
 <!-- Scripts -->
 
-<script src="../../node_modules/jquery/dist/jquery.js"></script>
-<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
 
 </body>
 </html>
