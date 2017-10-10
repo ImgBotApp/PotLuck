@@ -2,7 +2,6 @@
  * Created by O on 10/21/2016.
  */
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // define the schema for our recipe model
 const recipeSchema = mongoose.Schema({
@@ -47,9 +46,10 @@ const recipeSchema = mongoose.Schema({
     cuisines: [String],
     instructions: String,
     similarities: [new mongoose.Schema({
-        id: String,
+        recipe: {type: Number, ref: 'Recipe'},
         sim: Number
-    }, {_id: false})]
+    }, {_id: false})],
+    questionability: Number
 });
 
 // create the model for recipes and expose it to our app

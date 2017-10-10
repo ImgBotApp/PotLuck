@@ -2,7 +2,6 @@
  * Created by O on 10/21/2016.
  */
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const bcrypt = require('bcrypt-nodejs');
 
 
@@ -14,11 +13,7 @@ const userSchema = mongoose.Schema({
         password: String,
         picture: {
             type: String
-        },
-        feedback: [new mongoose.Schema({
-            recipeId: Number,
-            rating: Number
-        }, {_id: false})] // Create a new schema for user feedback, but don't give it an id.
+        }
     },
     facebook: {
         id: String,
@@ -66,7 +61,12 @@ const userSchema = mongoose.Schema({
             match: /^https:\/\//i
         }
     },
-    connected_accounts: Number
+    feedback: [new mongoose.Schema({
+        recipe: {type: Number, ref: 'Recipe'},
+        rating: Number
+    }, {_id: false})], // Create a new schema for user feedback, but don't give it an id.
+    connected_accounts: Number,
+    first_visit: {type: Boolean, default: true}
 });
 
 // methods ======================

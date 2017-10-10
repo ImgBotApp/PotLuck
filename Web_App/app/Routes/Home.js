@@ -5,7 +5,6 @@
 const _viewsdir = appRoot + '/views';
 
 const path = require('path'); // Require path module for configuring paths
-const bcrypt = require('bcrypt-nodejs'); // Require our encryption algorithm
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 
 let options = {routes: routes_list};
@@ -26,11 +25,13 @@ module.exports = (app, passport) => {
 
     // Route for privacy page
     app.get('/privacy_policy', (req, res) => {
-        res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'));
+        options.loggedin = req.user !== undefined; // Check if user is logged in and pass the result to the client
+        res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'), options);
     });
 
     // Route for terms page
     app.get('/terms', (req, res) => {
-        res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'));
+        options.loggedin = req.user !== undefined; // Check if user is logged in and pass the result to the client
+        res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'), options);
     });
 };

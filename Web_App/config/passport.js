@@ -61,24 +61,10 @@ module.exports = passport => {
                         return done(err);
                     }
 
-                    // check to see if theres already a user with that email
-                    if (user) {
-                        // if there is a user id already but no token (user was linked at one point and then removed)
-                        // just add our token and profile information
-                        if (!user.local.name) {
-                            user.local.email = email;
-                            user.local.password = user.generateHash(password);
-                            user.local.name = name;
-
-                            user.save(err => {
-                                if (err)
-                                    throw err;
-                                return done(null, user);
-                            });
-                        } else {
-                            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-                        }
-                    } else {
+                    // check to see if there's already a user with that email
+                    if (user)
+                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                    else {
 
                         if (req.originalUrl !== '/connect/local') {
                             // if there is no user with that email
@@ -167,9 +153,8 @@ module.exports = passport => {
         // facebook will send back the token and profile
         (req, accessToken, refreshToken, profile, done) => {
             console.log('profile', profile); // debugging
-            if (!profile.emails || !profile.emails.length) {
+            if (!profile.emails || !profile.emails.length)
                 return done('No emails associated with this account!');
-            }
 
             // asynchronous
             process.nextTick(() => {
@@ -184,28 +169,9 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        // if the user is found, then log them in
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.facebook.token) {
-                                user.facebook.token = accessToken;
-                                user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                                user.facebook.email = profile.emails[0].value;
-                                user.facebook.picture = 'https://graph.facebook.com/' +
-                                    profile.id.toString() + '/picture?type=large';
-                                user.connected_accounts++;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            return done(null, user); // user found, return that user
-                        } else {
+                        if (user)
+                            return done(null, user);// if a user is found, log them in
+                        else {
                             // if there is no user found with that facebook id, create them
                             const newUser = new User();
 
@@ -280,27 +246,9 @@ module.exports = passport => {
                         if (err)
                             return done(err);
                         // if the user is found then log them in
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.twitter.token) {
-                                user.twitter.token = token;
-                                user.twitter.diplayName = profile.displayName;
-                                user.twitter.username = profile.username;
-                                user.twitter.email = profile.emails[0].value;
-                                user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
-                                user.connected_accounts++;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            return done(null, user); // user found, return that user
-                        } else {
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
                             // if there is no user, create them
                             const newUser = new User();
 
@@ -369,27 +317,9 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.google.token) {
-                                user.google.token = token;
-                                user.google.diplayName = profile.displayName;
-                                user.google.email = profile.emails[0].value;
-                                user.google.picture = profile.photos[0].value;
-                                user.connected_accounts++;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            // if a user is found, log them in
-                            return done(null, user);
-                        } else {
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
                             // if the user isnt in our database, create a new user
                             const newUser = new User();
 
@@ -451,29 +381,9 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.github.token) {
-                                user.github.id = profile.id;
-                                user.github.token = accessToken;
-                                user.github.name = profile.displayName;
-                                user.github.username = profile.username;
-                                user.github.email = profile.emails[0].value;
-                                user.github.picture = profile._json.avatar_url;
-                                user.connected_accounts++;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            // if a user is found, log them in
-                            return done(null, user);
-                        } else {
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
                             // if the user isn't in our database, create a new user
                             const newUser = new User();
 

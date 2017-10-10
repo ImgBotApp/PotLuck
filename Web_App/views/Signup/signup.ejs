@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Registration</title>
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../../public/css/login_signup.css">
-    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
-    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
-    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- CSS  -->
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="/css/login_signup.css">
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
     <style>
         body, h1 {
             font-family: "Raleway", sans-serif
@@ -22,7 +27,7 @@
 
         .bgimg {
             min-height: 100%;
-            background: black url("../../public/images/HeroImage.jpg") center;
+            background: black url("/images/HeroImage.jpg") center;
             background-size: cover;
         }
     </style>
@@ -36,7 +41,7 @@
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="w3-container" style="background-color: rgba(0,0,0,0.85)">
             <div class="col-sm-6 col-sm-offset-3 w3-animate-right">
-                <form action="/<%= routes.signup.pathname %>" method="post" class="w3-container w3-text-blue w3-margin">
+                <form action="<%= routes.signup.pathname %>" method="post" class="w3-container w3-text-blue w3-margin">
                     <h2 class="w3-center">Registration</h2>
 
                     <% if (message.length > 0) { %>
@@ -45,7 +50,8 @@
                     <div class="w3-row w3-section">
                         <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-user"></i></div>
                         <div class="w3-rest">
-                            <input class="w3-input w3-border" name="name" minlength="2" maxlength="70" type="text"
+                            <input class="w3-input w3-border browser-default" name="name" minlength="2" maxlength="70"
+                                   type="text"
                                    placeholder="Name">
                         </div>
                     </div>
@@ -53,14 +59,16 @@
                     <div class="w3-row w3-section">
                         <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-envelope-o"></i></div>
                         <div class="w3-rest">
-                            <input class="w3-input w3-border" name="email" type="email" placeholder="Email">
+                            <input class="w3-input w3-border browser-default" name="email" type="email"
+                                   placeholder="Email">
                         </div>
                     </div>
 
                     <div class="w3-row w3-section">
                         <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-key"></i></div>
                         <div class="w3-rest">
-                            <input class="w3-input w3-border" name="password" type="password" placeholder="Password">
+                            <input class="w3-input w3-border browser-default" name="password" type="password"
+                                   placeholder="Password">
                         </div>
                     </div>
 
@@ -77,5 +85,39 @@
         Login here.</a>
 
 </div>
+
+<footer class="page-footer black">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">PotLuck Beta Phase</h5>
+                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for dinner
+                    tonight.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">More</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.privacy_policy.pathname %>"><%= routes.privacy_policy.alias %></a></li>
+                    <li><a class="grey-text text-lighten-3"
+                           href="<%= routes.tos.pathname %>"><%= routes.tos.alias %></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2016 - 2017 ISU-DSL, All rights reserved.
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+                Data Science Lab</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts  -->
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+
 </body>
 </html>

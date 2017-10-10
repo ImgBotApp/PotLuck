@@ -6,6 +6,8 @@
 
 require('dotenv').config();
 
+global.appRoot = __dirname; //set the global path so other files may use it
+
 const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
 const port = process.env.PORT || 80; // Set to port 80 if environment variable not set
@@ -19,7 +21,6 @@ const morgan = require('morgan'); // Require our server activity logger module
 const cookieParser = require('cookie-parser'); // Require our cookie parsing module (needed for auth)
 const bodyParser = require('body-parser'); // Parses incoming request bodies (made available in req.body)
 const session = require('express-session'); // Parses session cookie, validates it, etc. Keeps users logged in.
-const serveStatic = require('serve-static'); // Statically serve content
 const path = require('path'); // Require path module for configuring paths
 const tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const fs = require('fs'); // Require module for interacting with file system
@@ -27,7 +28,6 @@ const toolbox = require('./toolbox/toolbox');
 
 const configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 const configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
-global.appRoot = __dirname; //set the global path so other files may use it
 
 mongoose.Promise = global.Promise; // Use native promise
 
@@ -51,12 +51,12 @@ app.use(morgan('dev'), cookieParser(), bodyParser.urlencoded({extended: true}), 
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 
-app.use('/public', serveStatic('public')); // Serve up public folder
-app.use('/node_modules/bootstrap', serveStatic('node_modules/bootstrap'));
-app.use('/node_modules/font-awesome', serveStatic('node_modules/font-awesome'));
-app.use('/node_modules/jquery', serveStatic('node_modules/jquery'));
-app.use('/node_modules/materialize-css', serveStatic('node_modules/materialize-css'));
-app.use('/node_modules/w3-css', serveStatic('node_modules/w3-css'));
+app.use(express.static('./public')); // Serve up public folder
+app.use(express.static('./node_modules/bootstrap/dist'));
+app.use(express.static('./node_modules/font-awesome'));
+app.use(express.static('./node_modules/jquery/dist'));
+app.use(express.static('./node_modules/materialize-css/dist'));
+app.use(express.static('node_modules/w3-css'));
 
 app.use(favicon(path.join(appRoot, 'public', 'images', 'favicon.ico')));
 

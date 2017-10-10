@@ -1,22 +1,21 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | <%= user.local.name %>'s Profile</title>
 
     <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css"
-          media="screen,projection"/>
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../public/css/Dashboard.css">
-    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../../public/css/profile.css">
-    <link rel="stylesheet" href="../../public/css/fonts/Raleway.css">
-    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="/css/profile.css">
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
         body, h1 {
@@ -31,52 +30,13 @@
             padding-top: 160px;
             word-wrap: break-word;
             min-height: 100%;
-            background: black url("../../public/images/Japanese-cuisine-seafood-shrimp-fish-squid-meat-shellfish-on-wooden-table.jpg") center;
+            background: black url("/images/Japanese-cuisine-seafood-shrimp-fish-squid-meat-shellfish-on-wooden-table.jpg") center;
             background-size: cover;
         }
     </style>
 </head>
 <body>
-<div class="bgimg w3-animate-opacity">
-    <!------------------------------------------------->
-    <!--                 NAVBAR                      -->
-    <!------------------------------------------------->
-    <div class="container">
-
-        <!-- Static navbar -->
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                            aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<%= routes.index.pathname %>">PotLuck</a>
-                    <!-- Search Bar -->
-                    <section class="searcbar">
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="row">
-                                    <div class="input-field col s12">
-                                        <i class="material-icons prefix">search</i>
-                                        <input id="icon-prefix" type="text">
-                                        <label for="icon-prefix">Find a recipe</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right"></ul>
-                </div><!--/.nav-collapse -->
-            </div><!--/.container-fluid -->
-        </nav>
-    </div> <!-- /container -->
-
+<div class="bgimg w3-animate-opacity content">
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="col-sm-8 col-sm-offset-2 w3-animate-bottom" style="background: rgba(93,64,55,0.6)">
             <div class="page-header text-center">
@@ -89,27 +49,40 @@
 
                 <!-- LOCAL INFORMATION -->
                 <div class="col-sm-6">
-                    <div class="well" style="background-color:whitesmoke">
+                    <% const acct_statuses = {};
+                    user_obj = user.toObject();
+                    acct_statuses.local = user_obj.local ? 'connected' : '';
+                    acct_statuses.facebook = user_obj.facebook ? 'connected' : '';
+                    acct_statuses.twitter = user_obj.twitter ? 'connected' : '';
+                    acct_statuses.google = user_obj.google ? 'connected' : '';
+                    acct_statuses.github = user_obj.github ? 'connected' : '';
+                    %>
+                    <div class="well local-acct <%= acct_statuses.local %>" style="background-color:whitesmoke">
                         <%
                         let name = "";
-                        if (user.local.name)
-                            name = user.local.name;
-                        else if (user.facebook.name)
+                        if (acct_statuses.local === 'connected') {
+                            name = user.local.name; %>
+                        <div class="notification"></div>
+                        <% } else if (acct_statuses.facebook === 'connected')
                             name = user.facebook.name;
-                        else if (user.twitter.displayName)
+                        else if (acct_statuses.twitter === 'connected')
                             name = user.twitter.displayName;
-                        else if (user.google.name)
+                        else if (acct_statuses.google === 'connected')
                             name = user.google.name;
                         else
                             name = user.github.name;
                         %>
-                        <h3><span class="fa fa-user"></span> Welcome, <span data-editable
-                                                                            class="name"><%= name %></span></h3>
+                        <h3><span class="fa fa-user"></span> Welcome, <span
+                                    <% if (acct_statuses.local === 'connected') { %>data-editable
+                                    <% } %>
+                                    class="name"><%= name %></span></h3>
 
-                        <% if (user.local.email) { %>
+                        <% if (acct_statuses.local === 'connected') { %>
 
                         <p>
-                            <strong>Email</strong>: <span data-editable class="email"><%= user.local.email %></span><br><br>
+                            <strong>Email</strong>: <span <% if (acct_statuses.local === 'connected') { %>data-editable
+                                    <% } %>
+                                                          class="email"><%= user.local.email %></span><br><br>
                         </p>
                         <% if (!user.local.picture) { %>
                         <b>Upload a profile photo:</b>
@@ -127,8 +100,11 @@
                         <a href="/profile/photo/delete/<%= user.local.picture %>" class="btn btn-danger btn-sm">Delete
                             Photo</a>
                         <% } %>
-
-                        <a href="<%= routes.unlink_local.pathname %>" class="btn btn-default">Unlink</a>
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-default unlink-local">Unlink Local</button>
+                        <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_local.pathname %>" class="btn btn-default">Connect Local</a>
                         <% } %>
@@ -146,7 +122,7 @@
                                         <label for="password">Change Password</label>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-warning btn-lg btn-update-prof">Save Changes
+                                <button type="submit" class="btn btn-warning btn-update-prof">Save Changes
                                 </button>
                             </form>
                         </div>
@@ -155,14 +131,11 @@
 
                 <!-- FACEBOOK INFORMATION -->
                 <div class="col-sm-6">
-                    <div class="well">
-                        <h3 class="text-info"><span class="fa fa-lightbulb-o"></span> Recommended Recipes</h3>
-                    </div>
-                    <div class="well">
+                    <div class="well facebook-acct <%= acct_statuses.facebook %>">
                         <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
 
                         <!-- check if the user has this token (is the user authenticated with this social account) -->
-                        <% if (user.facebook.token) { %>
+                        <% if (acct_statuses.facebook === 'connected') { %>
 
                         <p>
                             <img src="<%= user.facebook.picture %>" alt="FB_PP" align="left">
@@ -170,7 +143,11 @@
                             <strong>email</strong>: <%= user.facebook.email %>
                         </p>
 
-                        <a href="<%= routes.unlink_facebook.pathname %>" class="btn btn-primary">Unlink</a>
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-primary unlink-facebook">Unlink</button>
+                        <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_facebook.pathname %>" class="btn btn-primary">Connect Facebook</a>
                         <% } %>
@@ -180,11 +157,11 @@
 
                 <!-- TWITTER INFORMATION -->
                 <div class="col-sm-6">
-                    <div class="well">
+                    <div class="well twitter-acct <%= acct_statuses.twitter %>">
                         <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
 
                         <!-- check if the user has this token (is the user authenticated with this social account) -->
-                        <% if (user.twitter.token) { %>
+                        <% if (acct_statuses.twitter === 'connected') { %>
 
                         <p>
                             <img src="<%= user.twitter.picture %>" alt="TW_PP" align="left">
@@ -193,7 +170,11 @@
                             <strong>email</strong>: <%= user.twitter.email %>
                         </p>
 
-                        <a href="<%= routes.unlink_twitter.pathname %>" class="btn btn-info">Unlink</a>
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-info unlink-twitter">Unlink</button>
+                        <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_twitter.pathname %>" class="btn btn-info">Connect Twitter</a>
                         <% } %>
@@ -203,11 +184,11 @@
 
                 <!-- GOOGLE INFORMATION -->
                 <div class="col-sm-6">
-                    <div class="well">
+                    <div class="well google-acct <%= acct_statuses.google %>">
                         <h3 class="text-warning"><span class="fa fa-google-plus"></span> Google</h3>
 
                         <!-- check if the user has this token (is the user authenticated with this social account) -->
-                        <% if (user.google.token) { %>
+                        <% if (acct_statuses.google === 'connected') { %>
 
                         <p>
                             <img src="<%= user.google.picture %>" alt="G_PP" align="left">
@@ -216,7 +197,11 @@
                             <strong>email</strong>: <%= user.google.email %>
                         </p>
 
-                        <a href="<%= routes.unlink_google.pathname %>" class="btn btn-danger">Unlink</a>
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-danger unlink-google">Unlink</button>
+                        <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_google.pathname %>" class="btn btn-danger">Connect Google</a>
                         <% } %>
@@ -226,10 +211,10 @@
 
                 <!-- GITHUB INFORMATION -->
                 <div class="col-sm-6">
-                    <div class="well">
+                    <div class="well github-acct <%= acct_statuses.github %>">
                         <h3 class="text-muted"><span class="fa fa-github"></span> GitHub</h3>
 
-                        <% if (user.github.token) { %>
+                        <% if (acct_statuses.github === 'connected') { %>
 
                         <p>
                             <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
@@ -238,7 +223,11 @@
                             <strong>email</strong>: <%= user.github.email %>
                         </p>
 
-                        <a href="<%= routes.unlink_github.pathname %>" class="btn btn-default">Unlink</a>
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-default unlink-github">Unlink</button>
+                        <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_github.pathname %>" class="btn btn-default">Connect GitHub</a>
                         <% } %>
@@ -279,23 +268,39 @@
 </footer>
 
 <!-- Scripts -->
-<script src="../../node_modules/jquery/dist/jquery.js"></script>
-<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/recipe_view_search.js"></script>
+<script type="text/javascript" src="/js/navbar.js"></script>
 <script>
+    const routes = <%- JSON.stringify(routes) %>;
+
+    addNav(routes);
+    addModals();
+
+    let navbar_routes = "";
+    let active_set = false;
+
+    for (let key in routes.navbar) {
+        if (routes.navbar.hasOwnProperty(key)) {
+            if (routes.navbar[key].pathname === window.location.pathname) {
+                navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                active_set = true;
+            } else
+                navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+        }
+    }
+
+    if (!active_set)
+        navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+
     $(document).ready(() => {
-        let navbar_routes = "";
-
-        <% for (let key in routes.navbar) {
-        if (routes.navbar.hasOwnProperty(key))  { %>
-        if ("<%= routes.navbar[key].pathname %>" === window.location.pathname)
-            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>";
-        else
-            navbar_routes += "<li><a href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>\n";
-        <% } %>
-        <% } %>
-
         $('.navbar-nav').html(navbar_routes);
+        if (localStorage.getItem('profile_notification') !== 'dismissed')
+            $('.notification').addClass('w3-panel w3-blue w3-display-container w3-card-4').append('<span class="w3-button w3-display-topright notification-close">&times;</span>\n' +
+                '        <h4>Hey!</h4>\n' +
+                '        <p>You can change your name or email by clicking on them. Try it!</p>');
 
         $('.btn-update-prof').click((event) => { // Handle event when there is a a click on the class
             event.preventDefault();
@@ -307,7 +312,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '<%= routes.navbar.profile.pathname %>',
+                url: routes.navbar.profile.pathname,
                 data: data,
                 dataType: 'text',
                 success: res => {
@@ -315,6 +320,54 @@
                         Materialize.toast('Password successfully reset!', 4000, 'teal')
                     } else
                         Materialize.toast('Password invalid. Try again.', 4000, 'teat')
+                }
+            });
+        });
+
+        $('.btn-remove-acct').click(event => {
+            event.preventDefault();
+            $.ajax({
+                type: 'DELETE',
+                url: routes.navbar.profile.pathname,
+                success: res => {
+                    Materialize.toast(res.msg, 3000, 'black-text white');
+                    setTimeout(() => window.location = res.red, 3000);
+                }
+            })
+        });
+
+        const unlink_btn_classes = ['unlink-local', 'unlink-facebook', 'unlink-twitter', 'unlink-google', 'unlink-github'];
+        $('.' + unlink_btn_classes.join(',.')).click(event => {
+            event.preventDefault();
+            const class_names = event.currentTarget.className.split(/\s+/);
+            const button_clicked = $.grep(class_names, c => {
+                return $.inArray(c, unlink_btn_classes) !== -1;
+            })[0];
+            const url = button_clicked === 'unlink-local' ? routes.unlink_local.pathname :
+                button_clicked === 'unlink-facebook' ? routes.unlink_facebook.pathname :
+                    button_clicked === 'unlink-twitter' ? routes.unlink_twitter.pathname :
+                        button_clicked === 'unlink-google' ? routes.unlink_google.pathname :
+                            routes.unlink_github.pathname;
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                success: res => {
+                    Materialize.toast(res.msg, 4000, 'black-text white');
+                    const account_status = $('.' + res.connect_alias.toLowerCase() + '-acct');
+                    account_status.removeClass('connected');
+                    $('.' + res.connect_alias.toLowerCase() + '-acct h3:first').nextAll().remove();
+                    $('span[data-editable]').removeAttr('data-editable');
+
+                    if (res.connected_accounts < 2) {
+                        const btn = $('div.w3-display-container > div > div.row').find('div.connected > button');
+                        const btn_class_names = btn.attr('class').split(/\s+/);
+                        const btn_class_name_to_del = $.grep(btn_class_names, c => {
+                            return $.inArray(c, unlink_btn_classes) !== -1;
+                        })[0];
+                        btn.removeClass(btn_class_name_to_del + ' btn-default btn-primary btn-info btn-danger').addClass('btn-remove-acct btn-danger').text('Delete Account');
+                    }
+
+                    account_status.append('<a href="' + res.connect_url + '" class="btn ' + res.btn_color + '">Connect ' + res.connect_alias + '</a>');
                 }
             });
         });
@@ -358,7 +411,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '<% routes.navbar.profile.pathname %>',
+                    url: routes.navbar.profile.pathname,
                     data: data,
                     dataType: 'text',
                     success: res => {
@@ -373,7 +426,7 @@
                         if (label.toLowerCase() === 'email' && res_obj.email.valid)
                             Materialize.toast('Email successfully changed to ' + res_obj.email.is, 4000, 'teal');
                         else if (label.toLowerCase() === 'email' && !res_obj.email.valid) {
-                            Materialize.toast('Email invalid. Try again.', 4000, 'teal');
+                            Materialize.toast('Email invalid or already taken. Try again.', 4000, 'teal');
                             $('.email').text(res_obj.email.is);
                         }
                     }
@@ -382,6 +435,11 @@
 
             input.one('blur', save).focus();
 
+        });
+
+        $('.notification-close').click(e => {
+            $(e.currentTarget).parent().css('display', 'none');
+            localStorage.setItem('profile_notification', 'dismissed');
         });
     });
 </script>

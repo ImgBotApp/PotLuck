@@ -18,6 +18,7 @@ nav {
 .nav li a:not{
     color: black;!important;
 }
+
 .active a{
     background-color: #2196F3!important;
     color: black!important;

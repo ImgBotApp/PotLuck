@@ -21,38 +21,44 @@ module.exports = (app, passport) => {
 
     // Our sign-in page
     app.get('/login', (req, res) => {
-        // render the page and pass in any flash data if it exists
-        options.message = req.flash('loginMessage');
-        res.render(path.resolve(_viewsdir + '/Login/login.ejs'), options);
+        if (req.user !== undefined) {
+            res.redirect('/index');
+        } else {
+            // render the page and pass in any flash data if it exists
+            options.message = req.flash('loginMessage');
+            res.render(path.resolve(_viewsdir + '/Login/login.ejs'), options);
+        }
     });
 
     // Process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/polling', // redirect to the secure profile section
         failureRedirect: '/login', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
-    }));
+    }), isFirstVisit);
 
     // Route for ending session
-    app.get('/logout', (req, res) => {
+    app.get('/logout', isLoggedIn, (req, res) => {
         req.logout();
         res.redirect('/');
     });
 
     // Our sign-up page
     app.get('/signup', (req, res) => {
-        // render the page and pass in any flash data if it exists
-        options.message = req.flash('signupMessage');
-        res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), options);
+        if (req.user !== undefined) {
+            res.redirect('/index');
+        } else {
+            // render the page and pass in any flash data if it exists
+            options.message = req.flash('signupMessage');
+            res.render(path.resolve(_viewsdir + '/Signup/signup.ejs'), options);
+        }
     });
 
 
     // Process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/polling', // redirect to the secure profile section
         failureRedirect: '/signup', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
-    }));
+    }), isFirstVisit);
 
     // Our profile page
     app.get('/profile', isLoggedIn, (req, res) => {
@@ -72,10 +78,9 @@ module.exports = (app, passport) => {
 
     // Process user form submission
     app.post('/profile', isLoggedIn, (req, res) => {
-        // TODO Use "connected_accounts" field of user model to disable user from unlinking all accounts. If a user wants to remove an account we should build a function for that.
         let target = {};
-        User.findById(req.user._id).then(user => {
-            target = user.toObject();
+        User.findById(req.user._id).lean().then(user => {
+            target = user;
             const data = {
                 name: {},
                 email: {},
@@ -88,31 +93,38 @@ module.exports = (app, passport) => {
             } else
                 data.name.valid = false;
 
-            if (toolbox.validateEmail(req.body.email)) {
-                target.local.email = req.body.email;
-                data.email.valid = true;
-            } else
-                data.email.valid = false;
-
             if (toolbox.validatePassword(req.body.pass)) {
                 target.local.password = generateHash(req.body.pass);
                 data.password.valid = true;
             } else
                 data.password.valid = false;
 
-            data.re = '/profile';
+            User.findOne({'local.email': req.body.email}).then(user => {
+                if (toolbox.validateEmail(req.body.email) && !user) {
+                    target.local.email = req.body.email;
+                    data.email.valid = true;
+                } else
+                    data.email.valid = false;
 
-            User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}).then(user => {
-                data.name.is = user.local.name;
-                data.email.is = user.local.email;
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify(data));
-            }).catch(err => {
-                console.log(err);
-            });
-        }).catch(err => {
-            console.log(err);
-        });
+                data.re = '/profile';
+
+                User.findByIdAndUpdate(req.user._id, {$set: target}, {new: true}).then(user => {
+                    data.name.is = user.local.name;
+                    data.email.is = user.local.email;
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify(data));
+                }).catch(err => console.log(err));
+            }).catch(err => console.log(err));
+        }).catch(err => console.log(err));
+    });
+
+    app.delete('/profile', isLoggedIn, (req, res) => {
+        if (req.user.connected_accounts < 2)
+            removeAccount(req.user._id, res);
+        else {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({msg: 'Please unlink all your accounts first before deletion.'}))
+        }
     });
 
     app.post('/profile/photo', isLoggedIn, upload.single('avatar'), (req, res) => {
@@ -120,14 +132,8 @@ module.exports = (app, passport) => {
             filename: req.file.originalname
         });
         fs.createReadStream('./uploads/' + req.file.filename)
-            .on('end', () => {
-                fs.unlink('./uploads/' + req.file.filename, err => {
-                    res.redirect('/profile');
-                })
-            })
-            .on('err', () => {
-                res.send('Error uploading image')
-            })
+            .on('end', () => fs.unlink('./uploads/' + req.file.filename, err => res.redirect('/profile')))
+            .on('err', () => res.send('Error uploading image'))
             .pipe(writestream);
         User.findByIdAndUpdate(req.user._id, {$set: {'local.picture': req.file.originalname}}, {new: true}, err => {
             if (err) return console.log(err);
@@ -201,13 +207,13 @@ module.exports = (app, passport) => {
         }));
 
     // Create a local account if previously set-up external account
-    app.get('/connect/local', (req, res) => {
+    app.get('/connect/local', isLoggedIn, (req, res) => {
         options.message = req.flash('loginMessage');
         res.render(path.resolve(_viewsdir + '/Login/connect-local.ejs'), options);
     });
 
     // Process local account creation
-    app.post('/connect/local', passport.authenticate('local-signup', {
+    app.post('/connect/local', isLoggedIn, passport.authenticate('local-signup', {
         successRedirect: '/profile', // redirect to the secure profile section
         failureRedirect: '/connect/local', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
@@ -254,58 +260,120 @@ module.exports = (app, passport) => {
         }));
 
     // Unlink local account
-    app.get('/unlink/local', (req, res) => {
+    app.delete('/unlink/local', (req, res) => {
         const user = req.user;
-        user.local.password = undefined;
-        user.local.email = undefined;
-        user.connected_accounts--;
-        user.save(err => {
-            res.redirect('/profile');
-        });
+        if (user.connected_accounts < 2) {
+            removeAccount(user._id, res);
+            res.redirect('/');
+        } else {
+            user.local = undefined;
+            user.connected_accounts--;
+            user.save(err => {
+                if (err) console.log(err);
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({
+                    msg: 'Local account successfully unlinked!',
+                    connect_url: routes_list.connect_local.pathname,
+                    connect_alias: routes_list.connect_local.alias,
+                    btn_color: 'btn-default',
+                    connected_accounts: user.connected_accounts
+                }));
+            });
+        }
     });
 
     // Unlink facebook account
-    app.get('/unlink/facebook', (req, res) => {
+    app.delete('/unlink/facebook', (req, res) => {
         const user = req.user;
-        user.facebook.token = undefined;
-        user.facebook.name = undefined;
-        user.connected_accounts--;
-        user.save(err => {
-            res.redirect('/profile');
-        });
+        if (user.connected_accounts < 2) {
+            removeAccount(user._id, res);
+            res.redirect('/');
+        } else {
+            user.facebook = undefined;
+            user.connected_accounts--;
+            user.save(err => {
+                if (err) console.log(err);
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({
+                    msg: 'Facebook account successfully unlinked!',
+                    connect_url: routes_list.connect_facebook.pathname,
+                    connect_alias: routes_list.connect_facebook.alias,
+                    btn_color: 'btn-primary',
+                    connected_accounts: user.connected_accounts
+                }));
+            });
+        }
     });
 
     // Unlink twitter account
-    app.get('/unlink/twitter', (req, res) => {
+    app.delete('/unlink/twitter', (req, res) => {
         const user = req.user;
-        user.twitter.token = undefined;
-        user.twitter.displayName = undefined;
-        user.connected_accounts--;
-        user.save(err => {
-            res.redirect('/profile');
-        });
+        if (user.connected_accounts < 2) {
+            removeAccount(user._id, res);
+            res.redirect('/');
+        } else {
+            user.twitter = undefined;
+            user.connected_accounts--;
+            user.save(err => {
+                if (err) console.log(err);
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({
+                    msg: 'Twitter account successfully unlinked!',
+                    connect_url: routes_list.connect_twitter.pathname,
+                    connect_alias: routes_list.connect_twitter.alias,
+                    btn_color: 'btn-info',
+                    connected_accounts: user.connected_accounts
+                }));
+            });
+        }
     });
 
     // Unlink google account
-    app.get('/unlink/google', (req, res) => {
+    app.delete('/unlink/google', (req, res) => {
         const user = req.user;
-        user.google.token = undefined;
-        user.google.name = undefined;
-        user.connected_accounts--;
-        user.save(err => {
-            res.redirect('/profile');
-        });
+        if (user.connected_accounts < 2) {
+            removeAccount(user._id, res);
+            res.redirect('/');
+        } else {
+            user.google = undefined;
+            user.connected_accounts--;
+            user.save(err => {
+                if (err) console.log(err);
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({
+                    msg: 'Google account successfully unlinked!',
+                    connect_url: routes_list.connect_google.pathname,
+                    connect_alias: routes_list.connect_google.alias,
+                    btn_color: 'btn-danger',
+                    connected_accounts: user.connected_accounts
+                }));
+            });
+        }
     });
 
     // Unlink github account
-    app.get('/unlink/github', (req, res) => {
-        const user = req.user;
-        user.github.token = undefined;
-        user.connected_accounts--;
-        user.save(err => {
-            res.redirect('/profile');
-        });
-    });
+    app.delete('/unlink/github', (req, res) => {
+            const user = req.user;
+            if (user.connected_accounts < 2) {
+                removeAccount(user._id, res);
+                res.redirect('/');
+            } else {
+                user.github = undefined;
+                user.connected_accounts--;
+                user.save(err => {
+                    if (err) console.log(err);
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end(JSON.stringify({
+                        msg: 'GitHub successfully unlinked!',
+                        connect_url: routes_list.connect_github.pathname,
+                        connect_alias: routes_list.connect_github.alias,
+                        btn_color: 'btn-default',
+                        connected_accounts: user.connected_accounts
+                    }));
+                });
+            }
+        }
+    );
 };
 
 
@@ -331,4 +399,34 @@ function isLoggedIn(req, res, next) {
  */
 function generateHash(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+}
+
+/**
+ * End user session and remove entry from database
+ * @param _id
+ * @param res
+ */
+function removeAccount(_id, res) {
+    User.findByIdAndRemove(_id).then(() => {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify({
+            msg: 'Account successfully deleted!',
+            red: '/'
+        }));
+    }).catch(err => {
+        if (err)
+            console.log(err);
+        res.writeHead(200, {'Content-Type': 'application/text'});
+        res.end(JSON.stringify({
+            msg: 'Sorry, we were not able to delete your account! Try again later.',
+            red: '/'
+        }));
+    });
+}
+
+function isFirstVisit(req, res) {
+    if (req.user.first_visit)
+        res.redirect('/polling');
+    else
+        res.redirect('/index');
 }
