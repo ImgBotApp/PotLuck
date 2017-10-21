@@ -45,6 +45,7 @@
     "passport-facebook": "*",
     "passport-github2": "^0.1.10",
     "passport-google-oauth": "*",
+    "passport-linkedin": "^1.0.0",
     "passport-local": "*",
     "passport-twitter": "*",
     "serve-favicon": "^2.4.4",

@@ -56,6 +56,7 @@
                     acct_statuses.twitter = user_obj.twitter ? 'connected' : '';
                     acct_statuses.google = user_obj.google ? 'connected' : '';
                     acct_statuses.github = user_obj.github ? 'connected' : '';
+                    acct_statuses.linkedin = user_obj.linkedin ? 'connected' : '';
                     %>
                     <div class="well local-acct <%= acct_statuses.local %>" style="background-color:whitesmoke">
                         <%
@@ -69,8 +70,9 @@
                             name = user.twitter.displayName;
                         else if (acct_statuses.google === 'connected')
                             name = user.google.name;
-                        else
+                        else if (acct_statuses.linkedin === 'connected')
                             name = user.github.name;
+                        else
                         %>
                         <h3><span class="fa fa-user"></span> Welcome, <span
                                     <% if (acct_statuses.local === 'connected') { %>data-editable
@@ -219,7 +221,7 @@
                         <p>
                             <img src="<%= user.github.picture %>" alt="GH_PP" align="left">
                             <strong>name</strong>: <%= user.github.name %><br>
-                            <strong>username</strong> <%= user.github.username %><br>
+                            <strong>username</strong>: <%= user.github.username %><br>
                             <strong>email</strong>: <%= user.github.email %>
                         </p>
 
@@ -230,6 +232,32 @@
                         <% } %>
                         <% } else { %>
                         <a href="<%= routes.connect_github.pathname %>" class="btn btn-default">Connect GitHub</a>
+                        <% } %>
+
+                    </div>
+                </div>
+
+                <!-- LINKEDIN INFORMATION -->
+                <div class="col-sm-6">
+                    <div class="well linkedin-acct <%= acct_statuses.linkedin %>">
+                        <h3 class="text-muted"><span class="fa fa-linkedin"></span> LinkedIn</h3>
+
+                        <% if (acct_statuses.linkedin === 'connected') { %>
+
+                        <p>
+                            <img src="<%= user.linkedin.picture %>" alt="GH_PP" align="left">
+                            <strong>name</strong>: <%= user.linkedin.name %><br>
+                            <strong>headline</strong>: <%= user.linkedin.headline %><br>
+                            <strong>email</strong>: <%= user.linkedin.email %>
+                        </p>
+
+                        <% if (user.connected_accounts < 2) { %>
+                        <button type="submit" class="btn btn-danger btn-remove-acct">Delete Account</button>
+                        <% } else { %>
+                        <button type="submit" class="btn btn-primary unlink-linkedin">Unlink</button>
+                        <% } %>
+                        <% } else { %>
+                        <a href="<%= routes.connect_linkedin.pathname %>" class="btn btn-primary">Connect LinkedIn</a>
                         <% } %>
 
                     </div>
@@ -336,7 +364,7 @@
             })
         });
 
-        const unlink_btn_classes = ['unlink-local', 'unlink-facebook', 'unlink-twitter', 'unlink-google', 'unlink-github'];
+        const unlink_btn_classes = ['unlink-local', 'unlink-facebook', 'unlink-twitter', 'unlink-google', 'unlink-github', 'unlink-linkedin'];
         $('.' + unlink_btn_classes.join(',.')).click(event => {
             event.preventDefault();
             const class_names = event.currentTarget.className.split(/\s+/);
@@ -347,7 +375,8 @@
                 button_clicked === 'unlink-facebook' ? routes.unlink_facebook.pathname :
                     button_clicked === 'unlink-twitter' ? routes.unlink_twitter.pathname :
                         button_clicked === 'unlink-google' ? routes.unlink_google.pathname :
-                            routes.unlink_github.pathname;
+                            button_clicked === 'unlink-github' ? routes.unlink_github.pathname :
+                                routes.unlink_linkedin.pathname;
             $.ajax({
                 type: 'DELETE',
                 url: url,

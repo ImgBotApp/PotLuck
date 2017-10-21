@@ -165,46 +165,37 @@ module.exports = (app, passport) => {
         });
     });
 
+    /*********************************/
+    /**      ACCOUNT MANAGEMENT     **/
+    /*********************************/
 
     // route for facebook authentication and login
-    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email', 'public_profile']}));
+    app.get('/auth/facebook', loginExternal(passport, 'facebook', {scope: ['email', 'public_profile']}, 'authenticate'));
 
     // handle the callback after facebook has authenticated the user
-    app.get('/auth/facebook/callback',
-        passport.authenticate('facebook', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/auth/facebook/callback', loginExternalCB(passport, 'authenticate'), isFirstVisit);
 
     // route for twitter authentication and login
-    app.get('/auth/twitter', passport.authenticate('twitter'));
+    app.get('/auth/twitter', loginExternal(passport, 'twitter', null, 'authenticate'));
 
     // handle the callback after twitter has authenticated the user
-    app.get('/auth/twitter/callback',
-        passport.authenticate('twitter', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/auth/twitter/callback', loginExternalCB(passport, 'authenticate'), isFirstVisit);
 
     // route for google authentication and login
-    app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+    app.get('/auth/google', loginExternal(passport, 'google', {scope: ['profile', 'email']}, 'authenticate'));
 
     // the callback after google has authenticated the user
-    app.get('/auth/google/callback',
-        passport.authenticate('google', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/auth/google/callback', loginExternalCB(passport, 'authenticate'), isFirstVisit);
 
     // route for github authentication and login
-    app.get('/auth/github', passport.authenticate('github', {scope: ['user']}));
+    app.get('/auth/github', loginExternal(passport, 'github', {scope: ['user']}, 'authenticate'));
 
     // the callback after github has authenticated the user
-    app.get('/auth/github/callback',
-        passport.authenticate('github', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/auth/github/callback', loginExternalCB(passport, 'authenticate'), isFirstVisit);
+
+    app.get('/auth/linkedin', loginExternal(passport, 'linkedin', {scope: ['r_basicprofile', 'r_emailaddress']}, 'authenticate'));
+
+    app.get('/auth/linkedin/callback', loginExternalCB(passport, 'authenticate'), isFirstVisit);
 
     // Create a local account if previously set-up external account
     app.get('/connect/local', isLoggedIn, (req, res) => {
@@ -220,160 +211,49 @@ module.exports = (app, passport) => {
     }));
 
     // send to facebook to do the authentication
-    app.get('/connect/facebook', passport.authorize('facebook', {scope: 'email'}));
+    app.get('/connect/facebook', loginExternal(passport, 'facebook', {scope: 'email'}, 'authorize'));
 
     // handle the callback after facebook has authorized the user
-    app.get('/connect/facebook/callback',
-        passport.authorize('facebook', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/connect/facebook/callback', loginExternalCB(passport, 'authorize'));
 
     // send to twitter to do the authentication
-    app.get('/connect/twitter', passport.authorize('twitter', {scope: ['email', 'public_profile']}));
+    app.get('/connect/twitter', loginExternal(passport, 'twitter', {scope: ['email', 'public_profile']}, 'authorize'));
 
     // handle the callback after twitter has authorized the user
-    app.get('/connect/twitter/callback',
-        passport.authorize('twitter', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/connect/twitter/callback', loginExternalCB(passport, 'authorize'));
 
     // send to google to do the authentication
-    app.get('/connect/google', passport.authorize('google', {scope: ['profile', 'email']}));
+    app.get('/connect/google', loginExternal(passport, 'google', {scope: ['profile', 'email']}, 'authorize'));
 
     // the callback after google has authorized the user
-    app.get('/connect/google/callback',
-        passport.authorize('google', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/connect/google/callback', loginExternalCB(passport, 'authorize'));
 
     // send to google to do the authentication
-    app.get('/connect/github', passport.authorize('github', {scope: ['user']}));
+    app.get('/connect/github', loginExternal(passport, 'github', {scope: ['user']}, 'authorize'));
 
     // the callback after google has authorized the user
-    app.get('/connect/github/callback',
-        passport.authorize('github', {
-            successRedirect: '/profile',
-            failureRedirect: '/'
-        }));
+    app.get('/connect/github/callback', loginExternalCB(passport, 'authorize'));
+
+    app.get('/connect/linkedin', loginExternal(passport, 'linkedin', {scope: ['r_basicprofile', 'r_emailaddress']}, 'authorize'));
+
+    app.get('/connect/linkedin/callback', loginExternalCB(passport, 'linkedin'));
 
     // Unlink local account
-    app.delete('/unlink/local', (req, res) => {
-        const user = req.user;
-        if (user.connected_accounts < 2) {
-            removeAccount(user._id, res);
-            res.redirect('/');
-        } else {
-            user.local = undefined;
-            user.connected_accounts--;
-            user.save(err => {
-                if (err) console.log(err);
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({
-                    msg: 'Local account successfully unlinked!',
-                    connect_url: routes_list.connect_local.pathname,
-                    connect_alias: routes_list.connect_local.alias,
-                    btn_color: 'btn-default',
-                    connected_accounts: user.connected_accounts
-                }));
-            });
-        }
-    });
+    app.delete('/unlink/local', (req, res) => unlinkAccount(req, res, 'local'));
 
     // Unlink facebook account
-    app.delete('/unlink/facebook', (req, res) => {
-        const user = req.user;
-        if (user.connected_accounts < 2) {
-            removeAccount(user._id, res);
-            res.redirect('/');
-        } else {
-            user.facebook = undefined;
-            user.connected_accounts--;
-            user.save(err => {
-                if (err) console.log(err);
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({
-                    msg: 'Facebook account successfully unlinked!',
-                    connect_url: routes_list.connect_facebook.pathname,
-                    connect_alias: routes_list.connect_facebook.alias,
-                    btn_color: 'btn-primary',
-                    connected_accounts: user.connected_accounts
-                }));
-            });
-        }
-    });
+    app.delete('/unlink/facebook', (req, res) => unlinkAccount(req, res, 'facebook'));
 
     // Unlink twitter account
-    app.delete('/unlink/twitter', (req, res) => {
-        const user = req.user;
-        if (user.connected_accounts < 2) {
-            removeAccount(user._id, res);
-            res.redirect('/');
-        } else {
-            user.twitter = undefined;
-            user.connected_accounts--;
-            user.save(err => {
-                if (err) console.log(err);
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({
-                    msg: 'Twitter account successfully unlinked!',
-                    connect_url: routes_list.connect_twitter.pathname,
-                    connect_alias: routes_list.connect_twitter.alias,
-                    btn_color: 'btn-info',
-                    connected_accounts: user.connected_accounts
-                }));
-            });
-        }
-    });
+    app.delete('/unlink/twitter', (req, res) => unlinkAccount(req, res, 'twitter'));
 
     // Unlink google account
-    app.delete('/unlink/google', (req, res) => {
-        const user = req.user;
-        if (user.connected_accounts < 2) {
-            removeAccount(user._id, res);
-            res.redirect('/');
-        } else {
-            user.google = undefined;
-            user.connected_accounts--;
-            user.save(err => {
-                if (err) console.log(err);
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                res.end(JSON.stringify({
-                    msg: 'Google account successfully unlinked!',
-                    connect_url: routes_list.connect_google.pathname,
-                    connect_alias: routes_list.connect_google.alias,
-                    btn_color: 'btn-danger',
-                    connected_accounts: user.connected_accounts
-                }));
-            });
-        }
-    });
+    app.delete('/unlink/google', (req, res) => unlinkAccount(req, res, 'google'));
 
     // Unlink github account
-    app.delete('/unlink/github', (req, res) => {
-            const user = req.user;
-            if (user.connected_accounts < 2) {
-                removeAccount(user._id, res);
-                res.redirect('/');
-            } else {
-                user.github = undefined;
-                user.connected_accounts--;
-                user.save(err => {
-                    if (err) console.log(err);
-                    res.writeHead(200, {'Content-Type': 'application/json'});
-                    res.end(JSON.stringify({
-                        msg: 'GitHub successfully unlinked!',
-                        connect_url: routes_list.connect_github.pathname,
-                        connect_alias: routes_list.connect_github.alias,
-                        btn_color: 'btn-default',
-                        connected_accounts: user.connected_accounts
-                    }));
-                });
-            }
-        }
-    );
+    app.delete('/unlink/github', (req, res) => unlinkAccount(req, res, 'github'));
+
+    app.delete('/unlink/linkedin', (req, res) => unlinkAccount(req, res, 'linkedin'));
 };
 
 
@@ -422,6 +302,58 @@ function removeAccount(_id, res) {
             red: '/'
         }));
     });
+}
+
+function unlinkAccount(req, res, account_name) {
+    const user = req.user;
+    if (user.connected_accounts < 2) {
+        removeAccount(user._id, res);
+        res.redirect('/');
+    } else {
+        user[account_name] = undefined;
+        user.connected_accounts--;
+        user.save(err => {
+            if (err) console.log(err);
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify({
+                msg: toolbox.capitalizeFL(account_name) + ' account successfully un' + (account_name === 'linkedin' ? '\'linked\' (heh heh)' : 'linked'),
+                connect_url: routes_list['connect_' + account_name].pathname,
+                connect_alias: routes_list['connect_' + account_name].alias,
+                btn_color: 'btn-primary',
+                connected_accounts: user.connected_accounts
+            }));
+        });
+    }
+}
+
+function loginExternal(passport, account_name, scope, method) {
+    return function (req, res, next) {
+        switch (method) {
+            case 'authorize':
+                passport.authorize(account_name, scope)(req, res, next);
+                break;
+            case 'authenticate':
+                passport.authenticate(account_name, scope)(req, res, next);
+                break;
+        }
+    };
+}
+
+function loginExternalCB(passport, method) {
+    return function (req, res, next) {
+        const account_name = req.originalUrl.split('/')[2];
+        switch (method) {
+            case 'authorize':
+                passport.authorize(account_name, {
+                    successRedirect: '/profile',
+                    failureRedirect: '/'
+                })(req, res, next);
+                break;
+            case 'authenticate':
+                passport.authenticate(account_name, {failureRedirect: '/'})(req, res, next);
+                break;
+        }
+    };
 }
 
 function isFirstVisit(req, res) {

@@ -22,6 +22,10 @@ exports.routes_list = {
         pathname: "/auth/twitter",
         alias: "Twitter"
     },
+    auth_linkedin: {
+        pathname: "/auth/linkedin",
+        alias: "LinkedIn"
+    },
     connect_local: {
         pathname: "/connect/local",
         alias: "Local"
@@ -42,6 +46,10 @@ exports.routes_list = {
         pathname: "/connect/twitter",
         alias: "Twitter"
     },
+    connect_linkedin: {
+        pathname: "/connect/linkedin",
+        alias: "LinkedIn"
+    },
     unlink_local: {
         pathname: "/unlink/local",
         alias: "Local"
@@ -61,6 +69,10 @@ exports.routes_list = {
     unlink_twitter: {
         pathname: "/unlink/twitter",
         alias: "Twitter"
+    },
+    unlink_linkedin: {
+        pathname: "/unlink/linkedin",
+        alias: "LinkedIn"
     },
 
     // Application
