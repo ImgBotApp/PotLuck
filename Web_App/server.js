@@ -24,7 +24,9 @@ const session = require('express-session'); // Parses session cookie, validates 
 const path = require('path'); // Require path module for configuring paths
 const tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const fs = require('fs'); // Require module for interacting with file system
+const ua = require('universal-analytics');
 const toolbox = require('./toolbox/toolbox');
+
 
 const configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 const configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
@@ -64,6 +66,7 @@ require(__dirname + '/app/Routes/')(app, passport); // load our routes and pass 
 
 app.listen(port);
 console.log("Listening on port " + port);
+
 
 setInterval(() => {
     fs.readFile('../Files/Recipes/Similarities_Appended/Aug_sims_test-534.json', 'utf8', (err, data) => {
