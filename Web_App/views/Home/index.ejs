@@ -30,6 +30,20 @@
             background-size: cover;
         }
     </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108483296-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108483296-1');
+    </script>
 </head>
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity content">
@@ -87,11 +101,9 @@
 
             <p><span style="color: #f5f5f5; "> Login or Register with:</span></p>
             <a href="<%= routes.login.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
-                        style="color: black;">
-                    Login</span></a>
+                        style="color: black;"> Login</span></a>
             <a href="<%= routes.signup.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
-                        style="color: black;">
-                    Signup</span></a>
+                        style="color: black;"> Signup</span></a>
             <a href="<%= routes.auth_facebook.pathname %>" class="btn btn-primary"><span class="fa fa-facebook"></span>
                 Facebook</a>
             <a href="<%= routes.auth_twitter.pathname %>" class="btn btn-info"><span class="fa fa-twitter"></span>
@@ -100,6 +112,8 @@
                 Google</a>
             <a href="<%= routes.auth_github.pathname %>" class="btn btn-default"><span class="fa fa-github"></span>
                 GitHub</a>
+            <a href="<%= routes.auth_linkedin.pathname %>" class="btn btn-primary"><span class="fa fa-linkedin"></span>
+                LinkedIn</a>
             <% } %>
         </div>
     </div>

@@ -85,5 +85,9 @@ module.exports = {
 
         arr.splice(locationOf(el, arr) + 1, 0, el);
         return arr;
+    },
+
+    capitalizeFL(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 };

@@ -29,11 +29,26 @@
             background: black url("/images/camaje-cooking-7.jpg") center;
             background-size: cover;
         }
+
+
     </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108483296-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108483296-1');
+    </script>
 </head>
 <body>
-
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+<div class="bgimg w3-display-container w3-text-white">
     <div class="w3-display-topleft w3-padding-large w3-xlarge"
          style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
         <a href="<%= routes.intro.pathname %>" style="text-decoration: none; color: #477496">PotLuck</a>

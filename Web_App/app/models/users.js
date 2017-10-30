@@ -61,6 +61,17 @@ const userSchema = mongoose.Schema({
             match: /^https:\/\//i
         }
     },
+    linkedin: {
+        id: String,
+        token: String,
+        email: String,
+        name: String,
+        picture: {
+            type: String,
+            match: /^https:\/\//i
+        },
+        headline: String
+    },
     feedback: [new mongoose.Schema({
         recipe: {type: Number, ref: 'Recipe'},
         rating: Number
