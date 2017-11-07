@@ -13,7 +13,9 @@ const User = require('../app/models/users').User;
 const configAuth = require('./auth');
 const toolbox = require('../toolbox/toolbox');
 
-let callbackURLIdx = process.argv[2] === 'dev' ? 0 : 1;
+const argv = require('minimist')(process.argv.slice(2));
+
+let callbackURLIdx = argv.dev ? 0 : 1;
 
 // expose this function to our app using module.exports
 module.exports = passport => {

@@ -63,23 +63,29 @@ module.exports = (app, passport) => {
 
         // Collect single random recipe from the database, projecting only its id, title, and image
         // TODO To increase uniqueness of polling sample, increase sample size
-        Recipe.aggregate({$sample: {size: 8}}, {$project: {_id: 1, title: 1, image: 1, cuisines: 1}}, (err, docs) => {
+        Recipe.aggregate({$sample: {size: 8}}, {
+            $project: {
+                _id: 1,
+                title: 1,
+                image: 1,
+                cuisines: 1,
+                readyInMinutes: 1
+            }
+        }, (err, docs) => {
             if (err) console.log(err);
             if (version === 'v2') {
                 res.setHeader('Content-Type', 'application/json');
                 const target = {
                     "_id": docs[0]._id,
                     "title": docs[0].title,
-                    "image": docs[0].image
+                    "image": docs[0].image,
+                    "readyInMinutes": docs[0].readyInMinutes,
+                    "cuisines": docs[0].cuisines
                 };
                 res.send(JSON.stringify(target, null, 3));
             } else {
                 options.recipes = docs;
                 options.user = req.user;
-                options.toasts = {
-                    likes: [""],
-                    dislikes: []
-                };
                 res.render(path.resolve(_viewsdir + '/Polling/polling.ejs'), options);
             }
         });
