@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Polling</title>
 
     <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/dist/css/materialize.css"
-          media="screen,projection"/>
-    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="../../public/css/Dashboard.css">
-    <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" ref="../../public/css/fonts/Raleway.css">
-    <link rel="stylesheet" href="../../node_modules/w3-css/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
         body, h1 {
@@ -29,52 +28,27 @@
         .bgimg {
             padding-top: 200px;
             min-height: 100%;
-            background: black url("../../public/images/12265684_1010729262282686_8800740801702150174_o.jpg") center;
+            background: black url("/images/12265684_1010729262282686_8800740801702150174_o.jpg") center;
             background-size: cover;
         }
     </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108483296-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-108483296-1');
+    </script>
 </head>
 <body>
-<div class="bgimg w3-animate-opacity">
-    <!------------------------------------------------->
-    <!--                 NAVBAR                      -->
-    <!------------------------------------------------->
-    <div class="container">
-
-        <!-- Static navbar -->
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                            aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<%= routes.index %>">PotLuck</a>
-                    <!-- Search Bar -->
-                    <section class="searcbar">
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="row">
-                                    <div class="input-field col s12">
-                                        <i class="material-icons prefix">search</i>
-                                        <input id="icon-prefix" type="text">
-                                        <label for="icon-prefix">Find a recipe</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right"></ul>
-                </div><!--/.nav-collapse -->
-            </div><!--/.container-fluid -->
-        </nav>
-    </div> <!-- /container -->
-
+<div class="bgimg w3-animate-opacity content">
     <div class="container">
         <div class="jumbotron text-center">
             <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
@@ -85,18 +59,21 @@
                 </div>
                 <div id="recipeTitle" class="card-content"></div>
                 <div class="card-action">
-                    <button id="" type="submit" class="btn btn-like w3-button w3-round w3-green">
+                    <button id="" type="submit" class="btn btn-like-polling w3-button w3-round w3-green">
                         Like
                     </button>
-                </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-finish w3-button w3-round w3-gray">
+                    <button id="" type="submit" class="btn btn-dislike-polling w3-button w3-round w3-red">
+                        Dislike
+                    </button>
+                    <button type="submit" class="btn btn-finish w3-button w3-round w3-gray">
                         Finish
                     </button>
                 </div>
-                <div class="card-action">
-                    <button id="" type="submit" class="btn btn-dislike w3-button w3-round w3-red">
-                        Dislike
+                <div class="card-content">
+                    <p style="font-size: small">Does this recipe look suspicious? Help us catch anomalies and let us
+                        know by hitting the button below!</p>
+                    <button id="" type="submit" class="btn btn-error-recipe">
+                        Report
                     </button>
                 </div>
             </div>
@@ -112,7 +89,8 @@
         <div class="row">
             <div class="col l6 s12">
                 <h5 class="white-text">PotLuck Beta Phase</h5>
-                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for dinner
+                <p class="grey-text text-lighten-4">Finally, an application to help you decide what you want for
+                    dinner
                     tonight.</p>
             </div>
             <div class="col l4 offset-l2 s12">
@@ -129,47 +107,61 @@
     <div class="footer-copyright">
         <div class="container">
             © 2016 - 2017 ISU-DSL, All rights reserved.
-            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa State
+            <a class="grey-text text-lighten-4 right" href="http://home.engineering.iastate.edu/~chinmay/">Iowa
+                State
                 Data Science Lab</a>
         </div>
     </div>
 </footer>
 
 <!-- Scripts  -->
-<script src="../../node_modules/jquery/dist/jquery.js"></script>
-<script src="../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.js"></script>
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/recipe_view_search.js"></script>
+<script type="text/javascript" src="/js/navbar.js"></script>
 <script>
+    const routes = <%- JSON.stringify(routes) %>;
+    const recipes = <%- JSON.stringify(recipes) %>;
+
+    addNav(routes);
+    addModals();
+
+    let navbar_routes = "";
+    let active_set = false;
+
+    for (let key in routes.navbar) {
+        if (routes.navbar.hasOwnProperty(key)) {
+            if (routes.navbar[key].pathname === window.location.pathname) {
+                navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                active_set = true;
+            } else
+                navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+        }
+    }
+
+    if (!active_set)
+        navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+
+    let num_recipes = recipes.length;
+
+    recipes.forEach((recipe, idx) => {
+        recipes[idx] = {
+            title: recipe.title,
+            image: recipe.image,
+            id: recipe._id
+        };
+    });
+
     $(document).ready(() => {
-        let navbar_routes = "";
-
-        <% for (let key in routes.navbar) {
-        if (routes.navbar.hasOwnProperty(key))  { %>
-        if ("<%= routes.navbar[key].pathname %>" === window.location.pathname)
-            navbar_routes += "<li class=\"active\"><a style=\"color:white!important;\" href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>"
-        else
-            navbar_routes += "<li><a href=\"<%= routes.navbar[key].pathname %>\"><%= routes.navbar[key].alias %></a></li>\n";
-        <% } %>
-        <% } %>
-
         $('.navbar-nav').html(navbar_routes);
 
-        let recipes = [],
-            num_recipes = "<%= recipes.length %>",
-            index = 0,
+        let index = 0,
             rated_data = {};
-
-        <% recipes.forEach((recipe, idx) => { %>
-        recipes["<%= idx %>"] = {
-            title: '<%= recipe.title %>',
-            image: '<%= recipe.image %>',
-            id: "<%= recipe._id %>"
-        };
-        <% }) %>
 
         $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title + '</span>');
         $('#recipeImg').attr('src', recipes[index].image);
-        $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+        $('.btn-dislike-polling, .btn-like-polling, .btn-error-recipe').attr('id', recipes[index].id);
 
         function isFinishedRating() {
             return index === num_recipes - 1;
@@ -179,26 +171,24 @@
             const recipeImg = $('#recipeImg');
             recipeImg.attr('src', recipes[++index].image);
             recipeImg.one('load', () => {
-                $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title+ '</span>');
-                $('.btn-dislike, .btn-like').attr('id', recipes[index].id);
+                $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title + '</span>');
+                $('.btn-dislike-polling, .btn-like-polling').attr('id', recipes[index].id);
             }).each(() => {
                 if (this.complete) $(this).load()
             });
 
-            $('#num_recipes').text(--num_recipes + ' Recipes Left to Rate');
+            $('#num_recipes').text(num_recipes - index + ' Recipes Left to Rate');
         }
 
         function postToPolling(data) {
-            $.post('/polling', data, (res) => {
+            $.post(routes.navbar.polling.pathname, data, (res) => {
                 if (res.status === 'Success') window.location = res.redirectTo;
             })
         }
 
-        $(".button-collapse").sideNav();
-
-        $('.btn-like').click(() => {
+        $('.btn-like-polling').click(() => {
             rated_data[index] = {
-                recipeId: recipes[index].id,
+                recipe: recipes[index].id,
                 rating: 1
             };
 
@@ -206,11 +196,23 @@
             else nextRecipe();
         });
 
-        $('.btn-dislike').click(() => {
+        $('.btn-dislike-polling').click(() => {
             rated_data[index] = {
-                recipeId: recipes[index].id,
+                recipe: recipes[index].id,
                 rating: 0
             };
+
+            if (isFinishedRating()) postToPolling(rated_data);
+            else nextRecipe();
+        });
+
+        $('.btn-error-recipe').click(() => {
+            rated_data[index] = {
+                recipe: recipes[index].id,
+                rating: -1
+            };
+
+            Materialize.toast('We\'ll look into this recipe. Thanks!', 4000, 'teal');
 
             if (isFinishedRating()) postToPolling(rated_data);
             else nextRecipe();

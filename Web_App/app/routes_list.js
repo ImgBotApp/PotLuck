@@ -7,43 +7,72 @@ exports.routes_list = {
 
     // Social
     auth_facebook: {
-        pathname: "/auth/facebook"
+        pathname: "/auth/facebook",
+        alias: "Facebook"
     },
     auth_github: {
-        pathname: "auth/github"
+        pathname: "auth/github",
+        alias: "GitHub"
     },
     auth_google: {
-        pathname: "/auth/google"
+        pathname: "/auth/google",
+        alias: "Google"
     },
     auth_twitter: {
-        pathname: "/auth/twitter"
+        pathname: "/auth/twitter",
+        alias: "Twitter"
+    },
+    auth_linkedin: {
+        pathname: "/auth/linkedin",
+        alias: "LinkedIn"
     },
     connect_local: {
-        pathname: "/connect/local"
+        pathname: "/connect/local",
+        alias: "Local"
     },
     connect_facebook: {
-        pathname: "/connect/facebook"
+        pathname: "/connect/facebook",
+        alias: "Facebook"
     },
     connect_github: {
-        pathname: "/connect/github"
+        pathname: "/connect/github",
+        alias: "GitHub"
     },
     connect_google: {
-        pathname: "/connect/google"
+        pathname: "/connect/google",
+        alias: "Google"
     },
     connect_twitter: {
-        pathname: "/connect/twitter"
+        pathname: "/connect/twitter",
+        alias: "Twitter"
+    },
+    connect_linkedin: {
+        pathname: "/connect/linkedin",
+        alias: "LinkedIn"
+    },
+    unlink_local: {
+        pathname: "/unlink/local",
+        alias: "Local"
     },
     unlink_facebook: {
-        pathname: "/unlink/facebook"
+        pathname: "/unlink/facebook",
+        alias: "Facebook"
     },
     unlink_github: {
-        pathname: "/unlink/github"
+        pathname: "/unlink/github",
+        alias: "GitHub"
     },
     unlink_google: {
-        pathname: "/unlink/google"
+        pathname: "/unlink/google",
+        alias: "Google"
     },
     unlink_twitter: {
-        pathname: "/unlink/twitter"
+        pathname: "/unlink/twitter",
+        alias: "Twitter"
+    },
+    unlink_linkedin: {
+        pathname: "/unlink/linkedin",
+        alias: "LinkedIn"
     },
 
     // Application
