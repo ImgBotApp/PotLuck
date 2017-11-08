@@ -20,8 +20,13 @@
     <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
 
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -32,6 +37,11 @@
             min-height: 100%;
             background: center;
             background-size: cover;
+        }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
         }
     </style>
 
@@ -322,9 +332,8 @@
             $('.terms').text(window.location.protocol + '//' + window.location.hostname + '/')
         });
     } else {
-        $('.content').prepend('<div class="w3-display-topleft w3-padding-large w3-xlarge"\n' +
-            '         style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">\n' +
-            '        <a href="' + routes.index.pathname + '" style="text-decoration: none; color: #477496">PotLuck</a>\n' +
+        $('.content').prepend('<div class="logo w3-display-topleft w3-padding-large w3-xlarge">\n' +
+            '        <a href="' + routes.index.pathname + '" style="text-decoration: none; color: deepskyblue">PotLuck</a>\n' +
             '    </div>');
         bg.css('padding-top', '80px');
     }

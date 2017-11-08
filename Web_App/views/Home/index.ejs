@@ -19,8 +19,13 @@
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -42,6 +47,11 @@
             width: 100%;
             height: 100%;
             opacity: 0.6;
+        }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
         }
     </style>
 
@@ -194,45 +204,48 @@
     const routes = <%- JSON.stringify(routes) %>;
     const loggedin = <%- loggedin %>;
 
-    addFeedback();
+    $(document).ready(() => {
+        addFeedback();
 
-    const content = $('.content');
-    if (loggedin) {
-        content.css('padding-top', '200px');
-        addNav(routes);
-        addModals();
+        const content = $('.content');
+        if (loggedin) {
+            content.css('padding-top', '200px');
+            addNav(routes);
+            addModals();
 
-        let navbar_routes = "";
-        let active_set = false;
+            let navbar_routes = "";
+            let active_set = false;
 
-        for (let key in routes.navbar) {
-            if (routes.navbar.hasOwnProperty(key)) {
-                if (routes.navbar[key].pathname === window.location.pathname) {
-                    navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
-                    active_set = true;
-                } else
-                    navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+            for (let key in routes.navbar) {
+                if (routes.navbar.hasOwnProperty(key)) {
+                    if (routes.navbar[key].pathname === window.location.pathname) {
+                        navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                        active_set = true;
+                    } else
+                        navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                }
             }
+
+            if (!active_set)
+                navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+
+            $(document).ready(() => $('.navbar-nav').html(navbar_routes));
+        } else {
+            content.prepend('<div class="logo w3-display-topleft w3-padding-large w3-xlarge">\n' +
+                '        <a href="' + routes.intro.pathname + '" style="text-decoration: none; color: deepskyblue">PotLuck</a>\n' +
+                '    </div>');
+            content.css('padding-top', '80px');
         }
 
-        if (!active_set)
-            navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+        function check() {
+            const isMobile = window.matchMedia("only screen and (max-width: 768px)");
 
-        $(document).ready(() => $('.navbar-nav').html(navbar_routes));
-    } else {
-        content.css('padding-top', '80px');
-    }
+            if (isMobile.matches)
+                $(".target > .row").find("div").removeClass().addClass('row');
+            else
+                $(".target > .row").find("div").removeClass().addClass('col s4');
+        }
 
-    function check() {
-        const isMobile = window.matchMedia("only screen and (max-width: 768px)");
-
-        if (isMobile.matches)
-            $(".target > .row").find("div").removeClass().addClass('row');
-        else
-            $(".target > .row").find("div").removeClass().addClass('col s4');
-    }
-
-    $(document).ready(() => {
         check();
         $(window).bind('orientationchange', check);
     });
