@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <% if (loggedin) { %>
     <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
-    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
-    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <% } %>
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
     <style>
         body, h1 {
@@ -21,13 +23,24 @@
         }
 
         body, html {
-            height: 100%
+            height: 100%;
         }
 
         .bgimg {
-            min-height: 100%;
-            background: black url("/images/Chinese-food-wallpaper-12-2560x1600.jpg") center;
+            height: 100%;
+            background: gray;
+            overflow: hidden;
+        }
+
+        .bgimg:before {
+            background: url("/images/Chinese-food-wallpaper-12-2560x1600-min.jpg") no-repeat fixed center;
             background-size: cover;
+            display: block;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.6;
         }
     </style>
 
@@ -46,75 +59,97 @@
     </script>
 </head>
 <body>
-<div class="bgimg w3-display-container w3-animate-opacity content">
-    <div id="manipulate" class="container-fluid text-center toggle_off"
-         style="background-color: rgba(0,0,0,0.85); padding-top: 80px; padding-bottom: 80px">
-        <div class="w3-animate-right">
-            <% if (loggedin) { %>
-            <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Welcome, <%= user.local.name %></span>
-            </h1>
-            <div class="container">
+<div class="bgimg">
+    <div class="content w3-display-container w3-animate-opacity">
+        <div id="manipulate" class="container-fluid text-center toggle_off"
+             style="background-color: rgba(0,0,0,0.85); padding-top: 80px; padding-bottom: 80px">
+            <div class="w3-animate-right">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <p><span style="color: #f5f5f5; "> Go to your profile:</span></p>
-                        <a href="<%= routes.navbar.profile.pathname %>" class="btn btn-default"><span
-                                    class="fa fa-user"></span><span
-                                    style="color: black;">
+                    <% if (loggedin) { %>
+                    <h1><span class="fa fa-lock"></span><span
+                                style="color: #b22222; "> Welcome, <%= user.local.name %></span>
+                    </h1>
+                    <div class="container target">
+                        <div class="row">
+                            <div>
+                                <p><span style="color: #f5f5f5; "> Go to your profile:</span></p>
+                                <a href="<%= routes.navbar.profile.pathname %>" class="btn btn-default"><span
+                                            class="fa fa-user"></span><span
+                                            style="color: black;">
                     My Profile</span></a>
-                    </div>
-                    <div class="col-sm-4">
-                        <p><span style="color: #f5f5f5; "> View your recommendations:</span></p>
-                        <a href="<%= routes.navbar.dashboard.pathname %>" class="btn btn-info"><span
-                                    class="fa fa-lightbulb-o"></span><span
-                                    style="color: black;">
+                            </div>
+                            <div>
+                                <p><span style="color: #f5f5f5; "> View your recommendations:</span></p>
+                                <a href="<%= routes.navbar.dashboard.pathname %>" class="btn btn-info"><span
+                                            class="fa fa-lightbulb-o"></span><span
+                                            style="color: black;">
                                 Dashboard</span></a>
-                    </div>
-                    <div class="col-sm-4">
-                        <p><span style="color: #f5f5f5;">Or logout: </span></p>
-                        <a href="<%= routes.navbar.logout.pathname %>" class="btn btn-danger"><span
-                                    class="fa fa-sign-out"></span><span
-                                    style="color: black;">
+                            </div>
+                            <div>
+                                <p><span style="color: #f5f5f5;">Or logout: </span></p>
+                                <a href="<%= routes.navbar.logout.pathname %>" class="btn btn-danger"><span
+                                            class="fa fa-sign-out"></span><span
+                                            style="color: black;">
                     Logout</span></a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div id="suggestions" class="w3-jumbo w3-padding-large"
-                 style="background-color: rgba(227,186,209,0.45); display: none">
-                <div class="container">
+                    <br>
+                    <div id="suggestions" class="w3-jumbo w3-padding-large"
+                         style="background-color: rgba(227,186,209,0.45); display: none">
+                        <div class="container">
+                            <div class="row">
+                                <div id="Sugg0" class="col-md-4">
+
+                                </div>
+                                <div id="Sugg1" class="col-md-4">
+
+                                </div>
+                                <div id="Sugg2" class="col-md-4">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% } else { %>
+                    <div class="col s12">
+                        <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Sign-in Options</span></h1>
+                    </div>
                     <div class="row">
-                        <div id="Sugg0" class="col-md-4">
-
-                        </div>
-                        <div id="Sugg1" class="col-md-4">
-
-                        </div>
-                        <div id="Sugg2" class="col-md-4">
-
-                        </div>
+                        <p><span style="color: #f5f5f5; "> Login or Register locally:</span></p>
+                        <a href="<%= routes.login.pathname %>" class="btn btn-default"><span
+                                    class="fa fa-user"></span><span
+                                    style="color: black;"> Login</span></a>
+                        <a href="<%= routes.signup.pathname %>" class="btn btn-default"><span
+                                    class="fa fa-user"></span><span
+                                    style="color: black;"> Signup</span></a>
                     </div>
+                    <p><span style="color: #f5f5f5; "> External account login/registration:</span></p>
+                    <div class="row">
+                        <a href="<%= routes.auth_facebook.pathname %>" class="btn btn-primary"><span
+                                    class="fa fa-facebook"></span>
+                            Facebook</a>
+                        <a href="<%= routes.auth_twitter.pathname %>" class="btn btn-info"><span
+                                    class="fa fa-twitter"></span>
+                            Twitter</a>
+                    </div>
+                    <div class="row">
+                        <a href="<%= routes.auth_google.pathname %>" class="btn btn-danger"><span
+                                    class="fa fa-google-plus"></span>
+                            Google</a>
+                        <a href="<%= routes.auth_github.pathname %>" class="btn btn-default"><span
+                                    class="fa fa-github"></span>
+                            GitHub</a>
+                    </div>
+                    <div class="row">
+                        <a href="<%= routes.auth_linkedin.pathname %>" class="btn btn-primary"><span
+                                    class="fa fa-linkedin"></span>
+                            LinkedIn</a>
+                    </div>
+                    <% } %>
                 </div>
             </div>
-
-            <% } else { %>
-            <h1><span class="fa fa-lock"></span><span style="color: #b22222; "> Sign-in Options</span></h1>
-
-            <p><span style="color: #f5f5f5; "> Login or Register with:</span></p>
-            <a href="<%= routes.login.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
-                        style="color: black;"> Login</span></a>
-            <a href="<%= routes.signup.pathname %>" class="btn btn-default"><span class="fa fa-user"></span><span
-                        style="color: black;"> Signup</span></a>
-            <a href="<%= routes.auth_facebook.pathname %>" class="btn btn-primary"><span class="fa fa-facebook"></span>
-                Facebook</a>
-            <a href="<%= routes.auth_twitter.pathname %>" class="btn btn-info"><span class="fa fa-twitter"></span>
-                Twitter</a>
-            <a href="<%= routes.auth_google.pathname %>" class="btn btn-danger"><span class="fa fa-google-plus"></span>
-                Google</a>
-            <a href="<%= routes.auth_github.pathname %>" class="btn btn-default"><span class="fa fa-github"></span>
-                GitHub</a>
-            <a href="<%= routes.auth_linkedin.pathname %>" class="btn btn-primary"><span class="fa fa-linkedin"></span>
-                LinkedIn</a>
-            <% } %>
         </div>
     </div>
 </div>
@@ -157,9 +192,9 @@
     const routes = <%- JSON.stringify(routes) %>;
     const loggedin = <%- loggedin %>;
 
-    const bgimg = $('.bgimg');
+    const content = $('.content');
     if (loggedin) {
-        bgimg.css('padding-top', '200px');
+        content.css('padding-top', '200px');
         addNav(routes);
         addModals();
 
@@ -181,8 +216,22 @@
 
         $(document).ready(() => $('.navbar-nav').html(navbar_routes));
     } else {
-        bgimg.css('padding-top', '80px');
+        content.css('padding-top', '80px');
     }
+
+    function check() {
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)");
+
+        if (isMobile.matches)
+            $(".target > .row").find("div").removeClass().addClass('row');
+        else
+            $(".target > .row").find("div").removeClass().addClass('col s4');
+    }
+
+    $(document).ready(() => {
+        check();
+        $(window).bind('orientationchange', check);
+    });
 </script>
 
 </body>
