@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msvalidate.01" content="0749B817640BB355A3C5A18AA053A499"/>
     <title>PotLuck | Intro</title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/css/intro.css">
-    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
         body, h1 {
-            font-family: "Raleway", sans-serif
+            font-family: "Raleway", sans-serif;
+            font-weight: bold;
         }
 
         body, html {
@@ -25,12 +27,36 @@
         }
 
         .bgimg {
-            min-height: 100%;
-            background: black url("/images/camaje-cooking-7.jpg") center;
-            background-size: cover;
+            height: 100%;
+            background: gray;
+            overflow: hidden;
         }
 
+        .bgimg:before {
+            background: url("/images/camaje-cooking-7-min.jpg") no-repeat fixed center;
+            background-size: cover;
+            display: block;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.6;
+        }
 
+        div h1 {
+            text-align: center;
+            color: whitesmoke;
+        }
+
+        div hr {
+            margin: auto;
+            width: 40%;
+        }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
+        }
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -48,22 +74,28 @@
     </script>
 </head>
 <body>
-<div class="bgimg w3-display-container w3-text-white">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge"
-         style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="<%= routes.intro.pathname %>" style="text-decoration: none; color: #477496">PotLuck</a>
+<div class="bgimg w3-display-container">
+    <div class="logo w3-display-topleft w3-padding-large w3-xlarge">
+        <a href="<%= routes.intro.pathname %>" style="text-decoration: none; color: deepskyblue">PotLuck</a>
     </div>
     <div class="w3-display-middle">
-        <h1 class="w3-jumbo w3-animate-top" style="text-align: center">A SMARTER RECIPE FINDER</h1>
-        <hr class="w3-border-grey" style="margin:auto;width:40%">
-        <p class="w3-large w3-center">Beta Testing</p>
+        <h1 class="w3-jumbo w3-animate-top">A SMARTER RECIPE FINDER</h1>
+        <hr class="w3-border-grey">
+        <p class="caption w3-large w3-center w3-text-white">Beta Testing</p>
     </div>
-    <div class="w3-display-container w3-display-bottomright w3-padding-large">
-        <a class="btn-floating btn-large teal pulse" href="<%= routes.index.pathname %>"><i class="material-icons">restaurant</i></a>
+    <div id="enter-site" class="w3-display-container w3-display-bottomright w3-padding-large">
+        <a class="btn-floating btn-large light-blue darken-4 pulse" href="<%= routes.index.pathname %>"><i
+                    class="material-icons">restaurant</i></a>
+    </div>
+    <div class="tap-target light-blue darken-4 light-blue-text text-lighten-5" data-activates="enter-site">
+        <div class="tap-target-content">
+            <h5>Let's get cookin'! &#x1F525; &#x1F374; &#x1F525;</h5>
+            <p>Head to the account page to <br>register and login.</p>
+        </div>
     </div>
 </div>
 
-<footer class="page-footer teal darken-4">
+<footer class="page-footer light-blue darken-4">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
@@ -96,6 +128,24 @@
 <script type="text/javascript" src="/jquery.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
+<script>
+    $(document).ready(() => {
+        <% if (play_intro) { %>
+        css_color = 'light-blue darken-3 light-blue-text text-lighten-5';
+        css_style = 'rounded';
+
+        Materialize.toast('Hey there, PotLuck beta tester! &#x1F35C; (Swipe away the message or wait for it to timeout)', 7000, css_color + ' ' + css_style, () => {
+            Materialize.toast('Thank you for being among our small group of testers! &#x1F35A;', 6000, css_color + ' ' + css_style, () => {
+                Materialize.toast('For you, this means getting a chance to work with the development team... &#x1F363;', 6000, css_color + ' ' + css_style, () => {
+                    Materialize.toast('...and having the chance to influence the direction of PotLuck! &#x1F379;', 6000, css_color + ' ' + css_style, () => {
+                        $('.tap-target').tapTarget('open');
+                    });
+                });
+            });
+        });
+        <% } %>
+    });
+</script>
 
 </body>
 </html>

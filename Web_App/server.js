@@ -8,8 +8,10 @@ require('dotenv').config();
 
 global.appRoot = __dirname; //set the global path so other files may use it
 
+const compression = require('compression');
 const express = require('express'); // Require our module
 const app = express(); // Instantiate our module
+const minifyHTML = require('express-minify-html');
 const port = process.env.PORT || 80; // Set to port 80 if environment variable not set
 const https = require('https'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const favicon = require('serve-favicon');
@@ -25,8 +27,7 @@ const path = require('path'); // Require path module for configuring paths
 const tls = require('tls'); // For impending SSL/TLS future set up (Relevant code commented out for now)
 const fs = require('fs'); // Require module for interacting with file system
 const ua = require('universal-analytics');
-const toolbox = require('./toolbox/toolbox');
-
+const toolbox = require('./toolbox/toolbox'); // Our handy-dandy functions
 
 const configDB = require(__dirname + '/config/database.js'); // Require our database configurations
 const configSesh = require(__dirname + '/config/sesh_conf.js'); //Require our session configurations
@@ -49,7 +50,20 @@ mongoose.connect(configDB.url, {useMongoClient: true}).then(conn => {
 
 require(__dirname + '/config/passport')(passport); // pass our passport module for configuration
 
-app.use(morgan('dev'), cookieParser(), bodyParser.urlencoded({extended: true}), bodyParser.json(), session(configSesh), passport.initialize(), passport.session(), flash());
+app.use(compression(), morgan('dev'), cookieParser(), bodyParser.urlencoded({extended: true}), bodyParser.json(), session(configSesh), passport.initialize(), passport.session(), flash());
+
+app.use(minifyHTML({
+    override: true,
+    exception_url: false,
+    htmlMinifier: {
+        removeComments: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true,
+        minifyJS: true
+    }
+}));
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 
@@ -58,6 +72,7 @@ app.use(express.static('./node_modules/bootstrap/dist'));
 app.use(express.static('./node_modules/font-awesome'));
 app.use(express.static('./node_modules/jquery/dist'));
 app.use(express.static('./node_modules/materialize-css/dist'));
+app.use(express.static('./node_modules/raleway-webfont'));
 app.use(express.static('node_modules/w3-css'));
 
 app.use(favicon(path.join(appRoot, 'public', 'images', 'favicon.ico')));
