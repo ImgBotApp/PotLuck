@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PotLuck | Terms of Service</title>
 
     <!--Import Google Icon Font-->
@@ -16,6 +17,7 @@
     <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
 
     <style>
         body, h1 {
@@ -48,7 +50,7 @@
     </script>
 </head>
 <body class="white-text grey darken-4">
-<div class="bg w3-animate-opacity">
+<div class="bg w3-animate-opacity content">
     <div class="container-fluid">
         <div class="container">
             <h2>
@@ -286,9 +288,12 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
-    const routes = "<%= routes %>";
-    const loggedin = "<%= loggedin %>";
+    const routes = <%- JSON.stringify(routes) %>;
+    const loggedin = <%- loggedin %>;
+
+    addFeedback();
 
     const bg = $('.bg');
     if (loggedin) {
@@ -301,10 +306,11 @@
 
         for (let key in routes.navbar) {
             if (routes.navbar.hasOwnProperty(key)) {
-                if (routes.navbar[key].pathname === window.location.pathname)
-                    navbar_routes += "<li class='active'><a style='color:white!important;' href='routes.navbar[key].pathname'>routes.navbar[key].alias</a></li>";
-                else
-                    navbar_routes += "<li><a href='routes.navbar[key].pathname'>routes.navbar[key].alias</a></li>";
+                if (routes.navbar[key].pathname === window.location.pathname) {
+                    navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                    active_set = true;
+                } else
+                    navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
             }
         }
 

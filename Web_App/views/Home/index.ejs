@@ -14,6 +14,7 @@
     <% if (loggedin) { %>
     <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
     <% } %>
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
     <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
@@ -188,9 +189,12 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
     const routes = <%- JSON.stringify(routes) %>;
     const loggedin = <%- loggedin %>;
+
+    addFeedback();
 
     const content = $('.content');
     if (loggedin) {

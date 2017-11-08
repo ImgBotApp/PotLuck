@@ -1,4 +1,4 @@
-.feedback-section{
+.feedback-section {
     background: #2196F3;
     color: white;
     text-align: center;
@@ -9,17 +9,131 @@
     border-radius: 10px;
 }
 
-.form-section{
+.form-section {
     width: 80%;
     margin: auto;
     padding-bottom: 20px;
 }
 
-textarea{
+textarea {
     height: 185px;
     max-width: 591px;
 }
 
-.feedback-section h2{
+.feedback-section h2 {
     padding-top: 10px;
+}
+
+#feedback-box a {
+    text-decoration: none;
+}
+
+#feedback-box fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#feedback-box h4, #feedback-box h5 {
+    line-height: 1.5em;
+    margin: 0;
+}
+
+#feedback-box input {
+    border: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: 100%;
+    line-height: normal;
+    margin: 0;
+}
+
+#feedback-box p {
+    margin: 0;
+}
+
+#feedback-box .clearfix {
+    *zoom: 1;
+}
+
+/* For IE 6/7 */
+#feedback-box .clearfix:before, .clearfix:after {
+    content: "";
+    display: table;
+}
+
+#feedback-box .clearfix:after {
+    clear: both;
+}
+
+#feedback-box {
+    bottom: 0;
+    font-size: 10px;
+    left: 24px;
+    position: fixed;
+    width: 300px;
+    font-family: "Droid Sans", sans-serif;
+    z-index: 100;
+}
+
+#feedback-box header {
+    background: #293239;
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    cursor: pointer;
+    padding: 16px 24px;
+}
+
+#feedback-box h4 {
+    font-size: 12px;
+}
+
+#feedback-box h5 {
+    font-size: 10px;
+}
+
+#feedback-box form {
+    padding: 24px;
+}
+
+#feedback-box input[type="email"] {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 8px;
+    outline: none;
+    width: 234px;
+}
+
+#feedback-box textarea[type="comments"] {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 8px;
+    outline: none;
+    width: 234px;
+}
+
+#feedback-box .feedback {
+    background: #fff;
+    display: none;
+}
+
+#feedback-box .feedback-area {
+    height: 10%;
+    padding: 8px 24px;
+}
+
+.feedback-close {
+    background: #1b2126;
+    border-radius: 50%;
+    color: #fff;
+    display: block;
+    float: right;
+    font-size: 10px;
+    height: 16px;
+    line-height: 16px;
+    margin: 2px 0 0 0;
+    text-align: center;
+    width: 16px;
 }

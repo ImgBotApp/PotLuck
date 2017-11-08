@@ -64,17 +64,4 @@ module.exports = (app, passport) => {
         res.PageResponse = {path: path.resolve(_viewsdir + '/Terms/terms.ejs'), options: options};
         res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'), options);
     });
-
-
-
-    app.get('/feedback',(req,res) =>{
-        res.render(path.resolve(_viewsdir + '/Home/Feedback.ejs'));
-    });
-
-
-    app.post('/feedback',(req,res)=>{
-       var data = req.body;
-        fs.appendFile(path.resolve(appRoot + '/feedback/feedbackLog.txt'),
-        JSON.stringify(data,null,2));
-    });
 };

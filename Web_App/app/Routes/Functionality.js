@@ -7,6 +7,7 @@ const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
 const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const fs = require('fs'); // Require module for interacting with file system
 const path = require('path'); // Require path module for configuring paths
 const User = require(_modelsdir + '/users.js').User; // Require our user model
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
@@ -117,6 +118,21 @@ module.exports = (app, passport) => {
                     redirectTo: '/dashboard'
                 }));
         }).catch(err => console.log(err));
+    });
+
+    app.post('/feedback', (req, res) => {
+        const data = req.body;
+        const response = {};
+        fs.appendFile(path.resolve(appRoot + '/feedback/feedbackLog.txt'), JSON.stringify(data, null, 2), err => {
+            if (err) {
+                console.log(err);
+                response.msg = "Oops! We weren't able to get your message. Try again later."
+            } else {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                response.msg = "Thank you for your feedback! We will take this into consideration.";
+            }
+            res.end(JSON.stringify(response));
+        });
     });
 };
 

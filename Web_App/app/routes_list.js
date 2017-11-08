@@ -76,6 +76,9 @@ exports.routes_list = {
     },
 
     // Application
+    feedback: {
+        pathname: "/feedback"
+    },
     get_recipe: {
         pathname: "/get_recipe"
     },

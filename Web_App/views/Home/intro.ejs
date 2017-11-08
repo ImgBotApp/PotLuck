@@ -13,6 +13,7 @@
     <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/css/intro.css">
     <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
     <link type="text/css" rel="stylesheet" href="raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
 
@@ -128,7 +129,12 @@
 <script type="text/javascript" src="/jquery.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
+    const routes = <%- JSON.stringify(routes) %>;
+
+    addFeedback();
+
     $(document).ready(() => {
         <% if (play_intro) { %>
         css_color = 'light-blue darken-3 light-blue-text text-lighten-5';
