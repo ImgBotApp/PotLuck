@@ -4,12 +4,16 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
+const LinkedInStrategy = require('passport-linkedin').Strategy;
 
 
 // load up the user model
 const User = require('../app/models/users').User;
 
 const configAuth = require('./auth');
+const toolbox = require('../toolbox/toolbox');
+
+let callbackURLIdx = process.argv[2] === 'dev' ? 0 : 1;
 
 // expose this function to our app using module.exports
 module.exports = passport => {
@@ -18,7 +22,7 @@ module.exports = passport => {
     // passport session setup ==================================================
     // =========================================================================
     // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
+    // passport needs ability to serialize and deserialize users out of session
     // High level user serialize/de-serialize configuration used for passport
     passport.serializeUser((user, done) => {
         done(null, user._id);
@@ -45,7 +49,10 @@ module.exports = passport => {
             // asynchronous
             // User.findOne wont fire unless data is sent back
             process.nextTick(() => {
-                if (req.body.name.length < 1 || email.length < 1 || password.length < 1) {
+                // Normalize name and enact server-side form validation since client scripts can be edited (Not so fast!)
+                const name = toolbox.normalizeName(req.body.name);
+
+                if (!toolbox.validateName(name) || !toolbox.validateEmail(email) || !toolbox.validatePassword(password)) {
                     return done(null, false, req.flash('signupMessage', 'Please fill in all the fields'));
                 }
                 // find a user whose email is the same as the forms email
@@ -57,27 +64,12 @@ module.exports = passport => {
                         return done(err);
                     }
 
-                    // check to see if theres already a user with that email
-                    if (user) {
-                        // if there is a user id already but no token (user was linked at one point and then removed)
-                        // just add our token and profile information
-                        if (!user.local.name) {
-                            user.local.email = email;
-                            user.local.password = user.generateHash(password);
-                            user.local.name = req.body.name;
-
-                            user.save(err => {
-                                if (err)
-                                    throw err;
-                                return done(null, user);
-                            });
-                        } else {
-                            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-                        }
-                    } else {
+                    // check to see if there's already a user with that email
+                    if (user)
+                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                    else {
 
                         if (req.originalUrl !== '/connect/local') {
-
                             // if there is no user with that email
                             // create the user
                             const newUser = new User();
@@ -85,7 +77,8 @@ module.exports = passport => {
                             // set the user's local credentials
                             newUser.local.email = email;
                             newUser.local.password = newUser.generateHash(password);
-                            newUser.local.name = req.body.name;
+                            newUser.local.name = name;
+                            newUser.connected_accounts = 1;
 
                             // save the user
                             newUser.save(err => {
@@ -98,7 +91,8 @@ module.exports = passport => {
                             // update the current users facebook credentials
                             user.local.email = email;
                             user.local.password = user.generateHash(password);
-                            user.local.name = req.body.name;
+                            user.local.name = name;
+                            user.connected_accounts++;
 
                             // save the user
                             user.save(err => {
@@ -154,7 +148,7 @@ module.exports = passport => {
     passport.use('facebook', new FacebookStrategy({
             clientID: configAuth.facebookAuth.clientID,
             clientSecret: configAuth.facebookAuth.clientSecret,
-            callbackURL: configAuth.facebookAuth.callbackURL,
+            callbackURL: configAuth.facebookAuth.callbackURLs[callbackURLIdx],
             profileFields: ['id', 'emails', 'name'],
             passReqToCallback: true
         },
@@ -162,9 +156,8 @@ module.exports = passport => {
         // facebook will send back the token and profile
         (req, accessToken, refreshToken, profile, done) => {
             console.log('profile', profile); // debugging
-            if (!profile.emails || !profile.emails.length) {
+            if (!profile.emails || !profile.emails.length)
                 return done('No emails associated with this account!');
-            }
 
             // asynchronous
             process.nextTick(() => {
@@ -179,30 +172,16 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        // if the user is found, then log them in
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.facebook.token) {
-                                user.facebook.token = accessToken;
-                                user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                                user.facebook.email = profile.emails[0].value;
-                                user.facebook.picture = 'http://graph.facebook.com/' +
-                                    profile.id.toString() + '/picture?type=large';
-                                //user.facebook.picture
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            return done(null, user); // user found, return that user
-                        } else {
+                        if (user)
+                            return done(null, user);// if a user is found, log them in
+                        else {
                             // if there is no user found with that facebook id, create them
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the facebook information in our user model
                             newUser.facebook.id = profile.id; // set the users facebook id
@@ -234,6 +213,7 @@ module.exports = passport => {
                     user.facebook.email = profile.emails[0].value;
                     user.facebook.picture = 'https://graph.facebook.com/v2.8/' +
                         profile.id.toString() + '/picture?type=large';
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -250,7 +230,7 @@ module.exports = passport => {
 
             consumerKey: configAuth.twitterAuth.consumerKey,
             consumerSecret: configAuth.twitterAuth.consumerSecret,
-            callbackURL: configAuth.twitterAuth.callbackURL,
+            callbackURL: configAuth.twitterAuth.callbackURLs[callbackURLIdx],
             includeEmail: true, // Only works if configure twitter app settings to allow permissions (A ToS and Privacy page were required)
             passReqToCallback: true
         },
@@ -269,28 +249,16 @@ module.exports = passport => {
                         if (err)
                             return done(err);
                         // if the user is found then log them in
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.twitter.token) {
-                                user.twitter.token = token;
-                                user.twitter.diplayName = profile.displayName;
-                                user.twitter.username = profile.username;
-                                user.twitter.email = profile.emails[0].value;
-                                user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            return done(null, user); // user found, return that user
-                        } else {
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
                             // if there is no user, create them
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the user data that we need
                             newUser.twitter.id = profile.id;
@@ -312,13 +280,14 @@ module.exports = passport => {
                     // user already exists and is logged in, we have to link accounts
                     const user = req.user; // pull the user out of the session
 
-                    // update the current users facebook credentials
+                    // update the current users twitter credentials
                     user.twitter.id = profile.id;
                     user.twitter.token = token;
                     user.twitter.displayName = profile.displayName;
                     user.twitter.username = profile.username;
                     user.twitter.email = profile.emails[0].value;
                     user.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -335,7 +304,7 @@ module.exports = passport => {
 
             clientID: configAuth.googleAuth.clientID,
             clientSecret: configAuth.googleAuth.clientSecret,
-            callbackURL: configAuth.googleAuth.callbackURL,
+            callbackURL: configAuth.googleAuth.callbackURLs[callbackURLIdx],
             passReqToCallback: true
         },
         (req, token, refreshToken, profile, done) => {
@@ -351,28 +320,16 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.google.token) {
-                                user.google.token = token;
-                                user.google.diplayName = profile.displayName;
-                                user.google.email = profile.emails[0].value;
-                                user.google.picture = profile.photos[0].value;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            // if a user is found, log them in
-                            return done(null, user);
-                        } else {
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
                             // if the user isnt in our database, create a new user
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the relevant information
                             newUser.google.id = profile.id;
@@ -399,6 +356,7 @@ module.exports = passport => {
                     user.google.name = profile.displayName;
                     user.google.email = profile.emails[0].value;
                     user.google.picture = profile.photos[0].value.substring(0, profile.photos[0].value.length - 6);
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -413,7 +371,7 @@ module.exports = passport => {
     passport.use(new GitHubStrategy({
             clientID: configAuth.githubAuth.clientID,
             clientSecret: configAuth.githubAuth.clientSecret,
-            callbackURL: configAuth.githubAuth.callbackURL,
+            callbackURL: configAuth.githubAuth.callbackURLs[callbackURLIdx],
             passReqToCallback: true
         },
         (req, accessToken, refreshToken, profile, done) => {
@@ -426,30 +384,16 @@ module.exports = passport => {
                         if (err)
                             return done(err);
 
-                        if (user) {
-
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            // just add our token and profile information
-                            if (!user.github.id) {
-                                user.github.id = profile.id;
-                                user.github.token = accessToken;
-                                user.github.name = profile.displayName;
-                                user.github.username = profile.username;
-                                user.github.email = profile.emails[0].value;
-                                user.github.picture = profile._json.avatar_url;
-
-                                user.save(err => {
-                                    if (err)
-                                        throw err;
-                                    return done(null, user);
-                                });
-                            }
-
-                            // if a user is found, log them in
-                            return done(null, user);
-                        } else {
-                            // if the user isnt in our database, create a new user
+                        if (user)
+                            return done(null, user); // if a user is found, log them in
+                        else {
+                            // if the user isn't in our database, create a new user
                             const newUser = new User();
+
+                            if (req.originalUrl !== '/profile')
+                                newUser.connected_accounts = 1;
+                            else
+                                user.connected_accounts++;
 
                             // set all of the relevant information
                             newUser.github.id = profile.id;
@@ -478,6 +422,7 @@ module.exports = passport => {
                     user.github.username = profile.username;
                     user.github.email = profile.emails[0].value;
                     user.github.picture = profile._json.avatar_url;
+                    user.connected_accounts++;
 
                     // save the user
                     user.save(err => {
@@ -489,5 +434,69 @@ module.exports = passport => {
             });
         }
     ));
+
+    passport.use(new LinkedInStrategy({
+        consumerKey: configAuth.linkedinAuth.clientID,
+        consumerSecret: configAuth.linkedinAuth.clientSecret,
+        callbackURL: configAuth.linkedinAuth.callbackURLs[callbackURLIdx],
+        profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline', 'picture-url'],
+        passReqToCallback: true
+    }, (req, token, tokenSecret, profile, done) => {
+        process.nextTick(() => {
+            if (!req.user) {
+                // try to find the user based on their linkedin id
+                User.findOne({'linkedin.id': profile.id}, (err, user) => {
+                    if (err)
+                        return done(err);
+
+                    if (user)
+                        return done(null, user); // if a user is found, log them in
+                    else {
+                        // if the user isn't in our database, create a new user
+                        const newUser = new User();
+
+                        if (req.originalUrl !== '/profile')
+                            newUser.connected_accounts = 1;
+                        else
+                            user.connected_accounts++;
+
+                        // set all of the relevant information
+                        newUser.linkedin.id = profile.id;
+                        newUser.linkedin.token = token;
+                        newUser.linkedin.name = profile.displayName;
+                        newUser.linkedin.email = profile.emails[0].value;
+                        newUser.linkedin.headline = profile._json.headline;
+                        newUser.linkedin.picture = profile._json.pictureUrl;
+
+                        // save the user
+                        newUser.save(err => {
+                            if (err)
+                                throw err;
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            } else {
+                // user already exists and is logged in, we have to link accounts
+                const user = req.user; // pull the user out of the session
+
+                // update the current users facebook credentials
+                user.linkedin.id = profile.id;
+                user.linkedin.token = token;
+                user.linkedin.name = profile.displayName;
+                user.linkedin.email = profile.emails[0].value;
+                user.linkedin.headline = profile._json.headline;
+                user.linkedin.picture = profile._json.pictureUrl;
+                user.connected_accounts++;
+
+                // save the user
+                user.save(err => {
+                    if (err)
+                        throw err;
+                    return done(null, user);
+                });
+            }
+        })
+    }));
 
 };

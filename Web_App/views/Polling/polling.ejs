@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="/css/Dashboard.min.css">
-    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
-    <link type="text/css" rel="stylesheet" href="/raleway.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
+    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
@@ -28,7 +28,7 @@
         .bgimg {
             padding-top: 200px;
             min-height: 100%;
-            background: black url("/images/12265684_1010729262282686_8800740801702150174_o-min.jpg") center;
+            background: black url("/images/12265684_1010729262282686_8800740801702150174_o.jpg") center;
             background-size: cover;
         }
     </style>
@@ -53,32 +53,9 @@
         <div class="jumbotron text-center">
             <h3><span class="fa fa-user"></span> Welcome, <%= user.local.name %></h3>
             <p>Let's collect more information about your food preferences.</p>
-            <div class="carousel carousel-slider center" data-indicators="true" style="height: 600px;">
-                <div class="carousel-fixed-item center">
-                    <a class="btn waves-effect white grey-text darken-text-2">button</a>
-                </div>
-                <div class="carousel-item light-blue white-text" href="#one!">
-                    <h2 id="recipeTitle"></h2>
-                    <p id="recipeDesc" class="white-text"></p>
-                    <img id="recipeImg" src="" alt="recipe" style="display: block; margin: auto; object-fit: scale-down">
-                </div>
-                <div class="carousel-item amber white-text" href="#two!">
-                    <h2>Second Panel</h2>
-                    <p class="white-text">This is your second panel</p>
-                </div>
-                <div class="carousel-item green white-text" href="#three!">
-                    <h2>Third Panel</h2>
-                    <p class="white-text">This is your third panel</p>
-                </div>
-                <div class="carousel-item blue white-text" href="#four!">
-                    <h2>Fourth Panel</h2>
-                    <p class="white-text">This is your fourth panel</p>
-                </div>
-            </div>
-
             <div class="card">
                 <div class="card-image">
-                    <img id="recipeImg" class="activator" src="" alt="recipe" style="width: 100%; height: 600px; object-fit: scale-down">
+                    <img id="recipeImg" class="activator" src="" alt="recipe" style="width: 100%">
                 </div>
                 <div id="recipeTitle" class="card-content"></div>
                 <div class="card-action">
@@ -172,25 +149,18 @@
         recipes[idx] = {
             title: recipe.title,
             image: recipe.image,
-            id: recipe._id,
-            readyInMinutes: recipe.readyInMinutes,
-            cuisines: recipe.cuisines
+            id: recipe._id
         };
     });
 
     $(document).ready(() => {
-        $('.carousel.carousel-slider').carousel({fullWidth: true});
-
         $('.navbar-nav').html(navbar_routes);
 
         let index = 0,
             rated_data = {};
 
-        $('#recipeTitle').text(recipes[index].title);
+        $('#recipeTitle').html('<span class="card-title activator grey-text text-darken-4">' + recipes[index].title + '</span>');
         $('#recipeImg').attr('src', recipes[index].image);
-        let cuisines = recipes[index].cuisines.join(', ');
-        $('#recipeDesc').text("Ready in " + recipes[index].readyInMinutes + " minutes. Cuisines: " + (cuisines === "" ? "Unsure!" : cuisines));
-        $('#')
         $('.btn-dislike-polling, .btn-like-polling, .btn-error-recipe').attr('id', recipes[index].id);
 
         function isFinishedRating() {

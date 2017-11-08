@@ -20,14 +20,14 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt-nodejs": "*",
-    "body-parser": "^1.18.1",
+    "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "connect-flash": "*",
     "cookie-parser": "*",
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
-    "express": "^4.15.4",
-    "express-session": "^1.15.5",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",
     "formidable": "^1.0.17",
     "fs": "^0.0.1-security",
@@ -35,24 +35,25 @@
     "https": "^1.0.0",
     "jquery": "^3.2.1",
     "materialize-css": "^0.100.2",
-    "method-override": "*",
-    "mongoose": "^4.11.11",
+    "method-override": "^2.3.10",
+    "mongoose": "^4.12.4",
     "mongoose-file": "0.0.2",
-    "morgan": "*",
+    "morgan": "^1.9.0",
     "multer": "^1.2.1",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
     "passport-facebook": "*",
-    "passport-github2": "^0.1.10",
+    "passport-github2": "^0.1.11",
     "passport-google-oauth": "*",
+    "passport-linkedin": "^1.0.0",
     "passport-local": "*",
     "passport-twitter": "*",
-    "serve-favicon": "^2.4.4",
-    "serve-static": "^1.12.4",
+    "serve-favicon": "^2.4.5",
     "socket.io": "^1.7.4",
     "ssl-root-cas": "^1.2.4",
     "tunnel-ssh": "^4.1.1",
     "underscore": "*",
+    "universal-analytics": "^0.4.15",
     "w3-css": "^4.0.4"
   },
   "bugs": {
@@ -61,6 +62,6 @@
   "homepage": "https://github.com/Acesonnall/PotLuck#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.0"
+    "babel-preset-env": "^1.6.1"
   }
 }
