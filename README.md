@@ -1,4 +1,4 @@
-# RecipeMaker
+# PotLuck
 
 Contributers:<br />
 Omar Taylor<br />
