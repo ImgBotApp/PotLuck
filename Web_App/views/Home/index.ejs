@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | Home Page</title>
+    <title>PotLuck |
+        <% if (loggedin) { %>
+        Home Page
+        <% } else { %>
+        Smart Recipe Recommendation, Search, and Discovery
+        <% } %>
+    </title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">

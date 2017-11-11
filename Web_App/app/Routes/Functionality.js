@@ -111,7 +111,7 @@ module.exports = (app, passport) => {
                     }
                 }
 
-        User.findByIdAndUpdate(req.user._id, {$push: {feedback: {$each: ratings}}}, {upsert: true}).then(() => {
+        User.findByIdAndUpdate(req.user._id, {$addToSet: {feedback: {$each: ratings}}}, {upsert: true}).then(() => {
             if (req.user.first_visit)
                 User.findByIdAndUpdate(req.user._id, {first_visit: false}).then(() => res.send({
                     status: 'Success',

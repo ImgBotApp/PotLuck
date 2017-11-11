@@ -398,7 +398,7 @@
         const unlink_btn_classes = ['unlink-local', 'unlink-facebook', 'unlink-twitter', 'unlink-google', 'unlink-github', 'unlink-linkedin'];
         $('.' + unlink_btn_classes.join(',.')).click(event => {
             event.preventDefault();
-            const class_names = event.currentTarget.css_color.split(/\s+/);
+            const class_names = event.currentTarget.className.split(/\s+/);
             const button_clicked = $.grep(class_names, c => {
                 return $.inArray(c, unlink_btn_classes) !== -1;
             })[0];
