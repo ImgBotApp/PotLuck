@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | Home Page</title>
+    <title>PotLuck |
+        <% if (loggedin) { %>
+        Home Page
+        <% } else { %>
+        Smart Recipe Recommendation, Search, and Discovery
+        <% } %>
+    </title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -14,12 +20,18 @@
     <% if (loggedin) { %>
     <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
     <% } %>
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
     <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -41,6 +53,11 @@
             width: 100%;
             height: 100%;
             opacity: 0.6;
+        }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
         }
     </style>
 
@@ -188,47 +205,53 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
     const routes = <%- JSON.stringify(routes) %>;
     const loggedin = <%- loggedin %>;
 
-    const content = $('.content');
-    if (loggedin) {
-        content.css('padding-top', '200px');
-        addNav(routes);
-        addModals();
+    $(document).ready(() => {
+        addFeedback();
 
-        let navbar_routes = "";
-        let active_set = false;
+        const content = $('.content');
+        if (loggedin) {
+            content.css('padding-top', '200px');
+            addNav(routes);
+            addModals();
 
-        for (let key in routes.navbar) {
-            if (routes.navbar.hasOwnProperty(key)) {
-                if (routes.navbar[key].pathname === window.location.pathname) {
-                    navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
-                    active_set = true;
-                } else
-                    navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+            let navbar_routes = "";
+            let active_set = false;
+
+            for (let key in routes.navbar) {
+                if (routes.navbar.hasOwnProperty(key)) {
+                    if (routes.navbar[key].pathname === window.location.pathname) {
+                        navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                        active_set = true;
+                    } else
+                        navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                }
             }
+
+            if (!active_set)
+                navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+
+            $(document).ready(() => $('.navbar-nav').html(navbar_routes));
+        } else {
+            content.prepend('<div class="logo w3-display-topleft w3-padding-large w3-xlarge">\n' +
+                '        <a href="' + routes.intro.pathname + '" style="text-decoration: none; color: deepskyblue">PotLuck</a>\n' +
+                '    </div>');
+            content.css('padding-top', '80px');
         }
 
-        if (!active_set)
-            navbar_routes += "<li class='active'><a style='color:white!important;' href='" + window.location.href + "'>" + document.title.split('|')[1].trim() + "</a></li>";
+        function check() {
+            const isMobile = window.matchMedia("only screen and (max-width: 768px)");
 
-        $(document).ready(() => $('.navbar-nav').html(navbar_routes));
-    } else {
-        content.css('padding-top', '80px');
-    }
+            if (isMobile.matches)
+                $(".target > .row").find("div").removeClass().addClass('row');
+            else
+                $(".target > .row").find("div").removeClass().addClass('col s4');
+        }
 
-    function check() {
-        const isMobile = window.matchMedia("only screen and (max-width: 768px)");
-
-        if (isMobile.matches)
-            $(".target > .row").find("div").removeClass().addClass('row');
-        else
-            $(".target > .row").find("div").removeClass().addClass('col s4');
-    }
-
-    $(document).ready(() => {
         check();
         $(window).bind('orientationchange', check);
     });

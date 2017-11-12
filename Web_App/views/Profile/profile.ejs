@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | <%= user.local.name %>'s Profile</title>
+    <title>PotLuck | Smart Recipe Recommendation, Search, and Discovery | <%= user.local.name %>'s Profile</title>
 
     <!--Import Google Icon Font-->
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
@@ -16,10 +17,16 @@
     <link type="text/css" rel="stylesheet" href="/css/profile.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
 
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -324,9 +331,11 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
     const routes = <%- JSON.stringify(routes) %>;
 
+    addFeedback();
     addNav(routes);
     addModals();
 
@@ -390,7 +399,7 @@
         const unlink_btn_classes = ['unlink-local', 'unlink-facebook', 'unlink-twitter', 'unlink-google', 'unlink-github', 'unlink-linkedin'];
         $('.' + unlink_btn_classes.join(',.')).click(event => {
             event.preventDefault();
-            const class_names = event.currentTarget.css_color.split(/\s+/);
+            const class_names = event.currentTarget.className.split(/\s+/);
             const button_clicked = $.grep(class_names, c => {
                 return $.inArray(c, unlink_btn_classes) !== -1;
             })[0];

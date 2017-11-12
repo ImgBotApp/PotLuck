@@ -3,6 +3,7 @@
  */
 
 const _viewsdir = appRoot + '/views';
+const _modelsdir = appRoot + '/app/models';
 
 const path = require('path'); // Require path module for configuring paths
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
@@ -14,7 +15,7 @@ let options = {
     play_intro: true
 };
 
-module.exports = (app, passport) => {
+module.exports = app => {
     // Our homepage
     app.get('/', (req, res, next) => {
         let ip;
@@ -39,28 +40,34 @@ module.exports = (app, passport) => {
     });
 
     // Sign-in page/dashboard
-    app.get('/index', (req, res) => {
+    app.get('/index', (req, res, next) => {
         options.loggedin = req.user !== undefined; // Check if user is logged in and pass the result to the client
         options.user = req.user; // Pass the user model to the client
 
         res.PageResponse = {path: path.resolve(_viewsdir + '/Home/index.ejs'), options: options};
-        res.render(path.resolve(_viewsdir + '/Home/index.ejs'), options);
+        next();
     });
 
+    app.get('/about', (req, res, next) => {
+        options.loggedin = req.user !== undefined;
+
+        res.PageResponse = {path: path.resolve(_viewsdir + '/Other/about.ejs'), options: options};
+        next();
+    });
 
     // Route for privacy page
-    app.get('/privacy_policy', (req, res) => {
+    app.get('/privacy_policy', (req, res, next) => {
         options.loggedin = req.user !== undefined; // Check if user is logged in and pass the result to the client
 
-        res.PageResponse = {path: path.resolve(_viewsdir + '/Privacy/privacy.ejs'), options: options};
-        res.render(path.resolve(_viewsdir + '/Privacy/privacy.ejs'), options);
+        res.PageResponse = {path: path.resolve(_viewsdir + '/Other/privacy.ejs'), options: options};
+        next();
     });
 
     // Route for terms page
-    app.get('/terms', (req, res) => {
+    app.get('/terms', (req, res, next) => {
         options.loggedin = req.user !== undefined; // Check if user is logged in and pass the result to the client
 
-        res.PageResponse = {path: path.resolve(_viewsdir + '/Terms/terms.ejs'), options: options};
-        res.render(path.resolve(_viewsdir + '/Terms/terms.ejs'), options);
+        res.PageResponse = {path: path.resolve(_viewsdir + '/Other/terms.ejs'), options: options};
+        next();
     });
 };

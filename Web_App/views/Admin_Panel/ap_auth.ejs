@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel | Authentication</title>
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- CSS  -->
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/raleway.min.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
+</head>
+<body class="black white-text">
+<div class="ap-auth">
+    <div class="w3-container">
+        <h1>Elevate Privilege (⌐■_■)</h1>
+
+        <div class="row"
+             style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%)">
+            <form class="col s12">
+                <div class="row">
+                    <div class="ap-auth-field col s12">
+                        Enter the password:
+                        <div class="input-field inline">
+                            <input id="password" type="password" class="validate">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts  -->
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script>
+    $(document).ready(() => {
+        const routes = <%- JSON.stringify(routes) %>;
+
+        $('form').on('submit', event => {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/admin/register',
+                data: {password: $('.ap-auth-field').find('#password').val()},
+                dataType: 'json',
+                success: elevate
+            });
+
+            function elevate(res) {
+                if (res.err)
+                    Materialize.toast(res.err, 2000, 'black white-text');
+                else {
+                    Materialize.toast('Successful elevation!', 2000, 'black white-text', () => {
+                        window.location.replace('http://' + window.location.hostname + routes.admin.pathname);
+                    });
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

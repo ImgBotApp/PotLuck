@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="msvalidate.01" content="0749B817640BB355A3C5A18AA053A499"/>
-    <title>PotLuck | Intro</title>
+    <title>PotLuck | Smart Recipe Recommendation, Search, and Discovery</title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -13,12 +13,17 @@
     <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/css/intro.css">
     <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
     <link type="text/css" rel="stylesheet" href="raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
 
     <style>
-        body, h1 {
+        body {
             font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
             font-weight: bold;
         }
 
@@ -128,7 +133,12 @@
 <script type="text/javascript" src="/jquery.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
+    const routes = <%- JSON.stringify(routes) %>;
+
+    addFeedback();
+
     $(document).ready(() => {
         <% if (play_intro) { %>
         css_color = 'light-blue darken-3 light-blue-text text-lighten-5';

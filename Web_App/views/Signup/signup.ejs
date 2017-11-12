@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | Registration</title>
+    <title>PotLuck | Smart Recipe Recommendation, Search, and Discovery | Registration</title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -16,9 +16,16 @@
     <link type="text/css" rel="stylesheet" href="/css/login_signup.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
+
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -41,6 +48,11 @@
             height: 100%;
             opacity: 0.6;
         }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
+        }
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -59,10 +71,6 @@
 </head>
 <body>
 <div class="bgimg w3-animate-opacity">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge"
-         style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">
-        <a href="<%= routes.index.pathname %>" style="text-decoration: none; color: #477496">PotLuck</a>
-    </div>
     <div class="w3-display-container" style="padding-top: 80px;">
         <div class="w3-container" style="background-color: rgba(0,0,0,0.85)">
             <div class="col-sm-6 col-sm-offset-3 w3-animate-right">
@@ -111,6 +119,10 @@
 
 </div>
 
+<div class="logo w3-display-topleft w3-padding-large w3-xlarge">
+    <a href="<%= routes.index.pathname %>" style="text-decoration: none; color: deepskyblue">PotLuck</a>
+</div>
+
 <footer class="page-footer black">
     <div class="container">
         <div class="row">
@@ -143,7 +155,12 @@
 <script type="text/javascript" src="/jquery.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
+    const routes = <%- JSON.stringify(routes) %>;
+
+    addFeedback();
+
     function getDocHeight() {
         const D = document;
         return Math.max(

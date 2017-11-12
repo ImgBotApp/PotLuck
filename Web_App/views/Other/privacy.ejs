@@ -2,24 +2,31 @@
 <html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PotLuck | Privacy Policy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PotLuck | Smart Recipe Recommendation, Search, and Discovery | Privacy Policy</title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <!-- CSS  -->
-    <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
     <% if (loggedin) { %>
     <link type="text/css" rel="stylesheet" href="/css/Dashboard.css">
     <% } %>
-    <link type="text/css" rel="stylesheet" href="/css/font-awesome.css">
-    <link type="text/css" rel="stylesheet" href="/css/fonts/Raleway.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
 
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -30,6 +37,11 @@
             min-height: 100%;
             background: center;
             background-size: cover;
+        }
+
+        .logo {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 0 0 15px 0
         }
     </style>
 
@@ -49,8 +61,8 @@
 </head>
 <body class="white-text grey darken-4">
 <div class="bg w3-animate-opacity content">
-    <div class="w3-display-container">
-        <div class="container-fluid">
+    <div class="container-fluid">
+        <div class="container">
             <h2>PotLuck Terms of Service and Privacy Policy</h2>
 
             <h3>1. Terms</h3>
@@ -261,9 +273,12 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
-    const routes = "<%= routes %>";
-    const loggedin = "<%= loggedin %>";
+    const routes = <%- JSON.stringify(routes) %>;
+    const loggedin = <%- loggedin %>;
+
+    addFeedback();
 
     const bg = $('.bg');
     if (loggedin) {
@@ -276,10 +291,11 @@
 
         for (let key in routes.navbar) {
             if (routes.navbar.hasOwnProperty(key)) {
-                if (routes.navbar[key].pathname === window.location.pathname)
-                    navbar_routes += "<li class='active'><a style='color:white!important;' href='routes.navbar[key].pathname'>routes.navbar[key].alias</a></li>";
-                else
-                    navbar_routes += "<li><a href='routes.navbar[key].pathname'>routes.navbar[key].alias</a></li>";
+                if (routes.navbar[key].pathname === window.location.pathname) {
+                    navbar_routes += "<li class='active'><a style='color:white!important;' href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
+                    active_set = true;
+                } else
+                    navbar_routes += "<li><a href='" + routes.navbar[key].pathname + "'>" + routes.navbar[key].alias + "</a></li>";
             }
         }
 
@@ -291,9 +307,8 @@
             $('.terms').text(window.location.protocol + '//' + window.location.hostname + '/')
         });
     } else {
-        $('.content').prepend('<div class="w3-display-topleft w3-padding-large w3-xlarge"\n' +
-            '         style="z-index: 1; background-color: rgba(0,0,0,0.6); border-radius: 0 0 15px 0">\n' +
-            '        <a href="' + routes.index.pathname + '" style="text-decoration: none; color: #477496">PotLuck</a>\n' +
+        $('.content').prepend('<div class="logo w3-display-topleft w3-padding-large w3-xlarge">\n' +
+            '        <a href="' + routes.index.pathname + '" style="text-decoration: none; color: deepskyblue">PotLuck</a>\n' +
             '    </div>');
         bg.css('padding-top', '80px');
     }

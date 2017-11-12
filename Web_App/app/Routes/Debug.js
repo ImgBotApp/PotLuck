@@ -9,7 +9,7 @@ const path = require('path'); // Require path module for configuring paths
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
 
 
-module.exports = (app, passport) => {
+module.exports = (app) => {
 // Displays random recipe from the database (for testing purposes)
     app.get('/rand_recipe', (req, res) => {
 

@@ -77,7 +77,9 @@ const userSchema = mongoose.Schema({
         rating: Number
     }, {_id: false})], // Create a new schema for user feedback, but don't give it an id.
     connected_accounts: Number,
-    first_visit: {type: Boolean, default: true}
+    isFirstVisit: {type: Boolean, default: true},
+    registration_date: Date,
+    isAdmin: {type: Boolean, default: false}
 });
 
 // methods ======================

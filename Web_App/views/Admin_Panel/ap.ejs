@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PotLuck | Admin Panel</title>
+
+    <!--Import Google Icon Font-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <!-- CSS  -->
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="/raleway.min.css">
+    <link type="text/css" rel="stylesheet" href="/w3.css">
+</head>
+<body class="black white-text">
+<div class="admin-panel w3-container">
+    <h1>The worst admin panel ever</h1>
+    <div class="admin-panel-announcement">
+        <h2>Make an Announcement</h2>
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix">announcement</i>
+                        <input id="icon_prefix" type="text" class="validate">
+                        <label for="icon_prefix">Announcement</label>
+                    </div>
+                    <p>
+                        <input class="with-gap" name="transmission" type="radio" id="broadcast"/>
+                        <label for="broadcast">Broadcast</label>
+                    </p>
+                    <p>
+                        <input class="with-gap" name="transmission" type="radio" id="unicast"/>
+                        <label for="unicast">Unicast</label>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts  -->
+<script type="text/javascript" src="/jquery.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+</body>
+</html>

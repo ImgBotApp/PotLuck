@@ -7,15 +7,16 @@ const _viewsdir = appRoot + '/views';
 const _modelsdir = appRoot + '/app/models';
 
 const _ = require('underscore'); // Our JavaScript utility-belt (used for looping in our case)
+const fs = require('fs'); // Require module for interacting with file system
 const path = require('path'); // Require path module for configuring paths
 const User = require(_modelsdir + '/users.js').User; // Require our user model
 const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe model
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 const toolbox = require('../../toolbox/toolbox'); // Handy-dandy functions
 
-let options = {routes: routes_list};
+const options = {routes: routes_list};
 
-module.exports = (app, passport) => {
+module.exports = (app) => {
 
     app.get('/dashboard', isLoggedIn, (req, res) => getSimilarities(req, res));
 
@@ -110,13 +111,28 @@ module.exports = (app, passport) => {
                     }
                 }
 
-        User.findByIdAndUpdate(req.user._id, {$push: {feedback: {$each: ratings}}}, {upsert: true}).then(() => {
-            if (req.user.first_visit)
-                User.findByIdAndUpdate(req.user._id, {first_visit: false}).then(() => res.send({
+        User.findByIdAndUpdate(req.user._id, {$addToSet: {feedback: {$each: ratings}}}, {upsert: true}).then(() => {
+            if (req.user.isFirstVisit)
+                User.findByIdAndUpdate(req.user._id, {isFirstVisit: false}).then(() => res.send({
                     status: 'Success',
                     redirectTo: '/dashboard'
                 }));
         }).catch(err => console.log(err));
+    });
+
+    app.post('/feedback', (req, res) => {
+        const data = req.body;
+        const response = {};
+        fs.appendFile(path.resolve(appRoot + '/feedback/feedbackLog.txt'), JSON.stringify(data, null, 2), err => {
+            if (err) {
+                console.log(err);
+                response.msg = "Oops! We weren't able to get your message. Try again later."
+            } else {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                response.msg = "Thank you for your feedback! We will take this into consideration.";
+            }
+            res.end(JSON.stringify(response));
+        });
     });
 };
 

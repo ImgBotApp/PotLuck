@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PotLuck | Polling</title>
+    <title>PotLuck | | Smart Recipe Recommendation, Search, and Discovery | Polling</title>
 
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -15,10 +15,16 @@
     <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/raleway.min.css">
     <link type="text/css" rel="stylesheet" href="/w3.css">
+    <link type="text/css" rel="stylesheet" href="/css/Feedback.css">
 
     <style>
-        body, h1 {
-            font-family: "Raleway", sans-serif
+        body {
+            font-family: "Raleway", sans-serif;
+            margin: 0;
+        }
+
+        body h1 {
+            font-weight: bold;
         }
 
         body, html {
@@ -59,14 +65,17 @@
                 </div>
                 <div id="recipeTitle" class="card-content"></div>
                 <div class="card-action">
+                    <div class="card-content">
+                        <p>Does this recipe interest you?</p>
+                    </div>
                     <button id="" type="submit" class="btn btn-like-polling w3-button w3-round w3-green">
-                        Like
+                        Yes
                     </button>
                     <button id="" type="submit" class="btn btn-dislike-polling w3-button w3-round w3-red">
-                        Dislike
+                        No
                     </button>
                     <button type="submit" class="btn btn-finish w3-button w3-round w3-gray">
-                        Finish
+                        I'm done
                     </button>
                 </div>
                 <div class="card-content">
@@ -120,10 +129,12 @@
 <script type="text/javascript" src="/js/materialize.min.js"></script>
 <script type="text/javascript" src="/js/recipe_view_search.js"></script>
 <script type="text/javascript" src="/js/navbar.js"></script>
+<script type="text/javascript" src="/js/feedback.js"></script>
 <script>
     const routes = <%- JSON.stringify(routes) %>;
     const recipes = <%- JSON.stringify(recipes) %>;
 
+    addFeedback();
     addNav(routes);
     addModals();
 
