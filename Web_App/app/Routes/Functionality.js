@@ -16,7 +16,7 @@ const toolbox = require('../../toolbox/toolbox'); // Handy-dandy functions
 
 const options = {routes: routes_list};
 
-module.exports = (app, passport) => {
+module.exports = (app) => {
 
     app.get('/dashboard', isLoggedIn, (req, res) => getSimilarities(req, res));
 
