@@ -357,7 +357,7 @@ function loginExternalCB(passport, method) {
 }
 
 function isFirstVisit(req, res) {
-    if (req.user.first_visit)
+    if (req.user.isFirstVisit)
         res.redirect('/polling');
     else
         res.redirect('/index');

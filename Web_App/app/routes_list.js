@@ -76,6 +76,9 @@ exports.routes_list = {
     },
 
     // Application
+    admin: {
+        pathname: "/admin"
+    },
     feedback: {
         pathname: "/feedback"
     },

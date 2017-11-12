@@ -14,7 +14,7 @@ const Recipe = require(_modelsdir + '/recipes.js').Recipe; // Require of recipe 
 const routes_list = require("../routes_list").routes_list; // List of routes to pass to EJS
 const toolbox = require('../../toolbox/toolbox'); // Handy-dandy functions
 
-let options = {routes: routes_list};
+const options = {routes: routes_list};
 
 module.exports = (app, passport) => {
 
@@ -112,8 +112,8 @@ module.exports = (app, passport) => {
                 }
 
         User.findByIdAndUpdate(req.user._id, {$addToSet: {feedback: {$each: ratings}}}, {upsert: true}).then(() => {
-            if (req.user.first_visit)
-                User.findByIdAndUpdate(req.user._id, {first_visit: false}).then(() => res.send({
+            if (req.user.isFirstVisit)
+                User.findByIdAndUpdate(req.user._id, {isFirstVisit: false}).then(() => res.send({
                     status: 'Success',
                     redirectTo: '/dashboard'
                 }));

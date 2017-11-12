@@ -81,6 +81,7 @@ module.exports = passport => {
                             newUser.local.password = newUser.generateHash(password);
                             newUser.local.name = name;
                             newUser.connected_accounts = 1;
+                            newUser.registration_date = new Date();
 
                             // save the user
                             newUser.save(err => {
@@ -192,6 +193,7 @@ module.exports = passport => {
                             newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
                             newUser.facebook.picture = 'https://graph.facebook.com/' +
                                 profile.id.toString() + '/picture?type=large';
+                            newUser.registration_date = new Date();
 
                             // save our user to the database
                             newUser.save(err => {
@@ -269,6 +271,7 @@ module.exports = passport => {
                             newUser.twitter.displayName = profile.displayName;
                             newUser.twitter.email = profile.emails[0].value;
                             newUser.twitter.picture = 'https://twitter.com/' + profile.username + '/profile_image?size=original';
+                            newUser.registration_date = new Date();
 
                             // save our user into the database
                             newUser.save(err => {
@@ -339,6 +342,7 @@ module.exports = passport => {
                             newUser.google.name = profile.displayName;
                             newUser.google.email = profile.emails[0].value; // pull the first email
                             newUser.google.picture = profile.photos[0].value;
+                            newUser.registration_date = new Date();
 
                             // save the user
                             newUser.save(err => {
@@ -404,6 +408,7 @@ module.exports = passport => {
                             newUser.github.username = profile.username;
                             newUser.github.email = profile.emails[0].value;
                             newUser.github.email = profile._json.avatar_url;
+                            newUser.registration_date = new Date();
 
                             // save the user
                             newUser.save(err => {
@@ -469,6 +474,7 @@ module.exports = passport => {
                         newUser.linkedin.email = profile.emails[0].value;
                         newUser.linkedin.headline = profile._json.headline;
                         newUser.linkedin.picture = profile._json.pictureUrl;
+                        newUser.registration_date = new Date();
 
                         // save the user
                         newUser.save(err => {
